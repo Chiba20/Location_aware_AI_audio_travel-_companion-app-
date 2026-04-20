@@ -1,18 +1,12 @@
 [
   {
     "id": 1,
-    "name": "Kanchipuram",
-    "state": "Tamil Nadu",
-    "country": "India",
-    "tagline": "City of thousand temples",
-    "description": "Kanchipuram is known for its temple heritage, silk weaving, and cultural history."
-  },
-  {
-    "id": 2,
-    "name": "Madurai",
-    "state": "Tamil Nadu",
-    "country": "India",
-    "tagline": "Ancient cultural city",
-    "description": "Madurai is famous for Meenakshi Temple, old markets, and rich history."
+    "cityId": 1,
+    "name": "Ekambareswarar Temple",
+    "latitude": 12.8476,
+    "longitude": 79.6992,
+    "triggerRadius": 100,
+    "audioUrl": "audio.mp3",
+    "isHiddenGem": false
   }
 ]
