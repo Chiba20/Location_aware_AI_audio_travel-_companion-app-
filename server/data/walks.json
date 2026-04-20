@@ -1,18 +1,8 @@
 [
   {
     "id": 1,
-    "name": "Kanchipuram",
-    "state": "Tamil Nadu",
-    "country": "India",
-    "tagline": "City of thousand temples",
-    "description": "Kanchipuram is known for its temple heritage, silk weaving, and cultural history."
-  },
-  {
-    "id": 2,
-    "name": "Madurai",
-    "state": "Tamil Nadu",
-    "country": "India",
-    "tagline": "Ancient cultural city",
-    "description": "Madurai is famous for Meenakshi Temple, old markets, and rich history."
+    "cityId": 1,
+    "name": "Temple Walk",
+    "placeIds": [1]
   }
 ]
