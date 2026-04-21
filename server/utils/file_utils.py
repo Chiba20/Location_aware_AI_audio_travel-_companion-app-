@@ -1,5 +1,4 @@
 import json
-<<<<<<< HEAD
 import os
 import tempfile
 
@@ -37,13 +36,3 @@ def next_id(items):
     if not items:
         return 1
     return max(int(item.get("id", 0)) for item in items) + 1
-=======
-
-def read_json(path):
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-def write_json(path, data):
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
->>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe

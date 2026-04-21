@@ -2,7 +2,6 @@
   {
     "id": 1,
     "name": "Kanchipuram",
-<<<<<<< HEAD
     "state": "Tamil Nadu",
     "country": "India",
     "tagline": "City of thousand temples",
@@ -21,8 +20,5 @@
     "heroImage": "madurai.jpg",
     "interests": ["history", "food", "markets", "architecture", "culture"],
     "offlineAvailable": true
-=======
-    "history": "Famous temple city"
->>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe
   }
 ]

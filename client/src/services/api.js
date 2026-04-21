@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const api = axios.create({
-<<<<<<< HEAD
   baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
   timeout: 12000
 });
@@ -34,9 +33,3 @@ export const getFeedback = () => api.get("/feedback/");
 export const createFeedback = (payload) => api.post("/feedback/", payload);
 
 export default api;
-=======
-  baseURL: "http://localhost:5000/api",
-});
-
-export default api;
->>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe

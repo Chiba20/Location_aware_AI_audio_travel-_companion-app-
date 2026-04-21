@@ -91,5 +91,3 @@ http://127.0.0.1:8080
 - Test location-aware story triggers
 - Submit and view traveller feedback
 - MySQL schema ready for migration from JSON storage
-=======
-# Location_aware_AI_audio_travel-_companion-app-

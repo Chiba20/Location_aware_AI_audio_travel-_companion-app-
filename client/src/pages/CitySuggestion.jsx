@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useEffect, useMemo, useState } from "react";
 import Navbar from "../component/Navbar";
 import CityCard from "../component/CityCard";
@@ -39,37 +38,12 @@ function CitySuggestion() {
       return matchesQuery && matchesInterest;
     });
   }, [cities, query, interest]);
-=======
-import React from "react";
-import Navbar from "../components/Navbar";
-import CityCard from "../components/CityCard";
-import "../styles/city.css";
-
-function CitySuggestions() {
-  const cities = [
-    {
-      id: 1,
-      name: "Kanchipuram",
-      state: "Tamil Nadu",
-      country: "India",
-      tagline: "City of thousand temples"
-    },
-    {
-      id: 2,
-      name: "Madurai",
-      state: "Tamil Nadu",
-      country: "India",
-      tagline: "Ancient cultural city"
-    }
-  ];
->>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe
 
   return (
     <>
       <Navbar />
 
       <div className="page-container">
-<<<<<<< HEAD
         <div className="page-header">
           <span className="eyebrow">Suggested cities</span>
           <h1>Choose a city and let the walk tell itself</h1>
@@ -105,21 +79,9 @@ function CitySuggestions() {
             ))}
           </div>
         )}
-=======
-        <h1>Suggested Cities</h1>
-        <div className="city-grid">
-          {cities.map((city) => (
-            <CityCard key={city.id} city={city} />
-          ))}
-        </div>
->>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe
       </div>
     </>
   );
 }
 
-<<<<<<< HEAD
 export default CitySuggestion;
-=======
-export default CitySuggestions;
->>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe

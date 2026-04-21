@@ -2,7 +2,6 @@
   {
     "id": 1,
     "cityId": 1,
-<<<<<<< HEAD
     "name": "Temple and Silk Walk",
     "description": "A light walking route that blends temple heritage with Kanchipuram's weaving culture.",
     "estimatedMinutes": 45,
@@ -19,9 +18,5 @@
     "distanceKm": 2.1,
     "placeIds": [3, 4],
     "interests": ["history", "food", "culture"]
-=======
-    "name": "Temple Walk",
-    "placeIds": [1]
->>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe
   }
 ]

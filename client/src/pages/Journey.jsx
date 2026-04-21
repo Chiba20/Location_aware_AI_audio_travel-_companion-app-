@@ -232,7 +232,7 @@ function Journey() {
                 <div>
                   <span className="eyebrow">Status</span>
                   <h2>{journey ? `Journey #${journey.id}` : "No active journey"}</h2>
-                  <p>{journey ? `${journey.status} · ${journey.narrationStyle}` : "Choose a city and start the walk."}</p>
+                  <p>{journey ? `${journey.status} - ${journey.narrationStyle}` : "Choose a city and start the walk."}</p>
                 </div>
                 {journey?.status === "active" ? <Navigation size={28} /> : <Square size={28} />}
               </div>
@@ -280,7 +280,7 @@ function Journey() {
                     <CheckCircle2 size={20} />
                     <div>
                       <strong>{place.name}</strong>
-                      <span>{place.distanceMeters}m away · {place.audio?.durationSeconds}s audio</span>
+                      <span>{place.distanceMeters}m away - {place.audio?.durationSeconds}s audio</span>
                     </div>
                   </article>
                 ))}

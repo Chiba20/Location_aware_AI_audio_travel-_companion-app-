@@ -155,7 +155,7 @@ function Feedback() {
                     <strong>{item.rating}/5</strong>
                   </div>
                   <p>{item.comment}</p>
-                  <small><MessageSquare size={14} /> City #{item.cityId || "-"} · Place #{item.placeId || "-"}</small>
+                  <small><MessageSquare size={14} /> City #{item.cityId || "-"} - Place #{item.placeId || "-"}</small>
                 </article>
               ))}
             </section>
