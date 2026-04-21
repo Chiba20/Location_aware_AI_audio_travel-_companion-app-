@@ -2,10 +2,9 @@ __pycache__/
 *.pyc
 .env
 venv/
-<<<<<<< HEAD
+
 node_modules/
 dist/
 *.log
 client/.env
 =======
->>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe
