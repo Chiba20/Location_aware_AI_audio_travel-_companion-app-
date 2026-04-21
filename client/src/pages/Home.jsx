@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Headphones, Map, Sparkles, WifiOff } from "lucide-react";
@@ -28,12 +29,21 @@ function Home() {
     };
   }, []);
 
+=======
+import React from "react";
+import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import "../styles/home.css";
+
+function Home() {
+>>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe
   return (
     <>
       <Navbar />
 
       <div className="home-container">
         <div className="hero-section">
+<<<<<<< HEAD
           <div className="hero-copy">
             <span className="eyebrow">Location-aware audio companion</span>
             <h1>{content.brand.tagline}</h1>
@@ -100,9 +110,25 @@ function Home() {
             })
           )}
         </section>
+=======
+          <h1>Every Street Has a Story</h1>
+          <p>
+            Discover cities, culture, and stories through a simple travel
+            companion app.
+          </p>
+
+          <Link to="/cities" className="explore-btn">
+            Explore Cities
+          </Link>
+        </div>
+>>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe
       </div>
     </>
   );
 }
 
+<<<<<<< HEAD
 export default Home;
+=======
+export default Home;
+>>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe

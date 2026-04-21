@@ -5,6 +5,7 @@
     "name": "Ekambareswarar Temple",
     "latitude": 12.8476,
     "longitude": 79.6992,
+<<<<<<< HEAD
     "triggerRadius": 120,
     "audioUrl": "/audio/kanchipuram/ekambareswarar.mp3",
     "audio": {
@@ -70,5 +71,10 @@
     "didYouKnow": "Madurai's food streets are often busiest after sunset.",
     "interests": ["food", "markets", "culture"],
     "isHiddenGem": true
+=======
+    "triggerRadius": 100,
+    "audioUrl": "audio.mp3",
+    "isHiddenGem": false
+>>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe
   }
 ]

@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+<<<<<<< HEAD
 import { ArrowRight, WifiOff } from "lucide-react";
 import content from "../data/appContent.json";
 
@@ -32,8 +33,26 @@ function CityCard({ city }) {
           <ArrowRight size={16} />
         </Link>
       </div>
+=======
+
+function CityCard({ city }) {
+  return (
+    <div className="city-card">
+      <h3>{city.name}</h3>
+      <p><strong>State:</strong> {city.state}</p>
+      <p><strong>Country:</strong> {city.country}</p>
+      <p>{city.tagline}</p>
+
+      <Link to={`/city/${city.id}`} className="view-btn">
+        View Details
+      </Link>
+>>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe
     </div>
   );
 }
 
+<<<<<<< HEAD
 export default CityCard;
+=======
+export default CityCard;
+>>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe
