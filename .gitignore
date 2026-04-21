@@ -7,4 +7,7 @@ node_modules/
 dist/
 *.log
 client/.env
+<<<<<<< HEAD
 
+=======
+>>>>>>> d681818c40c09cc7c7b4d7bf3ccb9c489dc7323d
