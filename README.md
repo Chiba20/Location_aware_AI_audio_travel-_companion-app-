@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Every Street
 
 Location-aware AI audio travel companion app for city storytelling, hidden gems, walking routes, journey tracking, and traveller feedback.
@@ -94,4 +93,3 @@ http://127.0.0.1:8080
 - MySQL schema ready for migration from JSON storage
 =======
 # Location_aware_AI_audio_travel-_companion-app-
->>>>>>> de3c8b2d4a2529ebd9a4a54bdd871216b99429fe
