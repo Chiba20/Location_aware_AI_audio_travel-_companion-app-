@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "cityId": 1,
+    "name": "Ekambareswarar Temple",
+    "latitude": 12.8476,
+    "longitude": 79.6992,
+    "triggerRadius": 120,
+    "audioUrl": "/audio/kanchipuram/ekambareswarar.mp3",
+    "audio": {
+      "url": "/audio/kanchipuram/ekambareswarar.mp3",
+      "durationSeconds": 165,
+      "offlineAvailable": true
+    },
+    "story": "A sacred site associated with the element earth, Ekambareswarar Temple turns stone, ritual, and legend into a living map of Kanchipuram.",
+    "didYouKnow": "The temple complex is known for a mango tree connected to local legend.",
+    "interests": ["history", "architecture", "spirituality"],
+    "isHiddenGem": false
+  },
+  {
+    "id": 2,
+    "cityId": 1,
+    "name": "Kanchipuram Silk Weaver Street",
+    "latitude": 12.8352,
+    "longitude": 79.7036,
+    "triggerRadius": 100,
+    "audioUrl": "/audio/kanchipuram/silk-weavers.mp3",
+    "audio": {
+      "url": "/audio/kanchipuram/silk-weavers.mp3",
+      "durationSeconds": 140,
+      "offlineAvailable": true
+    },
+    "story": "Here the city speaks through looms, dyed silk threads, family workshops, and the patient craft behind Kanchipuram sarees.",
+    "didYouKnow": "Traditional silk sarees can take several days or weeks depending on design complexity.",
+    "interests": ["silk", "culture", "hidden gems"],
+    "isHiddenGem": true
+  },
+  {
+    "id": 3,
+    "cityId": 2,
+    "name": "Meenakshi Amman Temple",
+    "latitude": 9.9195,
+    "longitude": 78.1193,
+    "triggerRadius": 140,
+    "audioUrl": "/audio/madurai/meenakshi.mp3",
+    "audio": {
+      "url": "/audio/madurai/meenakshi.mp3",
+      "durationSeconds": 180,
+      "offlineAvailable": true
+    },
+    "story": "Meenakshi Amman Temple anchors Madurai with towering gopurams, ritual movement, and a city rhythm shaped by devotion and trade.",
+    "didYouKnow": "The temple is one of the strongest visual symbols of Tamil temple architecture.",
+    "interests": ["history", "architecture", "culture"],
+    "isHiddenGem": false
+  },
+  {
+    "id": 4,
+    "cityId": 2,
+    "name": "Madurai Food Street",
+    "latitude": 9.915,
+    "longitude": 78.1219,
+    "triggerRadius": 110,
+    "audioUrl": "/audio/madurai/food-street.mp3",
+    "audio": {
+      "url": "/audio/madurai/food-street.mp3",
+      "durationSeconds": 130,
+      "offlineAvailable": true
+    },
+    "story": "This walk follows the smell of jigarthanda, hot snacks, and late-night food culture that keeps Madurai awake.",
+    "didYouKnow": "Madurai's food streets are often busiest after sunset.",
+    "interests": ["food", "markets", "culture"],
+    "isHiddenGem": true
+  }
+]

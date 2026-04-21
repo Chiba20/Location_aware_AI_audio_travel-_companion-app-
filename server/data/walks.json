@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "cityId": 1,
+    "name": "Temple and Silk Walk",
+    "description": "A light walking route that blends temple heritage with Kanchipuram's weaving culture.",
+    "estimatedMinutes": 45,
+    "distanceKm": 2.4,
+    "placeIds": [1, 2],
+    "interests": ["history", "architecture", "silk", "hidden gems"]
+  },
+  {
+    "id": 2,
+    "cityId": 2,
+    "name": "Madurai Culture Walk",
+    "description": "A compact route from temple stories to food street energy.",
+    "estimatedMinutes": 50,
+    "distanceKm": 2.1,
+    "placeIds": [3, 4],
+    "interests": ["history", "food", "culture"]
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "brand": {
+    "name": "Every Street",
+    "tagline": "Every street has a story",
+    "promise": "Hands-free city storytelling that starts when the traveller reaches the place."
+  },
+  "narrationStyles": [
+    "casual friend",
+    "soulful storyteller",
+    "fun facts",
+    "academic"
+  ],
+  "heroImages": {
+    "Kanchipuram": "https://images.unsplash.com/photo-1603262110263-fb0112e7cc33?auto=format&fit=crop&w=1200&q=80",
+    "Madurai": "https://images.unsplash.com/photo-1627894483216-2138af692e32?auto=format&fit=crop&w=1200&q=80",
+    "default": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
+  },
+  "features": [
+    {
+      "title": "Location audio",
+      "text": "Stories begin when travellers approach landmarks, markets, and hidden corners."
+    },
+    {
+      "title": "Personal taste",
+      "text": "History, food, art, architecture, silk, culture, and hidden gems shape the journey."
+    },
+    {
+      "title": "Offline ready",
+      "text": "Key city content stays useful when signal is weak or roaming data is limited."
+    }
+  ]
+}
