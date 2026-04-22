@@ -1,1 +1,78 @@
-[]
+[
+  {
+    "id": 1,
+    "cityId": 1,
+    "walkId": 1,
+    "interests": [
+      "history",
+      "architecture",
+      "spirituality",
+      "silk",
+      "hidden gems"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-22T06:17:12.622135+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": null
+  },
+  {
+    "id": 2,
+    "cityId": 1,
+    "walkId": 1,
+    "interests": [
+      "history",
+      "architecture",
+      "spirituality",
+      "silk",
+      "hidden gems"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-22T06:17:16.963654+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": null
+  },
+  {
+    "id": 3,
+    "cityId": 1,
+    "walkId": 1,
+    "interests": [
+      "history",
+      "architecture",
+      "spirituality",
+      "silk",
+      "hidden gems"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-22T06:17:17.747754+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": null
+  },
+  {
+    "id": 4,
+    "cityId": 1,
+    "walkId": 1,
+    "interests": [
+      "history",
+      "architecture",
+      "spirituality",
+      "silk",
+      "hidden gems"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-22T06:17:18.593062+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": null
+  }
+]
