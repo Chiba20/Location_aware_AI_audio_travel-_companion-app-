@@ -4,6 +4,61 @@
   padding: 40px 0 70px;
 }
 
+.landing-page {
+  min-height: 100vh;
+  background:
+    linear-gradient(180deg, rgba(244, 237, 224, 0.24), rgba(244, 237, 224, 0.1)),
+    url("https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1800&q=80") center / cover;
+  color: #2f453f;
+}
+
+.landing-hero {
+  width: min(1180px, calc(100% - 32px));
+  min-height: 100vh;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 56px 0;
+}
+
+.landing-content {
+  max-width: 760px;
+  text-align: center;
+  font-family: "Segoe Script", "Lucida Handwriting", "Brush Script MT", cursive;
+}
+
+.landing-content .eyebrow {
+  color: #2f453f;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: none;
+  text-shadow: 0 1px 12px rgba(255, 250, 240, 0.72);
+}
+
+.landing-content h1 {
+  margin: 8px 0 14px;
+  color: #2f453f;
+  font-size: clamp(3.6rem, 10vw, 8rem);
+  font-weight: 700;
+  line-height: 1;
+  text-shadow: 0 2px 18px rgba(255, 250, 240, 0.76);
+}
+
+.landing-content p {
+  max-width: 660px;
+  margin-inline: auto;
+  color: #2f453f;
+  font-size: 1.16rem;
+  font-weight: 650;
+  line-height: 1.75;
+  text-shadow: 0 1px 14px rgba(255, 250, 240, 0.76);
+}
+
+.landing-content .hero-actions {
+  justify-content: center;
+}
+
 .hero-section {
   min-height: 560px;
   display: grid;

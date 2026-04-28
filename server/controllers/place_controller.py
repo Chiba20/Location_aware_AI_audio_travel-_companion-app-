@@ -4,14 +4,17 @@ from flask import request
 
 from utils.api_utils import ApiError, get_json_body, parse_float, success
 from utils.distance_utils import calculate_distance, is_valid_coordinate
-from utils.file_utils import read_json
+from utils.place_data import read_place_catalog
 
 BASE = os.path.dirname(os.path.dirname(__file__))
-FILE = os.path.join(BASE, "data/places.json")
+
+
+def _all_places():
+    return read_place_catalog(BASE)
 
 
 def _find_place(place_id):
-    places = read_json(FILE, [])
+    places = _all_places()
     place = next((item for item in places if item.get("id") == place_id), None)
     if not place:
         raise ApiError("Place not found", 404)
@@ -19,7 +22,7 @@ def _find_place(place_id):
 
 
 def _filtered_places():
-    places = read_json(FILE, [])
+    places = _all_places()
     city_id = request.args.get("cityId", type=int)
     interest = request.args.get("interest", type=str)
     hidden_gems = request.args.get("hiddenGems", type=str)

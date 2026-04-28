@@ -109,6 +109,10 @@
   color: var(--muted);
 }
 
+.detail-toolbar {
+  margin-bottom: 16px;
+}
+
 .place-list {
   display: grid;
   gap: 14px;
@@ -144,12 +148,42 @@
 }
 
 .meta-row span,
+.meta-row a,
 .did-you-know,
 .feedback-item small,
 .walk-button small {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+.meta-row a {
+  color: var(--brand);
+  font-weight: 800;
+}
+
+.practical-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.practical-grid span {
+  display: grid;
+  gap: 3px;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.practical-grid strong {
+  color: var(--ink);
+  font-size: 0.74rem;
+  text-transform: uppercase;
 }
 
 .did-you-know {
@@ -304,7 +338,8 @@
 
 @media (max-width: 680px) {
   .toolbar,
-  .coordinate-grid {
+  .coordinate-grid,
+  .practical-grid {
     grid-template-columns: 1fr;
   }
 

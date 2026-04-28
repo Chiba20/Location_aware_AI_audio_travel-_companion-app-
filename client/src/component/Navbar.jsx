@@ -6,13 +6,13 @@ function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/" className="logo" aria-label="Every Street home">
+        <Link to="/app" className="logo" aria-label="Every Street app home">
           <MapPinned size={24} />
           <span>Every Street</span>
         </Link>
 
         <div className="nav-links">
-          <NavLink to="/">
+          <NavLink to="/app">
             <Compass size={18} />
             Home
           </NavLink>

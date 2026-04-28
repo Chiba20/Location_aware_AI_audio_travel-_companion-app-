@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowRight, Clock, Headphones, MapPin, Route, Sparkles, WifiOff } from "lucide-react";
 import Navbar from "../component/Navbar";
@@ -13,6 +13,8 @@ function CityDetails() {
   const [city, setCity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("all");
 
   const loadCity = () => {
     setLoading(true);
@@ -28,6 +30,26 @@ function CityDetails() {
   }, [id]);
 
   const image = city ? content.heroImages[city.name] || content.heroImages.default : content.heroImages.default;
+  const categories = useMemo(() => {
+    const names = (city?.places || []).map((place) => place.category).filter(Boolean);
+    return ["all", ...Array.from(new Set(names))];
+  }, [city]);
+  const filteredPlaces = useMemo(() => {
+    return (city?.places || []).filter((place) => {
+      const text = [
+        place.name,
+        place.category,
+        place.address,
+        place.contact,
+        place.timings,
+        place.story,
+        ...(place.interests || [])
+      ].join(" ").toLowerCase();
+      const matchesQuery = text.includes(query.toLowerCase());
+      const matchesCategory = category === "all" || place.category === category;
+      return matchesQuery && matchesCategory;
+    });
+  }, [city, query, category]);
 
   return (
     <>
@@ -61,11 +83,30 @@ function CityDetails() {
             <section className="detail-layout">
               <div className="main-column">
                 <div className="section-heading">
-                  <h2>Audio places</h2>
-                  <p>These points can trigger stories when the traveller reaches the location.</p>
+                  <h2>Audio places and local data</h2>
+                  <p>Stories, contacts, addresses, timings, and everyday stops for travellers in the city.</p>
+                </div>
+                <div className="toolbar detail-toolbar">
+                  <input
+                    aria-label="Search places"
+                    placeholder="Search place, category, address, or contact"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                  />
+                  <select
+                    aria-label="Filter by category"
+                    value={category}
+                    onChange={(event) => setCategory(event.target.value)}
+                  >
+                    {categories.map((item) => (
+                      <option key={item} value={item}>
+                        {item === "all" ? "All categories" : item}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="place-list">
-                  {(city.places || []).map((place) => (
+                  {filteredPlaces.map((place) => (
                     <article className="place-card" key={place.id}>
                       <div className="place-icon">
                         <MapPin size={22} />
@@ -73,18 +114,36 @@ function CityDetails() {
                       <div>
                         <div className="card-title-row">
                           <h3>{place.name}</h3>
+                          {place.category && <span className="mini-badge">{place.category}</span>}
                           {place.isHiddenGem && <span className="mini-badge">Hidden gem</span>}
                         </div>
                         <p>{place.story}</p>
+                        {(place.address || place.contact || place.timings) && (
+                          <div className="practical-grid">
+                            {place.address && <span><strong>Address</strong>{place.address}</span>}
+                            {place.contact && <span><strong>Contact</strong>{place.contact}</span>}
+                            {place.timings && <span><strong>Timing</strong>{place.timings}</span>}
+                          </div>
+                        )}
                         <div className="meta-row">
                           <span><Headphones size={15} /> {place.audio?.durationSeconds || 0}s</span>
                           <span><Route size={15} /> {place.triggerRadius}m trigger</span>
                           {place.audio?.offlineAvailable && <span><WifiOff size={15} /> Offline</span>}
+                          {place.directionsUrl && (
+                            <a href={place.directionsUrl} target="_blank" rel="noreferrer">
+                              <MapPin size={15} /> Directions
+                            </a>
+                          )}
                         </div>
                         <p className="did-you-know"><Sparkles size={16} /> {place.didYouKnow}</p>
                       </div>
                     </article>
                   ))}
+                  {filteredPlaces.length === 0 && (
+                    <div className="state-panel">
+                      <p>No local data matches that search.</p>
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -7,5 +7,14 @@
     "rating": 5,
     "comment": "The audio story was very helpful and immersive.",
     "createdAt": "2026-04-21T06:18:09.628452+00:00"
+  },
+  {
+    "id": 2,
+    "journeyId": null,
+    "cityId": 1,
+    "placeId": 1,
+    "rating": 5,
+    "comment": "A",
+    "createdAt": "2026-04-28T05:53:08.045381+00:00"
   }
 ]
