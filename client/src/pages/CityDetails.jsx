@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, ExternalLink, Headphones, Image, MapPin, Route, Sparkles, Video, WifiOff } from "lucide-react";
+import { ArrowRight, ExternalLink, Headphones, Image, LockKeyhole, MapPin, Route, Sparkles, Video, WifiOff } from "lucide-react";
 import Navbar from "../component/Navbar";
 import LoadingState from "../component/LoadingState";
 import ErrorState from "../component/ErrorState";
@@ -59,9 +59,9 @@ const interestOverviews = {
     highlights: ["Ancient dynasties", "Learning and devotion", "Living heritage"]
   },
   "hidden gems": {
-    title: "Hidden gems",
-    text: "Discover quieter corners beyond the most famous stops, including local craft streets, small stories, and places that reveal everyday heritage.",
-    highlights: ["Local corners", "Lesser-known stories", "Slow exploration"]
+    title: "Premium hidden gems",
+    text: "Unlock a curated shortlist of five quieter Kanchipuram experiences: food spots, Sarvatirtha Tank, old residential streets, local markets, and walking routes.",
+    highlights: ["Premium only", "Local food spots", "Walking routes"]
   },
   markets: {
     title: "Markets and local life",
@@ -101,6 +101,7 @@ function CityDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [hasPremium] = useState(() => Boolean(window.localStorage.getItem("everyStreetPremiumMember")));
   const selectedInterest = searchParams.get("interest") || "all";
 
   const loadCity = () => {
@@ -193,6 +194,8 @@ function CityDetails() {
   const showPracticalDetails = serviceCategorySet.has(normalizedInterest);
   const showPlaceDetails = showPracticalDetails || ["temples", "silk", "architecture", "hidden gems"].includes(normalizedInterest);
   const selectedOverview = interestOverviews[normalizedInterest];
+  const requiresPremium = normalizedInterest === "hidden gems" || serviceCategorySet.has(normalizedInterest);
+  const isPremiumLocked = requiresPremium && !hasPremium;
 
   return (
     <>
@@ -249,7 +252,15 @@ function CityDetails() {
                     onChange={(event) => setQuery(event.target.value)}
                   />
                 </div>
-                {selectedOverview && (
+                {isPremiumLocked && (
+                  <section className="premium-lock-panel">
+                    <LockKeyhole size={28} />
+                    <h3>{normalizedInterest === "hidden gems" ? "Hidden Gems are Premium" : "Traveller Services are Premium"}</h3>
+                    <p>Register and login as a premium traveller to unlock this section.</p>
+                    <Link className="primary-btn" to="/premium">Unlock Premium</Link>
+                  </section>
+                )}
+                {!isPremiumLocked && selectedOverview && (
                   <section className="interest-overview">
                     <span className="eyebrow">Interest overview</span>
                     <h3>{selectedOverview.title}</h3>
@@ -271,7 +282,7 @@ function CityDetails() {
                     </div>
                   </section>
                 )}
-                {isKanchipuramHistory && (
+                {!isPremiumLocked && isKanchipuramHistory && (
                   <section className="history-feature">
                     <span className="eyebrow">Ancient city story</span>
                     <h3>{kanchipuramHistory.title}</h3>
@@ -306,7 +317,7 @@ function CityDetails() {
                     </div>
                   </section>
                 )}
-                <div className="place-list">
+                {!isPremiumLocked && <div className="place-list">
                   {filteredPlaces.map((place) => (
                     (() => {
                       const links = buildPlaceLinks(place, city.name);
@@ -362,12 +373,12 @@ function CityDetails() {
                       <p>No places match this interest yet.</p>
                     </div>
                   )}
-                </div>
+                </div>}
               </div>
 
               <aside className="side-panel">
                 <h2>Traveller services</h2>
-                <p className="muted">Explore practical places separately from the main city interests.</p>
+                <p className="muted">Premium-only local services for practical travel help.</p>
                 <div className="service-button-grid">
                   {serviceCategories.map((service) => (
                     <button

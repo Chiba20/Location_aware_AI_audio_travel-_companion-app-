@@ -250,6 +250,28 @@
   box-shadow: var(--shadow-soft);
 }
 
+.premium-lock-panel {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card-tint);
+  text-align: center;
+  box-shadow: var(--shadow-soft);
+}
+
+.premium-lock-panel svg {
+  color: var(--brand-2);
+}
+
+.premium-lock-panel h3,
+.premium-lock-panel p {
+  margin: 0;
+}
+
 .history-feature h3 {
   margin: 0;
   color: var(--brand);
@@ -466,13 +488,18 @@
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .journey-form,
 .feedback-form {
   display: grid;
   gap: 16px;
+}
+
+.journey-form,
+.journey-panel {
+  min-height: 600px;
 }
 
 .selectable .chip {
@@ -793,11 +820,21 @@
   align-items: stretch;
 }
 
+.premium-grid-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .premium-card {
   min-height: 320px;
   height: 100%;
   padding: 20px;
   align-content: start;
+}
+
+.transport-select-card {
+  max-width: 760px;
+  margin-inline: auto;
+  width: 100%;
 }
 
 .contact-row,

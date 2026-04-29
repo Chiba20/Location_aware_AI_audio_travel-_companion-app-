@@ -16,5 +16,14 @@
     "rating": 5,
     "comment": "A",
     "createdAt": "2026-04-28T05:53:08.045381+00:00"
+  },
+  {
+    "id": 3,
+    "journeyId": null,
+    "cityId": 1,
+    "placeId": 1114,
+    "rating": 5,
+    "comment": "Nice pace to  visit",
+    "createdAt": "2026-04-29T09:08:11.765835+00:00"
   }
 ]

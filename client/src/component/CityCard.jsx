@@ -5,6 +5,7 @@ import content from "../data/appContent.json";
 
 function CityCard({ city }) {
   const image = content.heroImages[city.name] || content.heroImages.default;
+  const hasPremium = Boolean(window.localStorage.getItem("everyStreetPremiumMember"));
 
   return (
     <div className="city-card">
@@ -26,7 +27,7 @@ function CityCard({ city }) {
             <Link
               className="chip interest-link"
               key={interest}
-              to={`/city/${city.id}?interest=${encodeURIComponent(interest)}`}
+              to={interest === "hidden gems" && !hasPremium ? "/premium" : `/city/${city.id}?interest=${encodeURIComponent(interest)}`}
             >
               <Sparkles size={14} />
               {interest}

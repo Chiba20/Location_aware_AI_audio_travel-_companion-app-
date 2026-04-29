@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Crown, House, Landmark, MapPinned, MessageCircle, Route } from "lucide-react";
+import { Crown, House, Landmark, MapPinned, Menu, MessageCircle, Route, X } from "lucide-react";
 
 function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(() => {
+    return window.localStorage.getItem("everyStreetMenuOpen") === "true";
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem("everyStreetMenuOpen", String(menuOpen));
+  }, [menuOpen]);
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -13,7 +21,7 @@ function Navbar() {
           <span>Welcome</span>
         </Link>
 
-        <div className="nav-links">
+        <div className={`nav-links ${menuOpen ? "open" : ""}`}>
           <NavLink to="/app">
             <span className="nav-icon nav-icon-home">
               <House size={17} />
@@ -45,6 +53,16 @@ function Navbar() {
             Feedback
           </NavLink>
         </div>
+
+        <button
+          className="menu-toggle"
+          type="button"
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
       </div>
     </nav>
   );

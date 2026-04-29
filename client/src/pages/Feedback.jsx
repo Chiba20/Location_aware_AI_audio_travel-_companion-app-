@@ -39,6 +39,8 @@ function Feedback() {
   }, []);
 
   const cityPlaces = places.filter((place) => place.cityId === Number(form.cityId));
+  const getCityName = (cityId) => cities.find((city) => city.id === Number(cityId))?.name || "Unknown city";
+  const getPlaceName = (placeId) => places.find((place) => place.id === Number(placeId))?.name || "Unknown place";
 
   const submitFeedback = async (event) => {
     event.preventDefault();
@@ -155,7 +157,10 @@ function Feedback() {
                     <strong>{item.rating}/5</strong>
                   </div>
                   <p>{item.comment}</p>
-                  <small><MessageSquare size={14} /> City #{item.cityId || "-"} - Place #{item.placeId || "-"}</small>
+                  <small>
+                    <MessageSquare size={14} />
+                    {item.cityId ? getCityName(item.cityId) : "Unknown city"} - {item.placeId ? getPlaceName(item.placeId) : "Unknown place"}
+                  </small>
                 </article>
               ))}
             </section>

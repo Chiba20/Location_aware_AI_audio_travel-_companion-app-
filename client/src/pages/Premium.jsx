@@ -11,6 +11,7 @@ import {
   Phone,
   QrCode,
   ShieldCheck,
+  Sparkles,
   UserPlus,
 } from "lucide-react";
 import Navbar from "../component/Navbar";
@@ -57,6 +58,7 @@ const transportContacts = [
 
 function Premium() {
   const [mode, setMode] = useState("register");
+  const [selectedTransport, setSelectedTransport] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -89,6 +91,7 @@ function Premium() {
   );
 
   const canStartPayment = form.name.trim() && form.email.trim() && form.phone.trim() && form.password.length >= 4;
+  const selectedTransportContact = transportContacts.find((item) => item.type === selectedTransport);
 
   const handleStartPayment = (event) => {
     event.preventDefault();
@@ -302,11 +305,10 @@ function Premium() {
               </div>
             </div>
             <div className="premium-feature-list">
-              <p><Download size={17} /> Save travel content for offline use</p>
-              <p><Bus size={17} /> Unlock guide-driver contacts</p>
-              <p><Phone size={17} /> Unlock local transport support</p>
-              <p><CheckCircle2 size={17} /> Keep using online features when connected</p>
-              <p><Globe2 size={17} /> Audio stories stay available for everyone</p>
+              <p><Sparkles size={17} /> Unlock Hidden Gems in Kanchipuram</p>
+              <p><Phone size={17} /> Unlock Traveller Services</p>
+              <p><Bus size={17} /> Unlock guide-driver contacts by transport mode</p>
+              <p><Download size={17} /> Offline travel service</p>
             </div>
           </section>
         </section>
@@ -322,16 +324,26 @@ function Premium() {
             </p>
           </div>
 
-          <div className="premium-grid">
-            {transportContacts.map((transport) => (
-              <article className="premium-card" key={transport.type}>
-                <transport.icon size={24} />
-                <h3>{transport.type}</h3>
-                {member ? (
-                  <div className="transport-options">
-                    {transport.options.map((option) => (
+          <div className="premium-grid premium-grid-single">
+            <article className="premium-card transport-select-card">
+              <Bus size={24} />
+              <h3>Guide-driver contacts</h3>
+              {member ? (
+                <>
+                  <label>
+                    Select your transport interest
+                    <select value={selectedTransport} onChange={(event) => setSelectedTransport(event.target.value)}>
+                      <option value="">Choose a transport mode</option>
+                      {transportContacts.map((item) => (
+                        <option key={item.type} value={item.type}>{item.type}</option>
+                      ))}
+                    </select>
+                  </label>
+                  {selectedTransportContact ? (
+                    <div className="transport-options">
+                    {selectedTransportContact.options.map((option) => (
                       <div className="transport-card" key={option.phone}>
-                        <transport.icon size={22} />
+                        <selectedTransportContact.icon size={22} />
                         <strong>{option.name}</strong>
                         <a href={`tel:${option.phone.replaceAll(" ", "")}`}>
                           <Phone size={15} />
@@ -340,16 +352,23 @@ function Premium() {
                         <span>{option.note}</span>
                       </div>
                     ))}
-                  </div>
-                ) : (
-                  <div className="locked-contact">
-                    <LockKeyhole size={22} />
-                    <strong>{transport.type} contacts are locked</strong>
-                    <span>Premium login reveals driver details and guide-style local support.</span>
-                  </div>
-                )}
-              </article>
-            ))}
+                    </div>
+                  ) : (
+                    <div className="locked-contact">
+                      <LockKeyhole size={22} />
+                      <strong>Select a transport mode</strong>
+                      <span>Contacts will appear only after you choose your preferred mode.</span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="locked-contact">
+                  <LockKeyhole size={22} />
+                  <strong>Guide-driver contacts are locked</strong>
+                  <span>Premium login reveals transport contacts with guide-style local support.</span>
+                </div>
+              )}
+            </article>
           </div>
 
           {member && (
