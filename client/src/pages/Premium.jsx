@@ -3,9 +3,7 @@ import {
   Bike,
   Bus,
   CheckCircle2,
-  Crown,
   Download,
-  Globe2,
   LockKeyhole,
   LogIn,
   Phone,
@@ -15,10 +13,19 @@ import {
   UserPlus,
 } from "lucide-react";
 import Navbar from "../component/Navbar";
+import { sendPremiumConfirmationEmail } from "../services/api";
 
 const PREMIUM_AMOUNT = 199;
 const UPI_ID = "8754147468@ptaxis";
 const UPI_NAME = "Zakariya Yahya Ally";
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emptyRegistrationForm = {
+  name: "",
+  email: "",
+  phone: "",
+  password: "",
+  upiReference: ""
+};
 
 const transportContacts = [
   {
@@ -59,18 +66,14 @@ const transportContacts = [
 function Premium() {
   const [mode, setMode] = useState("register");
   const [selectedTransport, setSelectedTransport] = useState("");
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    password: "",
-    upiReference: ""
-  });
+  const [form, setForm] = useState(emptyRegistrationForm);
   const [login, setLogin] = useState({ email: "", password: "" });
   const [paymentReady, setPaymentReady] = useState(false);
   const [member, setMember] = useState(() => {
     const saved = window.localStorage.getItem("everyStreetPremiumMember");
-    return saved ? JSON.parse(saved) : null;
+    if (!saved) return null;
+    const parsed = JSON.parse(saved);
+    return parsed?.isPremium === true ? parsed : null;
   });
   const [message, setMessage] = useState("");
 
@@ -100,27 +103,52 @@ function Premium() {
       setMessage("Fill name, email, phone, and a password of at least 4 characters before payment.");
       return;
     }
+    if (!EMAIL_RE.test(form.email.trim())) {
+      setMessage("Enter a real email address, for example name@example.com.");
+      return;
+    }
     setPaymentReady(true);
   };
 
-  const completeRegistration = () => {
+  const completeRegistration = async () => {
     if (!form.upiReference.trim()) {
       setMessage("Enter the UPI transaction reference after payment to complete registration.");
+      return;
+    }
+    if (!EMAIL_RE.test(form.email.trim())) {
+      setMessage("Enter a real email address before completing premium registration.");
       return;
     }
 
     const nextMember = {
       name: form.name,
-      email: form.email,
+      email: form.email.trim().toLowerCase(),
       phone: form.phone,
       paidAmount: PREMIUM_AMOUNT,
       upiReference: form.upiReference,
       password: form.password,
+      isPremium: true,
       unlockedAt: new Date().toISOString()
     };
     window.localStorage.setItem("everyStreetPremiumMember", JSON.stringify(nextMember));
     setMember(nextMember);
-    setMessage("Premium unlocked. Offline packs, guides, and transport contacts are ready.");
+    setForm(emptyRegistrationForm);
+    setPaymentReady(false);
+    try {
+      const response = await sendPremiumConfirmationEmail({
+        name: nextMember.name,
+        email: nextMember.email,
+        amount: PREMIUM_AMOUNT,
+        upiReference: nextMember.upiReference
+      });
+      setMessage(
+        response.data?.emailSent
+          ? "Premium unlocked. A confirmation email has been sent."
+          : "Premium unlocked. Email sending needs SMTP setup on the backend."
+      );
+    } catch (err) {
+      setMessage(`Premium unlocked, but email could not be sent: ${err.message}`);
+    }
   };
 
   const handleLogin = (event) => {
@@ -132,6 +160,10 @@ function Premium() {
     }
 
     const savedMember = JSON.parse(saved);
+    if (savedMember?.isPremium !== true) {
+      setMessage("This account is not premium yet. Complete payment first.");
+      return;
+    }
     if (
       login.email.trim().toLowerCase() !== savedMember.email.toLowerCase() ||
       login.password !== savedMember.password
@@ -170,6 +202,8 @@ function Premium() {
                 onClick={() => {
                   setMode("register");
                   setMessage("");
+                  setForm(emptyRegistrationForm);
+                  setPaymentReady(false);
                 }}
               >
                 <UserPlus size={17} />
@@ -189,10 +223,11 @@ function Premium() {
             </div>
 
             {mode === "register" ? (
-              <form className="premium-form" onSubmit={handleStartPayment}>
+              <form className="premium-form" onSubmit={handleStartPayment} autoComplete="off">
                 <label>
                   Full name
                   <input
+                    autoComplete="off"
                     value={form.name}
                     onChange={(event) => setForm({ ...form, name: event.target.value })}
                     placeholder="Traveller name"
@@ -202,6 +237,7 @@ function Premium() {
                   Email
                   <input
                     type="email"
+                    autoComplete="off"
                     value={form.email}
                     onChange={(event) => setForm({ ...form, email: event.target.value })}
                     placeholder="name@example.com"
@@ -210,6 +246,7 @@ function Premium() {
                 <label>
                   Phone
                   <input
+                    autoComplete="off"
                     value={form.phone}
                     onChange={(event) => setForm({ ...form, phone: event.target.value })}
                     placeholder="+91 phone number"
@@ -219,6 +256,7 @@ function Premium() {
                   Password
                   <input
                     type="password"
+                    autoComplete="new-password"
                     value={form.password}
                     onChange={(event) => setForm({ ...form, password: event.target.value })}
                     placeholder="Minimum 4 characters"

@@ -101,7 +101,10 @@ function CityDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
-  const [hasPremium] = useState(() => Boolean(window.localStorage.getItem("everyStreetPremiumMember")));
+  const [hasPremium] = useState(() => {
+    const savedPremium = window.localStorage.getItem("everyStreetPremiumMember");
+    return savedPremium ? JSON.parse(savedPremium)?.isPremium === true : false;
+  });
   const selectedInterest = searchParams.get("interest") || "all";
 
   const loadCity = () => {

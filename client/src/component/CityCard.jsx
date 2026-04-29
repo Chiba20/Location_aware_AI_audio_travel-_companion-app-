@@ -5,7 +5,8 @@ import content from "../data/appContent.json";
 
 function CityCard({ city }) {
   const image = content.heroImages[city.name] || content.heroImages.default;
-  const hasPremium = Boolean(window.localStorage.getItem("everyStreetPremiumMember"));
+  const savedPremium = window.localStorage.getItem("everyStreetPremiumMember");
+  const hasPremium = savedPremium ? JSON.parse(savedPremium)?.isPremium === true : false;
 
   return (
     <div className="city-card">

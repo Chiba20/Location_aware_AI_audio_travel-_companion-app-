@@ -14,6 +14,7 @@ from routes.place_routes import bp as place_bp
 from routes.walk_routes import bp as walk_bp
 from routes.feedback_routes import bp as feedback_bp
 from routes.journey_routes import bp as journey_bp
+from routes.premium_routes import bp as premium_bp
 from middleware.error_handlers import register_error_handlers
 from utils.api_utils import success
 
@@ -32,6 +33,7 @@ def create_app():
     app.register_blueprint(walk_bp, url_prefix="/api/walks")
     app.register_blueprint(feedback_bp, url_prefix="/api/feedback")
     app.register_blueprint(journey_bp, url_prefix="/api/journeys")
+    app.register_blueprint(premium_bp, url_prefix="/api/premium")
 
     register_error_handlers(app)
 

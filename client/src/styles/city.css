@@ -253,8 +253,10 @@
 .premium-lock-panel {
   display: grid;
   justify-items: center;
+  align-content: center;
   gap: 12px;
   margin-bottom: 18px;
+  min-height: 360px;
   padding: 28px;
   border: 1px solid var(--line);
   border-radius: 10px;

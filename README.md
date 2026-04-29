@@ -26,6 +26,18 @@ Run the Flask API:
 python server\app.py
 ```
 
+Optional premium confirmation email setup:
+
+```powershell
+$env:SMTP_HOST="smtp.example.com"
+$env:SMTP_PORT="587"
+$env:SMTP_USERNAME="your-email@example.com"
+$env:SMTP_PASSWORD="your-app-password"
+$env:SMTP_FROM_EMAIL="your-email@example.com"
+```
+
+If SMTP is not configured, Premium still unlocks after payment reference entry, but no real email can be sent.
+
 Backend URL:
 
 ```text
