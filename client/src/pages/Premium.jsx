@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import Navbar from "../component/Navbar";
 import { sendPremiumConfirmationEmail } from "../services/api";
+import { recordMetric } from "../utils/metrics";
 
 const PREMIUM_AMOUNT = 199;
 const UPI_ID = "8754147468@ptaxis";
@@ -131,6 +132,10 @@ function Premium() {
       unlockedAt: new Date().toISOString()
     };
     window.localStorage.setItem("everyStreetPremiumMember", JSON.stringify(nextMember));
+    recordMetric("premium_conversion", {
+      amount: PREMIUM_AMOUNT,
+      email: nextMember.email,
+    });
     setMember(nextMember);
     setForm(emptyRegistrationForm);
     setPaymentReady(false);

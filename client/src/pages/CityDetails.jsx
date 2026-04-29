@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, ExternalLink, Headphones, Image, LockKeyhole, MapPin, Route, Sparkles, Video, WifiOff } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, EyeOff, Headphones, Image, LockKeyhole, MapPin, Route, Sparkles, Video, WandSparkles, WifiOff } from "lucide-react";
 import Navbar from "../component/Navbar";
 import LoadingState from "../component/LoadingState";
 import ErrorState from "../component/ErrorState";
-import { getCity } from "../services/api";
+import { generatePersonalizedStory, getCity } from "../services/api";
+import { recordMetric } from "../utils/metrics";
 import content from "../data/appContent.json";
 
 const kanchipuramHistory = {
@@ -101,6 +102,13 @@ function CityDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [storyStyle, setStoryStyle] = useState("warm");
+  const [personalizedStory, setPersonalizedStory] = useState("");
+  const [storySource, setStorySource] = useState("");
+  const [storyBusy, setStoryBusy] = useState(false);
+  const [storyError, setStoryError] = useState("");
+  const [microStoryIndex, setMicroStoryIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState(null);
   const [hasPremium] = useState(() => {
     const savedPremium = window.localStorage.getItem("everyStreetPremiumMember");
     return savedPremium ? JSON.parse(savedPremium)?.isPremium === true : false;
@@ -144,6 +152,7 @@ function CityDetails() {
 
   const setInterest = (interest) => {
     setQuery("");
+    recordMetric("interest_select", { cityId: id, interest });
     if (interest === "all") {
       setSearchParams({});
       return;
@@ -199,6 +208,73 @@ function CityDetails() {
   const selectedOverview = interestOverviews[normalizedInterest];
   const requiresPremium = normalizedInterest === "hidden gems" || serviceCategorySet.has(normalizedInterest);
   const isPremiumLocked = requiresPremium && !hasPremium;
+  const microStories = useMemo(
+    () => filteredPlaces
+      .filter((place) => place.didYouKnow)
+      .map((place) => ({
+        id: place.id,
+        title: place.name,
+        text: place.didYouKnow,
+        durationSeconds: place.audio?.durationSeconds || 0,
+      })),
+    [filteredPlaces]
+  );
+
+  useEffect(() => {
+    setMicroStoryIndex(0);
+    setPersonalizedStory("");
+    setStoryError("");
+  }, [selectedInterest, query]);
+
+  const moveMicroStory = (direction) => {
+    if (!microStories.length) return;
+    setMicroStoryIndex((current) => {
+      const next = (current + direction + microStories.length) % microStories.length;
+      recordMetric("micro_story_swipe", {
+        cityId: city?.id,
+        interest: selectedInterest,
+        storyId: microStories[next]?.id,
+      });
+      return next;
+    });
+  };
+
+  const handleTouchEnd = (event) => {
+    if (touchStartX === null) return;
+    const delta = touchStartX - event.changedTouches[0].clientX;
+    setTouchStartX(null);
+    if (Math.abs(delta) < 40) return;
+    moveMicroStory(delta > 0 ? 1 : -1);
+  };
+
+  const handlePersonalizedStory = async () => {
+    setStoryBusy(true);
+    setStoryError("");
+    try {
+      const response = await generatePersonalizedStory({
+        cityName: city.name,
+        interest: selectedInterest === "all" ? "main places" : selectedInterest,
+        narrationStyle: storyStyle,
+        places: filteredPlaces.slice(0, 8).map((place) => ({
+          name: place.name,
+          story: place.story,
+          didYouKnow: place.didYouKnow,
+          category: place.category,
+        })),
+      });
+      setPersonalizedStory(response.data.story);
+      setStorySource(response.data.source);
+      recordMetric("ai_story_generated", {
+        cityId: city.id,
+        interest: selectedInterest,
+        source: response.data.source,
+      });
+    } catch (err) {
+      setStoryError(err.message);
+    } finally {
+      setStoryBusy(false);
+    }
+  };
 
   return (
     <>
@@ -285,6 +361,76 @@ function CityDetails() {
                     </div>
                   </section>
                 )}
+                {!isPremiumLocked && (
+                  <section className="personal-story-panel">
+                    <div>
+                      <span className="eyebrow">True AI personalization</span>
+                      <h3>Personalized city story</h3>
+                      <p>Generate a story from the selected interest and visible place content.</p>
+                    </div>
+                    <div className="story-controls">
+                      <label>
+                        Narration style
+                        <select value={storyStyle} onChange={(event) => setStoryStyle(event.target.value)}>
+                          <option value="warm">Warm traveller</option>
+                          <option value="historical">Historical guide</option>
+                          <option value="short and cinematic">Short cinematic</option>
+                          <option value="family friendly">Family friendly</option>
+                        </select>
+                      </label>
+                      <button className="primary-btn" type="button" onClick={handlePersonalizedStory} disabled={storyBusy || filteredPlaces.length === 0}>
+                        <WandSparkles size={18} />
+                        {storyBusy ? "Generating" : "Generate story"}
+                      </button>
+                    </div>
+                    {storyError && <p className="premium-message">{storyError}</p>}
+                    {personalizedStory && (
+                      <article className="personal-story-output">
+                        <div className="personal-story-output-top">
+                          <span>{storySource === "ai" ? "AI generated" : "Generated from app content"}</span>
+                          <button type="button" onClick={() => setPersonalizedStory("")}>
+                            <EyeOff size={15} />
+                            Hide
+                          </button>
+                        </div>
+                        <p>{personalizedStory}</p>
+                      </article>
+                    )}
+                  </section>
+                )}
+                {!isPremiumLocked && microStories.length > 0 && (
+                  <section
+                    className="micro-story-carousel"
+                    onTouchStart={(event) => setTouchStartX(event.touches[0].clientX)}
+                    onTouchEnd={handleTouchEnd}
+                    aria-label="Swipeable Did You Know micro-stories"
+                  >
+                    <div className="micro-story-top">
+                      <div>
+                        <span className="eyebrow">Did You Know</span>
+                        <h3>Swipe micro-stories</h3>
+                      </div>
+                      <span>{microStoryIndex + 1}/{microStories.length}</span>
+                    </div>
+                    <article className="micro-story-card">
+                      <strong>{microStories[microStoryIndex].title}</strong>
+                      <p>{microStories[microStoryIndex].text}</p>
+                    </article>
+                    <div className="micro-story-actions">
+                      <button type="button" onClick={() => moveMicroStory(-1)} aria-label="Previous micro-story">
+                        <ChevronLeft size={18} />
+                      </button>
+                      <div className="micro-story-dots" aria-hidden="true">
+                        {microStories.map((story, index) => (
+                          <span className={index === microStoryIndex ? "active" : ""} key={story.id} />
+                        ))}
+                      </div>
+                      <button type="button" onClick={() => moveMicroStory(1)} aria-label="Next micro-story">
+                        <ChevronRight size={18} />
+                      </button>
+                    </div>
+                  </section>
+                )}
                 {!isPremiumLocked && isKanchipuramHistory && (
                   <section className="history-feature">
                     <span className="eyebrow">Ancient city story</span>
@@ -349,17 +495,26 @@ function CityDetails() {
                               {place.audio?.offlineAvailable && <span><WifiOff size={15} /> Offline</span>}
                             </div>
                             <div className="place-action-row" aria-label={`${place.name} links`}>
-                              <a href={links.directions} target="_blank" rel="noreferrer" onClick={requireOnline}>
+                              <a href={links.directions} target="_blank" rel="noreferrer" onClick={(event) => {
+                                requireOnline(event);
+                                recordMetric("media_open", { cityId: city.id, placeId: place.id, type: "directions" });
+                              }}>
                                 <MapPin size={15} />
                                 Directions
                                 <ExternalLink size={13} />
                               </a>
-                              <a href={links.photos} target="_blank" rel="noreferrer" onClick={requireOnline}>
+                              <a href={links.photos} target="_blank" rel="noreferrer" onClick={(event) => {
+                                requireOnline(event);
+                                recordMetric("media_open", { cityId: city.id, placeId: place.id, type: "photos" });
+                              }}>
                                 <Image size={15} />
                                 Photos
                                 <ExternalLink size={13} />
                               </a>
-                              <a href={links.videos} target="_blank" rel="noreferrer" onClick={requireOnline}>
+                              <a href={links.videos} target="_blank" rel="noreferrer" onClick={(event) => {
+                                requireOnline(event);
+                                recordMetric("media_open", { cityId: city.id, placeId: place.id, type: "videos" });
+                              }}>
                                 <Video size={15} />
                                 Videos
                                 <ExternalLink size={13} />
