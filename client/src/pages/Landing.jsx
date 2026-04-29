@@ -9,7 +9,7 @@ function Landing() {
       <section className="landing-hero">
         <div className="landing-content">
           <span className="eyebrow">Location-aware travel companion</span>
-          <h1>{content.brand.name}</h1>
+          <h1>{content.brand.name} has a history</h1>
           <p>
             Explore landmarks, culture, and nearby stories with an audio guide that follows
             where your journey takes you.

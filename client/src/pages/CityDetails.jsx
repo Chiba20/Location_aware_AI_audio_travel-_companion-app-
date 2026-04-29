@@ -1,20 +1,107 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowRight, Clock, Headphones, MapPin, Route, Sparkles, WifiOff } from "lucide-react";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { ArrowRight, ExternalLink, Headphones, Image, MapPin, Route, Sparkles, Video, WifiOff } from "lucide-react";
 import Navbar from "../component/Navbar";
 import LoadingState from "../component/LoadingState";
 import ErrorState from "../component/ErrorState";
 import { getCity } from "../services/api";
 import content from "../data/appContent.json";
 
+const kanchipuramHistory = {
+  title: "History of Kanchipuram",
+  intro:
+    "Kanchipuram is one of South India's great ancient cities, remembered as a sacred centre, a royal capital, a place of learning, and a living home of silk, stone, and story.",
+  knownFor: [
+    "Ancient temple architecture shaped by Pallava, Chola, Vijayanagara, and later Tamil traditions",
+    "A deep spiritual landscape where Shaiva and Vaishnava traditions exist side by side",
+    "Kanchipuram silk sarees, known for rich colour, zari borders, and skilled handloom weaving",
+    "Sacred learning, philosophy, ritual practice, inscriptions, and long-running festival culture"
+  ],
+  explore: [
+    "Temple sculpture, gopurams, mandapams, and old stone corridors",
+    "Silk weaving streets where craft families continue traditional methods",
+    "Sacred tanks, old streets, markets, food stops, and hidden heritage corners",
+    "Stories of kings, saints, artisans, pilgrims, and communities who shaped the city"
+  ],
+  stories: [
+    "The Pallavas made Kanchipuram a powerful cultural centre, filling the region with temples, sculpture, and architectural experiments that influenced later South Indian design.",
+    "The city became famous as a sacred landscape, with temples connected to devotion, myth, ritual, and the movement of pilgrims through narrow streets and temple courtyards.",
+    "Kanchipuram's silk identity grew from generations of weavers who turned thread, colour, and gold zari into sarees worn for weddings, festivals, and major life moments.",
+    "The city is often remembered as a place where religion, trade, craft, and learning met, making it more than a destination: it is a layered memory of Tamil civilisation."
+  ]
+};
+
+const interestOverviews = {
+  temples: {
+    title: "Temple heritage",
+    text: "Explore sacred spaces, old stone corridors, gopurams, mandapams, rituals, and stories that shaped Kanchipuram's spiritual identity.",
+    facts: [
+      { label: "Temple identity", value: "Traditionally known as the City of Thousand Temples" },
+      { label: "Oldest landmark", value: "Kailasanathar Temple, a Pallava-era shrine from around the 7th-8th century" },
+      { label: "Major temples", value: "Ekambareswarar, Kamakshi Amman, Varadharaja Perumal, Kailasanathar, Vaikunta Perumal" },
+      { label: "Look for", value: "Tall gopurams, pillared halls, carved shrines, sacred tanks, inscriptions, and festival routes" }
+    ],
+    highlights: ["Pancha Bhoota Sthalam", "Divya Desam temples", "Pallava architecture"]
+  },
+  silk: {
+    title: "Silk weaving streets",
+    text: "Follow the craft behind Kanchipuram silk, from dyed threads and handlooms to sarees known for rich colour, zari, and family tradition.",
+    highlights: ["Handloom craft", "Zari borders", "Weaver stories"]
+  },
+  architecture: {
+    title: "Architecture and sculpture",
+    text: "Look closely at the city's temple forms, carved pillars, sculpted details, and design ideas that influenced South Indian architecture.",
+    highlights: ["Stone carvings", "Gopuram design", "Pallava influence"]
+  },
+  history: {
+    title: "Layered city history",
+    text: "Understand Kanchipuram as a royal, sacred, and craft-centred city where dynasties, saints, traders, and artisans left their mark.",
+    highlights: ["Ancient dynasties", "Learning and devotion", "Living heritage"]
+  },
+  "hidden gems": {
+    title: "Hidden gems",
+    text: "Discover quieter corners beyond the most famous stops, including local craft streets, small stories, and places that reveal everyday heritage.",
+    highlights: ["Local corners", "Lesser-known stories", "Slow exploration"]
+  },
+  markets: {
+    title: "Markets and local life",
+    text: "Explore busy streets, local shopping, food culture, and everyday city rhythms that show how heritage continues in daily life.",
+    highlights: ["Street life", "Local shopping", "City rhythm"]
+  },
+  culture: {
+    title: "Culture and tradition",
+    text: "Find rituals, festivals, food habits, craft practices, and community stories that give the city its living character.",
+    highlights: ["Festivals", "Local customs", "Community stories"]
+  }
+};
+
+const buildPlaceQuery = (place, cityName) => `${place.name} ${cityName || ""} Tamil Nadu India`.trim();
+
+const buildPlaceLinks = (place, cityName) => {
+  const query = buildPlaceQuery(place, cityName);
+  const encodedQuery = encodeURIComponent(query);
+  return {
+    directions: place.directionsUrl || `https://www.google.com/maps/dir/?api=1&destination=${encodedQuery}`,
+    photos: place.photosUrl || `https://www.google.com/search?tbm=isch&q=${encodedQuery}`,
+    videos: place.videosUrl || `https://www.youtube.com/results?search_query=${encodedQuery}+shorts`
+  };
+};
+
+const requireOnline = (event) => {
+  if (navigator.onLine) return;
+  event.preventDefault();
+  window.alert("This feature needs an internet connection. Live maps, photos, and videos cannot open offline.");
+};
+
 function CityDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [city, setCity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("all");
+  const selectedInterest = searchParams.get("interest") || "all";
 
   const loadCity = () => {
     setLoading(true);
@@ -30,10 +117,61 @@ function CityDetails() {
   }, [id]);
 
   const image = city ? content.heroImages[city.name] || content.heroImages.default : content.heroImages.default;
-  const categories = useMemo(() => {
-    const names = (city?.places || []).map((place) => place.category).filter(Boolean);
-    return ["all", ...Array.from(new Set(names))];
+
+  const serviceCategories = useMemo(() => {
+    const mainInterests = new Set((city?.interests || []).map((interest) => interest.toLowerCase()));
+    const hiddenServiceCategories = new Set(["money transfer", "silk shop"]);
+    const names = (city?.places || [])
+      .filter((place) => place.category)
+      .map((place) => place.category)
+      .filter((categoryName) => {
+        const normalized = categoryName.toLowerCase();
+        return !mainInterests.has(normalized) && !hiddenServiceCategories.has(normalized);
+      });
+    return Array.from(new Set(names)).sort();
   }, [city]);
+
+  const serviceCategorySet = useMemo(
+    () => new Set(serviceCategories.map((categoryName) => categoryName.toLowerCase())),
+    [serviceCategories]
+  );
+
+  const interestOptions = useMemo(() => ["all", ...(city?.interests || [])], [city]);
+
+  const setInterest = (interest) => {
+    setQuery("");
+    if (interest === "all") {
+      setSearchParams({});
+      return;
+    }
+    setSearchParams({ interest });
+  };
+
+  const placeMatchesInterest = (place, interest) => {
+    if (interest === "all") {
+      return !place.category;
+    }
+
+    const target = interest.toLowerCase();
+    const placeInterests = (place.interests || []).map((item) => item.toLowerCase());
+    const category = (place.category || "").toLowerCase();
+    const name = (place.name || "").toLowerCase();
+
+    if (serviceCategorySet.has(target)) {
+      return category === target;
+    }
+
+    if (target === "temples") {
+      return name.includes("temple") || placeInterests.includes("spirituality");
+    }
+
+    if (target === "food") {
+      return placeInterests.includes(target) || ["restaurant", "tea shop", "juice shop"].includes(category);
+    }
+
+    return placeInterests.includes(target) || category === target;
+  };
+
   const filteredPlaces = useMemo(() => {
     return (city?.places || []).filter((place) => {
       const text = [
@@ -46,10 +184,15 @@ function CityDetails() {
         ...(place.interests || [])
       ].join(" ").toLowerCase();
       const matchesQuery = text.includes(query.toLowerCase());
-      const matchesCategory = category === "all" || place.category === category;
-      return matchesQuery && matchesCategory;
+      return matchesQuery && placeMatchesInterest(place, selectedInterest);
     });
-  }, [city, query, category]);
+  }, [city, query, selectedInterest, serviceCategorySet]);
+
+  const normalizedInterest = selectedInterest.toLowerCase();
+  const isKanchipuramHistory = city?.name === "Kanchipuram" && normalizedInterest === "history";
+  const showPracticalDetails = serviceCategorySet.has(normalizedInterest);
+  const showPlaceDetails = showPracticalDetails || ["temples", "silk", "architecture", "hidden gems"].includes(normalizedInterest);
+  const selectedOverview = interestOverviews[normalizedInterest];
 
   return (
     <>
@@ -83,89 +226,158 @@ function CityDetails() {
             <section className="detail-layout">
               <div className="main-column">
                 <div className="section-heading">
-                  <h2>Audio places and local data</h2>
-                  <p>Stories, contacts, addresses, timings, and everyday stops for travellers in the city.</p>
+                  <h2>{selectedInterest === "all" ? "Important city interests" : selectedInterest}</h2>
+                  <p>Select an interest to explore places that match your mood and journey.</p>
                 </div>
-                <div className="toolbar detail-toolbar">
+                <div className="interest-button-row detail-toolbar" aria-label="City interest filters">
+                  {interestOptions.map((interest) => (
+                    <button
+                      className={`chip interest-filter ${selectedInterest === interest ? "selected" : ""}`}
+                      key={interest}
+                      type="button"
+                      onClick={() => setInterest(interest)}
+                    >
+                      {interest === "all" ? "Main places" : interest}
+                    </button>
+                  ))}
+                </div>
+                <div className="detail-search-row">
                   <input
                     aria-label="Search places"
-                    placeholder="Search place, category, address, or contact"
+                    placeholder="Search inside selected interest"
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                   />
-                  <select
-                    aria-label="Filter by category"
-                    value={category}
-                    onChange={(event) => setCategory(event.target.value)}
-                  >
-                    {categories.map((item) => (
-                      <option key={item} value={item}>
-                        {item === "all" ? "All categories" : item}
-                      </option>
-                    ))}
-                  </select>
                 </div>
-                <div className="place-list">
-                  {filteredPlaces.map((place) => (
-                    <article className="place-card" key={place.id}>
-                      <div className="place-icon">
-                        <MapPin size={22} />
+                {selectedOverview && (
+                  <section className="interest-overview">
+                    <span className="eyebrow">Interest overview</span>
+                    <h3>{selectedOverview.title}</h3>
+                    <p>{selectedOverview.text}</p>
+                    {selectedOverview.facts && (
+                      <div className="overview-facts">
+                        {selectedOverview.facts.map((fact) => (
+                          <div key={fact.label}>
+                            <strong>{fact.label}</strong>
+                            <span>{fact.value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="chip-row">
+                      {selectedOverview.highlights.map((highlight) => (
+                        <span className="mini-badge" key={highlight}>{highlight}</span>
+                      ))}
+                    </div>
+                  </section>
+                )}
+                {isKanchipuramHistory && (
+                  <section className="history-feature">
+                    <span className="eyebrow">Ancient city story</span>
+                    <h3>{kanchipuramHistory.title}</h3>
+                    <p className="history-intro">{kanchipuramHistory.intro}</p>
+
+                    <div className="history-columns">
+                      <div>
+                        <h4>What it is known for</h4>
+                        <ul>
+                          {kanchipuramHistory.knownFor.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
                       </div>
                       <div>
-                        <div className="card-title-row">
-                          <h3>{place.name}</h3>
-                          {place.category && <span className="mini-badge">{place.category}</span>}
-                          {place.isHiddenGem && <span className="mini-badge">Hidden gem</span>}
-                        </div>
-                        <p>{place.story}</p>
-                        {(place.address || place.contact || place.timings) && (
-                          <div className="practical-grid">
-                            {place.address && <span><strong>Address</strong>{place.address}</span>}
-                            {place.contact && <span><strong>Contact</strong>{place.contact}</span>}
-                            {place.timings && <span><strong>Timing</strong>{place.timings}</span>}
-                          </div>
-                        )}
-                        <div className="meta-row">
-                          <span><Headphones size={15} /> {place.audio?.durationSeconds || 0}s</span>
-                          <span><Route size={15} /> {place.triggerRadius}m trigger</span>
-                          {place.audio?.offlineAvailable && <span><WifiOff size={15} /> Offline</span>}
-                          {place.directionsUrl && (
-                            <a href={place.directionsUrl} target="_blank" rel="noreferrer">
-                              <MapPin size={15} /> Directions
-                            </a>
-                          )}
-                        </div>
-                        <p className="did-you-know"><Sparkles size={16} /> {place.didYouKnow}</p>
+                        <h4>What you can explore</h4>
+                        <ul>
+                          {kanchipuramHistory.explore.map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
                       </div>
-                    </article>
+                    </div>
+
+                    <div className="ancient-story-list">
+                      {kanchipuramHistory.stories.map((story) => (
+                        <article key={story}>
+                          <Sparkles size={18} />
+                          <p>{story}</p>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                )}
+                <div className="place-list">
+                  {filteredPlaces.map((place) => (
+                    (() => {
+                      const links = buildPlaceLinks(place, city.name);
+                      return (
+                        <article className="place-card" key={place.id}>
+                          <div className="place-icon">
+                            <MapPin size={22} />
+                          </div>
+                          <div>
+                            <div className="card-title-row">
+                              <h3>{place.name}</h3>
+                              {place.category && <span className="mini-badge">{place.category}</span>}
+                              {place.isHiddenGem && <span className="mini-badge">Hidden gem</span>}
+                            </div>
+                            <p>{place.story}</p>
+                            {showPlaceDetails && (place.address || place.contact || place.timings) && (
+                              <div className="practical-grid">
+                                {place.address && <span><strong>Address</strong>{place.address}</span>}
+                                {place.contact && <span><strong>Contact</strong>{place.contact}</span>}
+                                {place.timings && <span><strong>Timing</strong>{place.timings}</span>}
+                              </div>
+                            )}
+                            <div className="meta-row">
+                              <span><Headphones size={15} /> {place.audio?.durationSeconds || 0}s</span>
+                              <span><Route size={15} /> {place.triggerRadius}m trigger</span>
+                              {place.audio?.offlineAvailable && <span><WifiOff size={15} /> Offline</span>}
+                            </div>
+                            <div className="place-action-row" aria-label={`${place.name} links`}>
+                              <a href={links.directions} target="_blank" rel="noreferrer" onClick={requireOnline}>
+                                <MapPin size={15} />
+                                Directions
+                                <ExternalLink size={13} />
+                              </a>
+                              <a href={links.photos} target="_blank" rel="noreferrer" onClick={requireOnline}>
+                                <Image size={15} />
+                                Photos
+                                <ExternalLink size={13} />
+                              </a>
+                              <a href={links.videos} target="_blank" rel="noreferrer" onClick={requireOnline}>
+                                <Video size={15} />
+                                Videos
+                                <ExternalLink size={13} />
+                              </a>
+                            </div>
+                            <p className="did-you-know"><Sparkles size={16} /> {place.didYouKnow}</p>
+                          </div>
+                        </article>
+                      );
+                    })()
                   ))}
                   {filteredPlaces.length === 0 && (
                     <div className="state-panel">
-                      <p>No local data matches that search.</p>
+                      <p>No places match this interest yet.</p>
                     </div>
                   )}
                 </div>
               </div>
 
               <aside className="side-panel">
-                <h2>Walks</h2>
-                {(city.walks || []).map((walk) => (
-                  <button
-                    type="button"
-                    className="walk-button"
-                    key={walk.id}
-                    onClick={() => navigate("/journey", { state: { cityId: city.id, walkId: walk.id } })}
-                  >
-                    <strong>{walk.name}</strong>
-                    <span>{walk.description}</span>
-                    <small><Clock size={14} /> {walk.estimatedMinutes} min - {walk.distanceKm} km</small>
-                  </button>
-                ))}
-
-                <h2>Sections</h2>
-                <div className="chip-row">
-                  {(city.availableSections || []).map((section) => (
-                    <span className="chip" key={section}>{section}</span>
+                <h2>Traveller services</h2>
+                <p className="muted">Explore practical places separately from the main city interests.</p>
+                <div className="service-button-grid">
+                  {serviceCategories.map((service) => (
+                    <button
+                      className={`chip service-chip ${selectedInterest === service ? "selected" : ""}`}
+                      key={service}
+                      type="button"
+                      onClick={() => setInterest(service)}
+                    >
+                      {service}
+                    </button>
                   ))}
                 </div>
               </aside>

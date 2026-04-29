@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, WifiOff } from "lucide-react";
+import { Sparkles, WifiOff } from "lucide-react";
 import content from "../data/appContent.json";
 
 function CityCard({ city }) {
@@ -21,16 +21,18 @@ function CityCard({ city }) {
         </div>
         <p className="muted">{city.state}, {city.country}</p>
         <p>{city.tagline}</p>
-        <div className="chip-row">
-          {(city.interests || []).slice(0, 4).map((interest) => (
-            <span className="chip" key={interest}>{interest}</span>
+        <div className="chip-row city-interest-actions" aria-label={`${city.name} interests`}>
+          {(city.interests || []).map((interest) => (
+            <Link
+              className="chip interest-link"
+              key={interest}
+              to={`/city/${city.id}?interest=${encodeURIComponent(interest)}`}
+            >
+              <Sparkles size={14} />
+              {interest}
+            </Link>
           ))}
         </div>
-
-        <Link to={`/city/${city.id}`} className="view-btn">
-          View details
-          <ArrowRight size={16} />
-        </Link>
       </div>
     </div>
   );

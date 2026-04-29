@@ -45,7 +45,6 @@ function CitySuggestion() {
 
       <div className="page-container">
         <div className="page-header">
-          <span className="eyebrow">Suggested cities</span>
           <h1>Choose a city and let the walk tell itself</h1>
           <p>Browse offline-ready destinations, interests, stories, hidden gems, and guided routes.</p>
         </div>

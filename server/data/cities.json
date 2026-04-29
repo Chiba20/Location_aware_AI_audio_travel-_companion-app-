@@ -7,7 +7,7 @@
     "tagline": "City of thousand temples",
     "description": "Kanchipuram is known for ancient temples, silk weaving streets, sacred architecture, and layered cultural history.",
     "heroImage": "kanchipuram.jpg",
-    "interests": ["history", "architecture", "spirituality", "silk", "hidden gems", "food", "emergency", "shopping", "transport", "banking"],
+    "interests": ["temples", "silk", "architecture", "history", "hidden gems"],
     "offlineAvailable": true
   },
   {
@@ -18,7 +18,7 @@
     "tagline": "Ancient city of stories",
     "description": "Madurai blends temple heritage, food streets, markets, and living traditions around the Meenakshi Amman Temple.",
     "heroImage": "madurai.jpg",
-    "interests": ["history", "food", "markets", "architecture", "culture"],
+    "interests": ["temples", "markets", "architecture", "culture"],
     "offlineAvailable": true
   }
 ]

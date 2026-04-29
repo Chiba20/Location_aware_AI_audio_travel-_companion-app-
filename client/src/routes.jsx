@@ -6,6 +6,7 @@ import CitySuggestion from "./pages/CitySuggestion";
 import CityDetails from "./pages/CityDetails";
 import Journey from "./pages/Journey";
 import Feedback from "./pages/Feedback";
+import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
 
 function AppRoutes() {
@@ -17,6 +18,7 @@ function AppRoutes() {
         <Route path="/cities" element={<CitySuggestion />} />
         <Route path="/city/:id" element={<CityDetails />} />
         <Route path="/journey" element={<Journey />} />
+        <Route path="/premium" element={<Premium />} />
         <Route path="/feedback" element={<Feedback />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

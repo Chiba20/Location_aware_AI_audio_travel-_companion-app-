@@ -54,11 +54,6 @@ function Journey() {
     [walks, form.cityId]
   );
 
-  const cityPlaces = useMemo(
-    () => places.filter((place) => place.cityId === Number(form.cityId)),
-    [places, form.cityId]
-  );
-
   const selectedCity = cities.find((city) => city.id === Number(form.cityId));
 
   const toggleInterest = (interest) => {
@@ -287,15 +282,6 @@ function Journey() {
               </div>
             </section>
 
-            <section className="side-panel">
-              <h2>City places</h2>
-              {cityPlaces.map((place) => (
-                <div className="compact-place" key={place.id}>
-                  <strong>{place.name}</strong>
-                  <span>{place.triggerRadius}m trigger</span>
-                </div>
-              ))}
-            </section>
           </section>
         )}
       </main>
