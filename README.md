@@ -20,6 +20,7 @@ Install Python dependencies:
 pip install -r requirements.txt
 ```
 
+
 Run the Flask API:
 
 ```powershell
