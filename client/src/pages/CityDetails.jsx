@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, ExternalLink, Headphones, Image, LockKeyhole, MapPin, Route, Sparkles, Video, WifiOff } from "lucide-react";
+import { ArrowRight, ExternalLink, Headphones, Image, Info, LockKeyhole, MapPin, Pause, Play, Route, Sparkles, Video, WifiOff } from "lucide-react";
 import Navbar from "../component/Navbar";
 import LoadingState from "../component/LoadingState";
 import ErrorState from "../component/ErrorState";
@@ -102,6 +102,9 @@ function CityDetails() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [hasPremium] = useState(() => Boolean(window.localStorage.getItem("everyStreetPremiumMember")));
+  const [expandedInfoPlaceId, setExpandedInfoPlaceId] = useState(null);
+  const [playingPlaceId, setPlayingPlaceId] = useState(null);
+  const audioRef = useRef(null);
   const selectedInterest = searchParams.get("interest") || "all";
 
   const loadCity = () => {
@@ -116,6 +119,14 @@ function CityDetails() {
   useEffect(() => {
     loadCity();
   }, [id]);
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
 
   const image = city ? content.heroImages[city.name] || content.heroImages.default : content.heroImages.default;
 
@@ -171,6 +182,39 @@ function CityDetails() {
     }
 
     return placeInterests.includes(target) || category === target;
+  };
+
+  const togglePlaceInfo = (placeId) => {
+    setExpandedInfoPlaceId((current) => (current === placeId ? null : placeId));
+  };
+
+  const togglePlaceAudio = (place) => {
+    const audioUrl = place.audio?.url || place.audioUrl;
+    if (!audioUrl) return;
+
+    if (playingPlaceId === place.id && audioRef.current) {
+      audioRef.current.pause();
+      setPlayingPlaceId(null);
+      return;
+    }
+
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+
+    const audio = new Audio(audioUrl);
+    audioRef.current = audio;
+    audio.addEventListener("ended", () => setPlayingPlaceId(null), { once: true });
+    audio.addEventListener("error", () => {
+      setPlayingPlaceId(null);
+      window.alert("This audio could not be played. Please check that the audio file exists.");
+    }, { once: true });
+    audio.play()
+      .then(() => setPlayingPlaceId(place.id))
+      .catch(() => {
+        setPlayingPlaceId(null);
+        window.alert("Tap again to allow audio playback in this browser.");
+      });
   };
 
   const filteredPlaces = useMemo(() => {
@@ -346,6 +390,18 @@ function CityDetails() {
                               {place.audio?.offlineAvailable && <span><WifiOff size={15} /> Offline</span>}
                             </div>
                             <div className="place-action-row" aria-label={`${place.name} links`}>
+                              {place.audioNarration && (
+                                <button type="button" onClick={() => togglePlaceInfo(place.id)}>
+                                  <Info size={15} />
+                                  {expandedInfoPlaceId === place.id ? "Hide info" : "Info"}
+                                </button>
+                              )}
+                              {place.audioNarration && (place.audio?.url || place.audioUrl) && (
+                                <button type="button" onClick={() => togglePlaceAudio(place)}>
+                                  {playingPlaceId === place.id ? <Pause size={15} /> : <Play size={15} />}
+                                  {playingPlaceId === place.id ? "Pause audio" : "Play audio"}
+                                </button>
+                              )}
                               <a href={links.directions} target="_blank" rel="noreferrer" onClick={requireOnline}>
                                 <MapPin size={15} />
                                 Directions
@@ -362,6 +418,22 @@ function CityDetails() {
                                 <ExternalLink size={13} />
                               </a>
                             </div>
+                            {expandedInfoPlaceId === place.id && place.audioNarration && (
+                              <div className="audio-info-panel">
+                                <strong>Audio story text</strong>
+                                <p>{place.audioNarration}</p>
+                                {place.audioSources?.length > 0 && (
+                                  <div className="source-list">
+                                    {place.audioSources.map((source, index) => (
+                                      <a href={source} target="_blank" rel="noreferrer" key={source}>
+                                        Source {index + 1}
+                                        <ExternalLink size={13} />
+                                      </a>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            )}
                             <p className="did-you-know"><Sparkles size={16} /> {place.didYouKnow}</p>
                           </div>
                         </article>

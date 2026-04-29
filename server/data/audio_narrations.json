@@ -1,0 +1,70 @@
+[
+  {
+    "placeId": 1,
+    "audioPath": "kanchipuram/ekambareswarar.mp3",
+    "durationSeconds": 105,
+    "sources": [
+      "https://kancheepuram.nic.in/tourism/places-of-interest/",
+      "https://en.wikipedia.org/wiki/Ekambareswarar_Temple_(Kanchipuram)"
+    ],
+    "text": "You are near Ekambareswarar Temple, one of Kanchipuram's great Shiva temples. It is revered as a Pancha Bhoota Sthalam, connected with the element earth, or prithvi. The district tourism record notes its sacred mango tree, its very tall Raja Gopuram, and its thousand-pillared hall associated with Vijayanagara patronage. As you walk here, notice how the temple is not only a monument, but a living sacred landscape: gateways, halls, shrines, legends, and daily worship all meet in one large complex."
+  },
+  {
+    "placeId": 3,
+    "audioPath": "madurai/meenakshi.mp3",
+    "durationSeconds": 105,
+    "sources": [
+      "https://www.tamilnadutourism.com/monuments/meenakshi-amman-temple.php",
+      "https://www.youtube.com/watch?v=qXE75OzUf6c"
+    ],
+    "text": "You are near Meenakshi Amman Temple, the spiritual and cultural heart of Madurai. Tamil Nadu Tourism describes the temple as standing at the centre of an ancient city, filled with sculpture, painting, towers, and sacred stories. The temple is dedicated to Goddess Meenakshi and Lord Sundareswarar, and its gopurams rise with thousands of figures. This is not a silent ruin. It is a living urban centre where worship, festivals, markets, memory, and Tamil identity continue to move together."
+  },
+  {
+    "placeId": 4,
+    "audioPath": "madurai/food-street.mp3",
+    "durationSeconds": 75,
+    "sources": [
+      "https://www.tamilnadutourism.com/monuments/meenakshi-amman-temple.php"
+    ],
+    "text": "Madurai's food streets are part of the city's living culture around the temple town. After the temple's formal spaces, the streets bring another kind of memory: hot snacks, sweets, local drinks, late evening crowds, and conversations that stretch into the night. Food here is not separate from heritage. It is how many travellers meet the rhythm of Madurai: walking, tasting, listening, and slowly understanding why the city feels both ancient and awake."
+  },
+  {
+    "placeId": 5,
+    "audioPath": "kanchipuram/kamakshi-amman.mp3",
+    "durationSeconds": 90,
+    "sources": [
+      "https://kancheepuram.nic.in/public-utility/arulmigu-kamatchiamman-thirukoil/",
+      "https://en.wikipedia.org/wiki/Kamakshi_Amman_Temple"
+    ],
+    "text": "Kamakshi Amman Temple is one of Kanchipuram's most important goddess shrines. It is dedicated to Kamakshi, a revered form of the divine mother, and it anchors the sacred geography of the old city. Many traditions connect Kanchipuram's Shiva temples with Kamakshi as the central goddess presence. For a visitor, this stop is about more than architecture. It shows how devotion, ritual movement, and the idea of Kanchipuram as a sacred city gather around one powerful shrine."
+  },
+  {
+    "placeId": 7,
+    "audioPath": "kanchipuram/varadharaja-perumal.mp3",
+    "durationSeconds": 105,
+    "sources": [
+      "https://kancheepuram.nic.in/tourism/places-of-interest/",
+      "https://kanchivaradarajar.hrce.tn.gov.in/hrcehome/index_temple.php?action=contact_us&tid=1864"
+    ],
+    "text": "Varadharaja Perumal Temple, also known through the Devarajaswamy temple tradition, stands in Little Kanchipuram and is one of the great Vishnu shrines of the city. The district tourism record describes a large temple complex with vimanams, pillared halls, Divya Desam importance, and fine Vijayanagara-period carving. This place helps explain why Kanchipuram is both Shiva Kanchi and Vishnu Kanchi: different sacred traditions sharing the same city, each with its own routes, festivals, and memory."
+  },
+  {
+    "placeId": 8,
+    "audioPath": "kanchipuram/ulagalanda-perumal.mp3",
+    "durationSeconds": 90,
+    "sources": [
+      "https://kancheepuram.nic.in/tourism/places-of-interest/",
+      "https://en.wikipedia.org/wiki/Ulagalantha_Perumal_Temple,_Kanchipuram"
+    ],
+    "text": "Ulagalanda Perumal Temple is connected with Vishnu's Vamana and Trivikrama story: the divine dwarf who expands to measure the worlds. Kancheepuram district tourism notes a remarkable feature here: multiple Divya Desam shrines are associated with the same temple complex. That makes the stop important for travellers following Kanchipuram's Vaishnava map. The story is cosmic, but the experience is local: a temple near the city centre where mythology, pilgrimage, and architecture meet in a compact sacred space."
+  },
+  {
+    "placeId": 23,
+    "audioPath": "kanchipuram/pandava-thoothar-perumal.mp3",
+    "durationSeconds": 80,
+    "sources": [
+      "https://en.wikipedia.org/wiki/Pandava_Thoothar_Perumal_Temple"
+    ],
+    "text": "Pandava Thoothar Perumal Temple is connected with Krishna as the messenger of the Pandavas in the Mahabharata tradition. The shrine is remembered for its large seated form of Krishna and for its place within Kanchipuram's Vaishnava sacred geography. This stop shows how epic storytelling becomes local: a pan-Indian story enters a specific street, a specific shrine, and a pattern of worship that travellers can encounter while walking through the old city."
+  }
+]

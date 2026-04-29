@@ -3,6 +3,7 @@ import os
 from utils.api_utils import ApiError, get_json_body, parse_float, require_fields, success, utc_now_iso
 from utils.distance_utils import calculate_distance, is_valid_coordinate
 from utils.file_utils import next_id, read_json, write_json
+from utils.place_data import read_place_catalog
 
 BASE = os.path.dirname(os.path.dirname(__file__))
 FILE = os.path.join(BASE, "data/journey.json")
@@ -57,7 +58,7 @@ def update_location(journey_id):
 
     triggered = []
     city_places = [
-        place for place in read_json(PLACES_FILE, [])
+        place for place in read_place_catalog(BASE)
         if place.get("cityId") == journey.get("cityId")
     ]
     allowed_place_ids = _allowed_place_ids(journey, city_places)

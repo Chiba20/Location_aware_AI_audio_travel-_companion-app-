@@ -398,7 +398,8 @@
   margin-top: 12px;
 }
 
-.place-action-row a {
+.place-action-row a,
+.place-action-row button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -413,10 +414,50 @@
   font-weight: 800;
 }
 
-.place-action-row a:hover {
+.place-action-row a:hover,
+.place-action-row button:hover {
   background: var(--brand);
   border-color: var(--brand);
   color: #f8fbfb;
+}
+
+.audio-info-panel {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffffff, #f1f7f8);
+}
+
+.audio-info-panel strong {
+  color: var(--brand);
+}
+
+.audio-info-panel p {
+  color: var(--ink);
+  line-height: 1.65;
+}
+
+.source-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.source-list a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 6px 9px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--brand);
+  font-size: 0.82rem;
+  font-weight: 800;
 }
 
 .practical-grid {
@@ -536,6 +577,41 @@
   color: var(--muted);
 }
 
+.tracking-status {
+  margin-top: 8px !important;
+  color: var(--brand) !important;
+  font-weight: 800;
+}
+
+.now-playing-card {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffffff, #e8f3f5);
+}
+
+.now-playing-card > svg {
+  color: var(--brand-2);
+}
+
+.now-playing-card div {
+  display: grid;
+  gap: 3px;
+}
+
+.now-playing-card strong {
+  color: var(--brand);
+}
+
+.now-playing-card span {
+  color: var(--muted);
+}
+
 .coordinate-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -561,6 +637,13 @@
 .trigger-card {
   align-items: center;
   margin-top: 10px;
+}
+
+.trigger-card button {
+  margin-left: auto;
+  min-height: 36px;
+  padding: 8px 10px;
+  box-shadow: none;
 }
 
 .trigger-card svg {
@@ -913,7 +996,18 @@
     padding: 22px;
   }
 
-  .place-card {
+  .place-card,
+  .now-playing-card {
     grid-template-columns: 1fr;
+  }
+
+  .trigger-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .trigger-card button {
+    width: 100%;
+    margin-left: 0;
   }
 }

@@ -41,6 +41,32 @@ def _service_defaults(place):
 def read_place_catalog(base_dir):
     places_file = os.path.join(base_dir, "data/places.json")
     services_file = os.path.join(base_dir, "data/service_places.json")
+    narrations_file = os.path.join(base_dir, "data/audio_narrations.json")
     places = read_json(places_file, [])
     services = [_service_defaults(place) for place in read_json(services_file, [])]
-    return places + services
+    narrations = {
+        item["placeId"]: item
+        for item in read_json(narrations_file, [])
+    }
+    return [_with_audio_narration(place, narrations) for place in places + services]
+
+
+def _with_audio_narration(place, narrations):
+    narration = narrations.get(place.get("id"))
+    if not narration:
+        return place
+
+    audio_url = f"/audio/{narration['audioPath']}"
+    audio = {
+        **place.get("audio", {}),
+        "url": audio_url,
+        "durationSeconds": narration.get("durationSeconds", place.get("audio", {}).get("durationSeconds")),
+        "offlineAvailable": True,
+    }
+    return {
+        **place,
+        "audioUrl": audio_url,
+        "audio": audio,
+        "audioNarration": narration["text"],
+        "audioSources": narration.get("sources", []),
+    }
