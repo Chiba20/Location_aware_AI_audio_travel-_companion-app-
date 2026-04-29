@@ -8,6 +8,7 @@ import { generatePersonalizedStory, getCity } from "../services/api";
 import { recordMetric } from "../utils/metrics";
 import content from "../data/appContent.json";
 
+
 const kanchipuramHistory = {
   title: "History of Kanchipuram",
   intro:
