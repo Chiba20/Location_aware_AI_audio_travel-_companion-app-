@@ -112,12 +112,39 @@
   align-items: start;
 }
 
+.interest-detail-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.interest-detail-layout .main-column {
+  overflow: visible;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.interest-detail-layout .main-column::before {
+  display: none;
+}
+
+.interest-service-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  align-items: stretch;
+  margin-bottom: 18px;
+}
+
 .main-column,
 .side-panel,
 .journey-form,
 .journey-panel,
 .feedback-form,
-.feedback-list {
+.feedback-list,
+.interest-picker-panel,
+.traveller-services-panel,
+.places-section-card {
   position: relative;
   overflow: hidden;
   background: var(--card);
@@ -132,7 +159,10 @@
 .journey-form::before,
 .journey-panel::before,
 .feedback-form::before,
-.feedback-list::before {
+.feedback-list::before,
+.interest-picker-panel::before,
+.traveller-services-panel::before,
+.places-section-card::before {
   content: "";
   position: absolute;
   inset: 0 0 auto;
@@ -166,6 +196,160 @@
   gap: 8px;
 }
 
+.interest-view-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-template-columns: none;
+  gap: 6px;
+  align-items: stretch;
+  overflow: visible;
+  padding-bottom: 0;
+  height: auto;
+}
+
+.interest-view-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  justify-items: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 92px;
+  height: auto;
+  padding: 10px 7px;
+  border: 1px solid rgba(15, 118, 110, 0.14);
+  border-radius: 8px;
+  background: #e8f3f5;
+  color: var(--ink);
+  text-align: center;
+  box-shadow: 0 10px 24px rgba(20, 35, 51, 0.07);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.interest-view-card:hover,
+.interest-view-card.selected {
+  transform: translateY(-2px);
+  border-color: rgba(15, 118, 110, 0.38);
+  box-shadow: 0 14px 28px rgba(20, 35, 51, 0.12);
+}
+
+.interest-view-card.selected {
+  background: #e8f3f5;
+  color: var(--ink);
+}
+
+.interest-view-card:nth-child(2n) {
+  background: #e8f3f5;
+}
+
+.interest-view-card:nth-child(3n) {
+  background: #e8f3f5;
+}
+
+.interest-view-card:nth-child(4n) {
+  background: #e8f3f5;
+}
+
+.interest-view-card:nth-child(5n) {
+  background: #e8f3f5;
+}
+
+.interest-view-card.selected:nth-child(n) {
+  background: #e8f3f5;
+}
+
+.interest-view-icon {
+  width: 30px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--brand);
+  box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.12);
+}
+
+.interest-view-card.selected .interest-view-icon {
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color: #f8fbfb;
+}
+
+.interest-view-copy {
+  display: inline-grid;
+  place-items: center;
+  align-self: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 30px;
+  padding: 6px 5px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: inset 0 0 0 1px rgba(25, 52, 79, 0.08);
+}
+
+.interest-view-copy strong {
+  text-transform: capitalize;
+  color: var(--ink);
+  font-size: 0.76rem;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.interest-view-copy small,
+.interest-view-description,
+.interest-view-preview {
+  color: var(--muted);
+  font-size: 0.64rem;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.interest-view-card.selected .interest-view-copy small,
+.interest-view-card.selected .interest-view-description,
+.interest-view-card.selected .interest-view-preview {
+  color: var(--muted);
+}
+
+.interest-view-count {
+  position: static;
+  min-width: 22px;
+  min-height: 19px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--gold-soft);
+  color: #7a520d;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.interest-view-card.selected .interest-view-count {
+  background: var(--gold-soft);
+  color: #7a520d;
+}
+
+.interest-view-description,
+.interest-view-preview {
+  grid-column: 1 / -1;
+  font-size: 0.78rem;
+}
+
+.interest-view-preview {
+  display: none;
+  align-self: end;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: 800;
+}
+
 .interest-filter {
   min-height: 36px;
   padding-inline: 12px;
@@ -174,6 +358,140 @@
 
 .detail-search-row {
   margin-bottom: 16px;
+}
+
+.interest-picker-panel,
+.traveller-services-panel,
+.places-section-card {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 16px;
+  box-shadow: var(--shadow-soft);
+}
+
+.interest-picker-panel {
+  align-content: stretch;
+  align-self: stretch;
+  grid-template-rows: auto 1fr;
+  gap: 8px;
+  margin-bottom: 0;
+  height: 100%;
+  min-height: 0;
+}
+
+.interest-picker-panel .section-heading {
+  margin-bottom: 2px;
+}
+
+.interest-picker-panel .section-heading h2 {
+  margin: 0 0 5px;
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+
+.interest-picker-panel .section-heading p {
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.interest-picker-panel .detail-toolbar {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.interest-service-row .traveller-services-panel {
+  grid-template-rows: auto 1fr;
+  margin-bottom: 0;
+  height: 100%;
+}
+
+.traveller-services-panel .section-heading {
+  margin-bottom: 2px;
+}
+
+.traveller-services-panel .section-heading h2 {
+  margin: 0 0 5px;
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+
+.traveller-services-panel .section-heading p {
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.service-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(98px, 1fr));
+  gap: 6px;
+  align-items: stretch;
+  height: 100%;
+}
+
+.service-option-card,
+.service-empty-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  justify-items: stretch;
+  gap: 5px;
+  min-height: 34px;
+  height: auto;
+  padding: 5px 7px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--ink);
+  text-align: left;
+}
+
+.service-option-card:hover,
+.service-option-card.selected {
+  transform: translateY(-1px);
+  border-color: rgba(15, 118, 110, 0.38);
+  box-shadow: var(--shadow-soft);
+}
+
+.service-option-card.selected {
+  background: var(--card-tint);
+}
+
+.service-option-card span:last-child,
+.service-empty-card span {
+  display: grid;
+  gap: 0;
+  min-width: 0;
+}
+
+.service-option-card strong {
+  color: var(--ink);
+  font-size: 0.74rem;
+  line-height: 1.18;
+  text-transform: capitalize;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.service-option-card small {
+  color: var(--muted);
+  font-size: 0.64rem;
+  line-height: 1.2;
+}
+
+.service-empty-card {
+  grid-column: 1 / -1;
+  align-content: center;
+  color: var(--muted);
+}
+
+.places-section-card .section-heading {
+  margin-bottom: 0;
+}
+
+.places-section-card .detail-search-row {
+  margin-bottom: 0;
 }
 
 .place-list {
@@ -192,6 +510,7 @@
     linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(232, 243, 245, 0.92)),
     url("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=70") center / cover;
   box-shadow: var(--shadow-soft);
+  animation: interestRiseIn 520ms ease both;
 }
 
 .interest-overview h3 {
@@ -208,6 +527,18 @@
   color: var(--ink);
   font-weight: 650;
   line-height: 1.65;
+}
+
+@keyframes interestRiseIn {
+  from {
+    opacity: 0;
+    transform: translate(28px, 10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
 }
 
 .overview-facts {
@@ -389,6 +720,58 @@
   font-weight: 650;
 }
 
+.architecture-detail-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.architecture-detail-grid article {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(15, 118, 110, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.architecture-detail-grid svg {
+  margin-top: 3px;
+  color: var(--brand-2);
+}
+
+.architecture-detail-grid h4 {
+  margin: 0 0 5px;
+  color: var(--brand);
+}
+
+.architecture-detail-grid p {
+  max-width: none;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.architecture-source-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.architecture-source-row a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: 7px;
+  background: #f8fbfb;
+  color: var(--brand);
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
 .history-feature {
   display: grid;
   gap: 18px;
@@ -443,6 +826,27 @@
   font-weight: 650;
 }
 
+.history-source-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.history-source-row a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: 7px;
+  background: #f8fbfb;
+  color: var(--brand);
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
 .history-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -491,6 +895,15 @@
   margin: 0;
   color: var(--ink);
   line-height: 1.65;
+}
+
+.history-story-list article {
+  align-items: start;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.history-story-list p {
+  font-weight: 650;
 }
 
 .place-card {
@@ -1162,12 +1575,21 @@
 
 @media (max-width: 980px) {
   .detail-layout,
+  .interest-service-row,
   .journey-grid,
   .feedback-layout,
   .metrics-panel,
   .premium-layout,
   .premium-grid {
     grid-template-columns: 1fr;
+  }
+
+  .interest-view-grid {
+    grid-auto-columns: minmax(0, 1fr);
+  }
+
+  .service-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1177,8 +1599,13 @@
   .practical-grid,
   .overview-facts,
   .history-columns,
+  .interest-view-grid,
   .story-controls,
   .service-button-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-card-grid {
     grid-template-columns: 1fr;
   }
 

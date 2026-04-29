@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, EyeOff, Headphones, Image, Info, LockKeyhole, MapPin, Pause, Play, Route, Sparkles, Video, WandSparkles, WifiOff } from "lucide-react";
+import { ArrowRight, Building2, ChevronLeft, ChevronRight, Compass, ExternalLink, EyeOff, Gem, Headphones, Image, Info, Landmark, LockKeyhole, MapPin, Pause, Play, Route, ScrollText, Sparkles, Store, Utensils, Video, WandSparkles, WifiOff } from "lucide-react";
 import Navbar from "../component/Navbar";
 import LoadingState from "../component/LoadingState";
 import ErrorState from "../component/ErrorState";
@@ -12,26 +12,41 @@ import content from "../data/appContent.json";
 const kanchipuramHistory = {
   title: "History of Kanchipuram",
   intro:
-    "Kanchipuram is one of South India's great ancient cities, remembered as a sacred centre, a royal capital, a place of learning, and a living home of silk, stone, and story.",
+    "Kanchipuram is one of South India's great ancient cities: a Pallava capital, a centre of Tamil and Sanskrit learning, a sacred city of Shaiva and Vaishnava traditions, and a living home of silk, stone, and story.",
   knownFor: [
-    "Ancient temple architecture shaped by Pallava, Chola, Vijayanagara, and later Tamil traditions",
-    "A deep spiritual landscape where Shaiva and Vaishnava traditions exist side by side",
-    "Kanchipuram silk sarees, known for rich colour, zari borders, and skilled handloom weaving",
-    "Sacred learning, philosophy, ritual practice, inscriptions, and long-running festival culture"
+    "A Pallava royal capital that helped shape the political and artistic history of northern Tamil Nadu",
+    "Sacred geography where Shaiva, Vaishnava, Jain, and Buddhist memories once met across the city",
+    "Temple architecture that records Pallava, Chola, and Vijayanagara layers in stone, sculpture, gateways, and halls",
+    "Silk weaving traditions that grew with royal patronage, temple culture, trade, and hereditary craft communities"
   ],
   explore: [
-    "Temple sculpture, gopurams, mandapams, and old stone corridors",
-    "Silk weaving streets where craft families continue traditional methods",
-    "Sacred tanks, old streets, markets, food stops, and hidden heritage corners",
-    "Stories of kings, saints, artisans, pilgrims, and communities who shaped the city"
+    "How Pallava rulers turned Kanchi into a capital of architecture, inscriptions, learning, and sacred authority",
+    "How temple streets, tanks, mandapas, and gateways made ritual movement part of the city plan",
+    "How silk weaving became part of Kanchipuram's identity through skilled communities and ceremonial demand",
+    "How kings, saints, scholars, artisans, pilgrims, and traders all left different kinds of history behind"
   ],
   stories: [
-    "The Pallavas made Kanchipuram a powerful cultural centre, filling the region with temples, sculpture, and architectural experiments that influenced later South Indian design.",
-    "The city became famous as a sacred landscape, with temples connected to devotion, myth, ritual, and the movement of pilgrims through narrow streets and temple courtyards.",
-    "Kanchipuram's silk identity grew from generations of weavers who turned thread, colour, and gold zari into sarees worn for weddings, festivals, and major life moments.",
-    "The city is often remembered as a place where religion, trade, craft, and learning met, making it more than a destination: it is a layered memory of Tamil civilisation."
+    "Kanchipuram's historical power comes from the way it joined kingship and sacred space. Under the Pallavas, Kanchi was not just a ruling centre; it became a place where royal ambition was carved into durable stone, where Sanskrit and Tamil learning flourished, and where sacred institutions helped the city speak across centuries.",
+    "Its temples should be read as historical records as much as religious monuments. Their towers, mandapas, shrines, inscriptions, sculpted panels, sacred tanks, and processional streets show how dynasties, patrons, artists, and communities kept adding to the city rather than replacing it.",
+    "The city's silk story belongs to the same long history. Kanchipuram sarees carry memory through colour, zari, borders, and motifs shaped by temple forms and ceremonial life. The craft is not separate from heritage; it is one of the ways Kanchipuram's past is still worn, gifted, and remembered.",
+    "That is why the city feels layered instead of frozen. A traveller can move from stone corridors to weaving streets, from old markets to sacred tanks, from Pallava architecture to later festival traditions, and still be inside one continuing story of Tamil civilisation."
   ]
 };
+
+const kanchipuramHistoryLinks = [
+  {
+    label: "City history",
+    url: "https://www.worldhistory.org/Kanchipuram/"
+  },
+  {
+    label: "Pallava dynasty",
+    url: "https://www.britannica.com/topic/Pallava-dynasty"
+  },
+  {
+    label: "Temples and silk",
+    url: "https://artsandculture.google.com/story/kanchipuram-the-city-of-temples-and-silk/GwURg_BDf2ZpLw?hl=en"
+  }
+];
 
 const interestOverviews = {
   temples: {
@@ -52,8 +67,14 @@ const interestOverviews = {
   },
   architecture: {
     title: "Architecture and sculpture",
-    text: "Look closely at the city's temple forms, carved pillars, sculpted details, and design ideas that influenced South Indian architecture.",
-    highlights: ["Stone carvings", "Gopuram design", "Pallava influence"]
+    text: "Read the built form itself: Pallava sandstone experiments, Dravidian vimanas, cloistered corridors, lion-base pillars, sculpted wall panels, and later gateway and mandapa additions.",
+    facts: [
+      { label: "Core style", value: "Early Dravidian temple architecture shaped by Pallava builders and later expanded by Chola and Vijayanagara traditions" },
+      { label: "Materials", value: "Granite plinths support lighter sandstone superstructures, allowing rich carving while stabilising the monument" },
+      { label: "Look for", value: "Pyramidal vimanas, mandapas, prakara walls, miniature shrine forms, lion-base pillars, carved panels, inscriptions, and murals" },
+      { label: "Best examples", value: "Kailasanathar Temple and Vaikunta Perumal Temple show Pallava planning, sculpture, and narrative architecture most clearly" }
+    ],
+    highlights: ["Pallava sandstone", "Dravidian vimana", "Lion-base pillars"]
   },
   history: {
     title: "Layered city history",
@@ -76,6 +97,104 @@ const interestOverviews = {
     highlights: ["Festivals", "Local customs", "Community stories"]
   }
 };
+
+const interestMeta = {
+  all: {
+    label: "Main places",
+    title: "Start with the landmarks",
+    text: "Begin with the city's core story stops before narrowing into a theme.",
+    icon: Compass
+  },
+  temples: {
+    label: "Temples",
+    title: "Sacred routes",
+    text: "Temple corridors, rituals, legends, and sacred architecture.",
+    icon: Landmark
+  },
+  silk: {
+    label: "Silk",
+    title: "Weaving streets",
+    text: "Handloom craft, saree shops, zari work, and artisan memory.",
+    icon: Sparkles
+  },
+  architecture: {
+    label: "Architecture",
+    title: "Stone and structure",
+    text: "Gopurams, carved pillars, shrines, and old-town forms.",
+    icon: Building2
+  },
+  history: {
+    label: "History",
+    title: "Layered past",
+    text: "Dynasties, saints, learning traditions, and civic memory.",
+    icon: ScrollText
+  },
+  "hidden gems": {
+    label: "Hidden gems",
+    title: "Quieter discoveries",
+    text: "Local lanes, tanks, food corners, and premium route ideas.",
+    icon: Gem
+  },
+  markets: {
+    label: "Markets",
+    title: "Street life",
+    text: "Bazaars, local shopping, food stops, and daily rhythms.",
+    icon: Store
+  },
+  culture: {
+    label: "Culture",
+    title: "Living tradition",
+    text: "Festivals, rituals, community stories, and local customs.",
+    icon: Sparkles
+  },
+  food: {
+    label: "Food",
+    title: "Food trails",
+    text: "Tiffin shops, snacks, drinks, and late-night city flavour.",
+    icon: Utensils
+  }
+};
+
+const interestPlaceLabels = {
+  temples: "temple",
+  silk: "silk shop",
+  architecture: "architecture place",
+  history: "history place",
+  "hidden gems": "hidden gem",
+  markets: "market",
+  culture: "culture place",
+  food: "food place"
+};
+
+const architectureDetails = [
+  {
+    title: "Pallava stone experiment",
+    text: "Kanchipuram architecture is important because it shows the move from rock-cut sacred spaces toward freestanding structural temples. Kailasanathar is especially useful to study: a granite base supports sandstone walls, shrines, and sculpted surfaces, turning architecture into a stable but highly carved composition."
+  },
+  {
+    title: "Vimana, mandapa, and enclosure",
+    text: "Instead of seeing each site only as a temple name, look at its parts. The vimana rises above the sanctum in stacked, tapering tiers. Mandapas create ritual and gathering space. Prakara walls and cloisters frame movement, shade, sculpture, and circumambulation."
+  },
+  {
+    title: "Sculpture as structure",
+    text: "The architecture is not plain masonry with decoration added later. Pillars, pilasters, shrine niches, lion bases, narrative panels, and deity figures are part of how the wall is read. Vaikunta Perumal is known for cloister panels that turn dynastic history into carved visual storytelling."
+  }
+];
+
+const architectureSources = [
+  {
+    label: "Kailasanathar architecture notes",
+    url: "https://imp-art.org/articles/kailasanathar-temple-kanchipuram/"
+  },
+  {
+    label: "UNESCO tentative listing",
+    url: "https://whc.unesco.org/fr/listesindicatives/6528/"
+  },
+  {
+    label: "Architecture photo search",
+    url: "https://www.google.com/search?tbm=isch&q=Kanchipuram+Pallava+temple+architecture"
+  }
+];
 
 const buildPlaceQuery = (place, cityName) => `${place.name} ${cityName || ""} Tamil Nadu India`.trim();
 
@@ -160,7 +279,7 @@ function CityDetails() {
     [serviceCategories]
   );
 
-  const interestOptions = useMemo(() => ["all", ...(city?.interests || [])], [city]);
+  const interestOptions = useMemo(() => city?.interests || [], [city]);
 
   const setInterest = (interest) => {
     setQuery("");
@@ -196,6 +315,26 @@ function CityDetails() {
 
     return placeInterests.includes(target) || category === target;
   };
+
+  const interestCards = useMemo(() => {
+    return interestOptions.map((interest) => {
+      const normalized = interest.toLowerCase();
+      const matches = (city?.places || []).filter((place) => placeMatchesInterest(place, interest));
+      const meta = interestMeta[normalized] || {
+        label: interest,
+        title: interest,
+        text: "Local places and stories connected to this interest.",
+        icon: MapPin
+      };
+
+      return {
+        interest,
+        ...meta,
+        count: matches.length,
+        preview: matches.slice(0, 3).map((place) => place.name)
+      };
+    });
+  }, [city, interestOptions, serviceCategorySet]);
 
   const togglePlaceInfo = (placeId) => {
     setExpandedInfoPlaceId((current) => (current === placeId ? null : placeId));
@@ -248,9 +387,16 @@ function CityDetails() {
 
   const normalizedInterest = selectedInterest.toLowerCase();
   const isKanchipuramHistory = city?.name === "Kanchipuram" && normalizedInterest === "history";
+  const isHistoryInterest = normalizedInterest === "history";
+  const isArchitectureInterest = normalizedInterest === "architecture";
   const showPracticalDetails = serviceCategorySet.has(normalizedInterest);
   const showPlaceDetails = showPracticalDetails || ["temples", "silk", "architecture", "hidden gems"].includes(normalizedInterest);
   const selectedOverview = interestOverviews[normalizedInterest];
+  const selectedInterestCard = interestCards.find((card) => card.interest === selectedInterest);
+  const selectedPlaceLabel = interestPlaceLabels[normalizedInterest] || selectedInterest;
+  const searchPlaceholder = selectedInterest === "all"
+    ? "Search for a place"
+    : `Search for a ${selectedPlaceLabel}`;
   const requiresPremium = normalizedInterest === "hidden gems" || serviceCategorySet.has(normalizedInterest);
   const isPremiumLocked = requiresPremium && !hasPremium;
   const microStories = useMemo(
@@ -350,31 +496,66 @@ function CityDetails() {
               </div>
             </section>
 
-            <section className="detail-layout">
+            <section className="detail-layout interest-detail-layout">
               <div className="main-column">
-                <div className="section-heading">
-                  <h2>{selectedInterest === "all" ? "Important city interests" : selectedInterest}</h2>
-                  <p>Select an interest to explore places that match your mood and journey.</p>
-                </div>
-                <div className="interest-button-row detail-toolbar" aria-label="City interest filters">
-                  {interestOptions.map((interest) => (
-                    <button
-                      className={`chip interest-filter ${selectedInterest === interest ? "selected" : ""}`}
-                      key={interest}
-                      type="button"
-                      onClick={() => setInterest(interest)}
-                    >
-                      {interest === "all" ? "Main places" : interest}
-                    </button>
-                  ))}
-                </div>
-                <div className="detail-search-row">
-                  <input
-                    aria-label="Search places"
-                    placeholder="Search inside selected interest"
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                  />
+                <div className="interest-service-row">
+                  <section className="interest-picker-panel">
+                    <div className="section-heading">
+                      <h2>Choose your travel interest</h2>
+                      <p>Pick what you want to explore and the city will show matching stories.</p>
+                    </div>
+                    <div className="interest-view-grid detail-toolbar" aria-label="City interest views">
+                      {interestCards.map((card) => {
+                        const InterestIcon = card.icon;
+                        return (
+                        <button
+                          className={`interest-view-card ${selectedInterest === card.interest ? "selected" : ""}`}
+                          key={card.interest}
+                          type="button"
+                          onClick={() => setInterest(card.interest)}
+                        >
+                          <span className="interest-view-icon" aria-hidden="true">
+                            <InterestIcon size={18} strokeWidth={2.3} />
+                          </span>
+                          <span className="interest-view-copy">
+                            <strong>{card.label}</strong>
+                          </span>
+                          {card.preview.length > 0 && (
+                            <span className="interest-view-preview">{card.preview.join(" - ")}</span>
+                          )}
+                        </button>
+                        );
+                      })}
+                    </div>
+                  </section>
+
+                  {!isPremiumLocked && (
+                    <section className="traveller-services-panel">
+                      <div className="section-heading">
+                        <h2>Traveller services</h2>
+                        <p>Premium-only local services for practical travel help.</p>
+                      </div>
+                      <div className="service-card-grid">
+                        {serviceCategories.length > 0 ? serviceCategories.map((service) => (
+                          <button
+                            className={`service-option-card ${selectedInterest === service ? "selected" : ""}`}
+                            key={service}
+                            type="button"
+                            onClick={() => setInterest(service)}
+                          >
+                            <span>
+                              <strong>{service}</strong>
+                            </span>
+                          </button>
+                        )) : (
+                          <div className="service-empty-card">
+                            <Store size={20} />
+                            <span>No services listed yet</span>
+                          </div>
+                        )}
+                      </div>
+                    </section>
+                  )}
                 </div>
                 {isPremiumLocked && (
                   <section className="premium-lock-panel">
@@ -384,12 +565,11 @@ function CityDetails() {
                     <Link className="primary-btn" to="/premium">Unlock Premium</Link>
                   </section>
                 )}
-                {!isPremiumLocked && selectedOverview && (
+                {!isPremiumLocked && selectedInterestCard && (
                   <section className="interest-overview">
-                    <span className="eyebrow">Interest overview</span>
-                    <h3>{selectedOverview.title}</h3>
-                    <p>{selectedOverview.text}</p>
-                    {selectedOverview.facts && (
+                    <h3>{selectedOverview?.title || selectedInterestCard.title}</h3>
+                    <p>{selectedOverview?.text || selectedInterestCard.text}</p>
+                    {selectedOverview?.facts && (
                       <div className="overview-facts">
                         {selectedOverview.facts.map((fact) => (
                           <div key={fact.label}>
@@ -400,9 +580,65 @@ function CityDetails() {
                       </div>
                     )}
                     <div className="chip-row">
-                      {selectedOverview.highlights.map((highlight) => (
+                      {(selectedOverview?.highlights || selectedInterestCard.preview).map((highlight) => (
                         <span className="mini-badge" key={highlight}>{highlight}</span>
                       ))}
+                    </div>
+                    {isArchitectureInterest && (
+                      <>
+                        <div className="architecture-detail-grid">
+                          {architectureDetails.map((detail) => (
+                            <article key={detail.title}>
+                              <Building2 size={18} />
+                              <div>
+                                <h4>{detail.title}</h4>
+                                <p>{detail.text}</p>
+                              </div>
+                            </article>
+                          ))}
+                        </div>
+                        <div className="architecture-source-row">
+                          {architectureSources.map((source) => (
+                            <a href={source.url} target="_blank" rel="noreferrer" key={source.url}>
+                              {source.label}
+                              <ExternalLink size={13} />
+                            </a>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </section>
+                )}
+                {!isPremiumLocked && microStories.length > 0 && (
+                  <section
+                    className="micro-story-carousel"
+                    onTouchStart={(event) => setTouchStartX(event.touches[0].clientX)}
+                    onTouchEnd={handleTouchEnd}
+                    aria-label="Swipeable Did You Know micro-stories"
+                  >
+                    <div className="micro-story-top">
+                      <div>
+                        <span className="eyebrow">Did You Know</span>
+                        <h3>Swipe micro-stories</h3>
+                      </div>
+                      <span>{microStoryIndex + 1}/{microStories.length}</span>
+                    </div>
+                    <article className="micro-story-card">
+                      <strong>{microStories[microStoryIndex].title}</strong>
+                      <p>{microStories[microStoryIndex].text}</p>
+                    </article>
+                    <div className="micro-story-actions">
+                      <button type="button" onClick={() => moveMicroStory(-1)} aria-label="Previous micro-story">
+                        <ChevronLeft size={18} />
+                      </button>
+                      <div className="micro-story-dots" aria-hidden="true">
+                        {microStories.map((story, index) => (
+                          <span className={index === microStoryIndex ? "active" : ""} key={story.id} />
+                        ))}
+                      </div>
+                      <button type="button" onClick={() => moveMicroStory(1)} aria-label="Next micro-story">
+                        <ChevronRight size={18} />
+                      </button>
                     </div>
                   </section>
                 )}
@@ -443,44 +679,18 @@ function CityDetails() {
                     )}
                   </section>
                 )}
-                {!isPremiumLocked && microStories.length > 0 && (
-                  <section
-                    className="micro-story-carousel"
-                    onTouchStart={(event) => setTouchStartX(event.touches[0].clientX)}
-                    onTouchEnd={handleTouchEnd}
-                    aria-label="Swipeable Did You Know micro-stories"
-                  >
-                    <div className="micro-story-top">
-                      <div>
-                        <span className="eyebrow">Did You Know</span>
-                        <h3>Swipe micro-stories</h3>
-                      </div>
-                      <span>{microStoryIndex + 1}/{microStories.length}</span>
-                    </div>
-                    <article className="micro-story-card">
-                      <strong>{microStories[microStoryIndex].title}</strong>
-                      <p>{microStories[microStoryIndex].text}</p>
-                    </article>
-                    <div className="micro-story-actions">
-                      <button type="button" onClick={() => moveMicroStory(-1)} aria-label="Previous micro-story">
-                        <ChevronLeft size={18} />
-                      </button>
-                      <div className="micro-story-dots" aria-hidden="true">
-                        {microStories.map((story, index) => (
-                          <span className={index === microStoryIndex ? "active" : ""} key={story.id} />
-                        ))}
-                      </div>
-                      <button type="button" onClick={() => moveMicroStory(1)} aria-label="Next micro-story">
-                        <ChevronRight size={18} />
-                      </button>
-                    </div>
-                  </section>
-                )}
                 {!isPremiumLocked && isKanchipuramHistory && (
                   <section className="history-feature">
-                    <span className="eyebrow">Ancient city story</span>
                     <h3>{kanchipuramHistory.title}</h3>
                     <p className="history-intro">{kanchipuramHistory.intro}</p>
+                    <div className="history-source-row">
+                      {kanchipuramHistoryLinks.map((link) => (
+                        <a href={link.url} target="_blank" rel="noreferrer" key={link.url}>
+                          {link.label}
+                          <ExternalLink size={13} />
+                        </a>
+                      ))}
+                    </div>
 
                     <div className="history-columns">
                       <div>
@@ -501,7 +711,7 @@ function CityDetails() {
                       </div>
                     </div>
 
-                    <div className="ancient-story-list">
+                    <div className="ancient-story-list history-story-list">
                       {kanchipuramHistory.stories.map((story) => (
                         <article key={story}>
                           <Sparkles size={18} />
@@ -511,7 +721,23 @@ function CityDetails() {
                     </div>
                   </section>
                 )}
-                {!isPremiumLocked && <div className="place-list">
+                {!isPremiumLocked && !isHistoryInterest && (
+                  <section className="places-section-card">
+                    <div className="section-heading">
+                      <h2>{searchPlaceholder}</h2>
+                      <p>Explore memorable places and stories matched to your selected interest.</p>
+                    </div>
+                    <div className="detail-search-row">
+                      <input
+                        aria-label="Search places"
+                        placeholder={searchPlaceholder}
+                        value={query}
+                        onChange={(event) => setQuery(event.target.value)}
+                      />
+                    </div>
+                  </section>
+                )}
+                {!isPremiumLocked && !isHistoryInterest && <div className="place-list">
                   {filteredPlaces.map((place) => (
                     (() => {
                       const links = buildPlaceLinks(place, city.name);
@@ -539,44 +765,44 @@ function CityDetails() {
                               <span><Route size={15} /> {place.triggerRadius}m trigger</span>
                               {place.audio?.offlineAvailable && <span><WifiOff size={15} /> Offline</span>}
                             </div>
-                            <div className="place-action-row" aria-label={`${place.name} links`}>
-                              {place.audioNarration && (
+                            {!isHistoryInterest && <div className="place-action-row" aria-label={`${place.name} links`}>
+                              {!isArchitectureInterest && place.audioNarration && (
                                 <button type="button" onClick={() => togglePlaceInfo(place.id)}>
                                   <Info size={15} />
                                   {expandedInfoPlaceId === place.id ? "Hide info" : "Info"}
                                 </button>
                               )}
-                              {place.audioNarration && (place.audio?.url || place.audioUrl) && (
+                              {!isArchitectureInterest && place.audioNarration && (place.audio?.url || place.audioUrl) && (
                                 <button type="button" onClick={() => togglePlaceAudio(place)}>
                                   {playingPlaceId === place.id ? <Pause size={15} /> : <Play size={15} />}
                                   {playingPlaceId === place.id ? "Pause audio" : "Play audio"}
                                 </button>
                               )}
-                              <a href={links.directions} target="_blank" rel="noreferrer" onClick={(event) => {
+                              {!isArchitectureInterest && <a href={links.directions} target="_blank" rel="noreferrer" onClick={(event) => {
                                 requireOnline(event);
                                 recordMetric("media_open", { cityId: city.id, placeId: place.id, type: "directions" });
                               }}>
                                 <MapPin size={15} />
                                 Directions
                                 <ExternalLink size={13} />
-                              </a>
+                              </a>}
                               <a href={links.photos} target="_blank" rel="noreferrer" onClick={(event) => {
                                 requireOnline(event);
                                 recordMetric("media_open", { cityId: city.id, placeId: place.id, type: "photos" });
                               }}>
                                 <Image size={15} />
-                                Photos
+                                {isArchitectureInterest ? "View architecture photos" : "Photos"}
                                 <ExternalLink size={13} />
                               </a>
-                              <a href={links.videos} target="_blank" rel="noreferrer" onClick={(event) => {
+                              {!isArchitectureInterest && <a href={links.videos} target="_blank" rel="noreferrer" onClick={(event) => {
                                 requireOnline(event);
                                 recordMetric("media_open", { cityId: city.id, placeId: place.id, type: "videos" });
                               }}>
                                 <Video size={15} />
                                 Videos
                                 <ExternalLink size={13} />
-                              </a>
-                            </div>
+                              </a>}
+                            </div>}
                             {expandedInfoPlaceId === place.id && place.audioNarration && (
                               <div className="audio-info-panel">
                                 <strong>Audio story text</strong>
@@ -598,7 +824,7 @@ function CityDetails() {
                         </article>
                       );
                     })()
-                  ))}
+                    ))}
                   {filteredPlaces.length === 0 && (
                     <div className="state-panel">
                       <p>No places match this interest yet.</p>
@@ -606,23 +832,6 @@ function CityDetails() {
                   )}
                 </div>}
               </div>
-
-              <aside className="side-panel">
-                <h2>Traveller services</h2>
-                <p className="muted">Premium-only local services for practical travel help.</p>
-                <div className="service-button-grid">
-                  {serviceCategories.map((service) => (
-                    <button
-                      className={`chip service-chip ${selectedInterest === service ? "selected" : ""}`}
-                      key={service}
-                      type="button"
-                      onClick={() => setInterest(service)}
-                    >
-                      {service}
-                    </button>
-                  ))}
-                </div>
-              </aside>
             </section>
           </>
         )}
