@@ -74,6 +74,29 @@ Optional frontend environment file:
 copy .env.example .env
 ```
 
+## Location Audio
+
+Sourced narration scripts live in:
+
+```text
+server/data/audio_narrations.json
+```
+
+Generated MP3 files are saved in:
+
+```text
+client/public/audio/
+```
+
+Generate missing audio files with `gTTS`:
+
+```powershell
+pip install -r requirements.txt
+python scripts\generate_audio.py
+```
+
+The generator skips existing MP3 files, so audio only needs to be generated once unless narration text changes or a file is deleted.
+
 ## MySQL
 
 Import manually:
