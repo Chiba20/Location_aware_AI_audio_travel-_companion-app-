@@ -263,13 +263,13 @@ function CityDetails() {
 
   const serviceCategories = useMemo(() => {
     const mainInterests = new Set((city?.interests || []).map((interest) => interest.toLowerCase()));
-    const hiddenServiceCategories = new Set(["money transfer", "silk shop"]);
+    const nonServiceCategories = new Set(["hidden gem", "money transfer", "silk shop", "temple"]);
     const names = (city?.places || [])
       .filter((place) => place.category)
       .map((place) => place.category)
       .filter((categoryName) => {
         const normalized = categoryName.toLowerCase();
-        return !mainInterests.has(normalized) && !hiddenServiceCategories.has(normalized);
+        return !mainInterests.has(normalized) && !nonServiceCategories.has(normalized);
       });
     return Array.from(new Set(names)).sort();
   }, [city]);

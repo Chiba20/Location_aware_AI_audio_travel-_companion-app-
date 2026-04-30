@@ -25,7 +25,7 @@
     "story": "A living craft street where looms, dyed silk threads, family workshops, and patient handwork reveal why Kanchipuram sarees became part of wedding and festival memory.",
     "didYouKnow": "Traditional silk sarees can take several days or weeks depending on design complexity.",
     "interests": ["silk", "culture"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 5,
@@ -51,7 +51,7 @@
     "story": "Kailasanathar Temple is among the finest early Pallava monuments in Kanchipuram, admired for sandstone architecture, sculpted shrines, and a quieter, more ancient atmosphere.",
     "didYouKnow": "It is often highlighted as one of the oldest surviving structural temples in Kanchipuram.",
     "interests": ["temples", "architecture", "history"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 7,
@@ -90,7 +90,7 @@
     "story": "A Pallava-era Vishnu temple known for its layered architectural plan, historical panels, and royal visual storytelling carved into stone.",
     "didYouKnow": "Its sculptural panels are valued for what they suggest about Pallava royal history.",
     "interests": ["temples", "architecture", "history"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 10,
@@ -129,7 +129,7 @@
     "story": "A distinctive temple dedicated to Chitragupta, the divine accountant in Hindu tradition, making it one of Kanchipuram's unusual and memorable sacred stops.",
     "didYouKnow": "Chitragupta worship is comparatively rare, which makes this temple stand out for many travellers.",
     "interests": ["temples", "history", "spirituality"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 13,
@@ -142,7 +142,7 @@
     "story": "Also known as Sonna Vannam Seitha Perumal Temple, this Divya Desam is tied to the idea of the deity responding to the devotee's word.",
     "didYouKnow": "The temple is linked to Alvar devotional tradition and Kanchipuram's Vaishnava heritage.",
     "interests": ["temples", "history", "spirituality"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 14,
@@ -155,7 +155,7 @@
     "story": "A Vishnu temple known for the eight-armed form of the deity, Ashtabujakaram adds another rich layer to Kanchipuram's Divya Desam circuit.",
     "didYouKnow": "Its name refers to the deity's eight arms, a striking iconographic form.",
     "interests": ["temples", "architecture", "history"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 15,
@@ -168,7 +168,7 @@
     "story": "A smaller Shiva temple that rewards slow exploration, Muktheeswarar shows how Kanchipuram's heritage is spread across many quiet sacred corners.",
     "didYouKnow": "Smaller temples like this help reveal the city's dense sacred geography beyond the famous landmarks.",
     "interests": ["temples", "history"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 16,
@@ -181,7 +181,7 @@
     "story": "Kanchi Kudil presents the feel of a traditional Kanchipuram house, helping visitors imagine domestic life, local objects, and cultural memory beyond temple walls.",
     "didYouKnow": "It is often treated as a heritage stop for understanding old-town life and traditional interiors.",
     "interests": ["history", "architecture", "culture"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 23,
@@ -213,7 +213,7 @@
     "story": "Also known as Vilakkoli Perumal Temple, this Divya Desam is associated with Vishnu as the radiant light and with the birthplace tradition of Vedanta Desika nearby.",
     "didYouKnow": "The name Deepa Prakasar means the deity who shines like a lamp.",
     "interests": ["temples", "history", "spirituality"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 25,
@@ -229,7 +229,7 @@
     "story": "A Vishnu temple celebrated in the Divya Desam tradition, Pavala Vannar is linked with the coral-hued form of the deity and Kanchipuram's dense Vaishnava sacred map.",
     "didYouKnow": "The temple is often visited together with other nearby Divya Desam shrines in the old town.",
     "interests": ["temples", "history", "spirituality"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 26,
@@ -245,7 +245,7 @@
     "story": "A Divya Desam dedicated to Narasimha, Azhagiya Singar Perumal Temple adds a powerful Vishnu story to Kanchipuram's temple network.",
     "didYouKnow": "Thiruvelukkai is one of the sacred Kanchipuram Divya Desam sites associated with Alvar hymns.",
     "interests": ["temples", "history", "spirituality"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 27,
@@ -261,7 +261,7 @@
     "story": "A rare Vishnu Divya Desam shrine located within the Ekambareswarar Temple complex, linking Shaiva and Vaishnava traditions in one sacred space.",
     "didYouKnow": "Its legend connects Vishnu, Shiva's crescent moon, and the protection of Parvati during penance.",
     "interests": ["temples", "history", "spirituality"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 28,
@@ -277,7 +277,7 @@
     "story": "A Divya Desam shrine associated with Vishnu's Varaha form, set close to the Kamakshi temple area and important to Kanchipuram's sacred geography.",
     "didYouKnow": "The shrine is part of the compact old-town temple circuit around Kamakshi Amman Temple.",
     "interests": ["temples", "history", "spirituality"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 29,
@@ -293,7 +293,7 @@
     "story": "A smaller Shiva temple that helps reveal Kanchipuram beyond its biggest monuments, Matangeswarar belongs to the city's quieter sacred landscape.",
     "didYouKnow": "Kanchipuram's old town is filled with smaller shrines that preserve local ritual memory.",
     "interests": ["temples", "history"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 30,
@@ -309,7 +309,7 @@
     "story": "Jurahareswarar Temple is a distinctive Shiva shrine associated with healing from fever and disease, and is valued for its early Dravidian temple character.",
     "didYouKnow": "The name comes from Jvara, Hara, and Ishvara, meaning Shiva as the remover of fever.",
     "interests": ["temples", "architecture", "history"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 31,
@@ -325,7 +325,7 @@
     "story": "A lesser-known Shiva temple associated with Kanchipuram's old sacred fabric, Iravatanesvara rewards travellers interested in quieter stone shrines.",
     "didYouKnow": "The name is linked with Airavata, the mythic white elephant of Indra, in temple tradition.",
     "interests": ["temples", "architecture", "history"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 32,
@@ -341,7 +341,7 @@
     "story": "An 8th-century Jain temple in Thiruparuthikundram, also called Jain Kanchi, showing that Kanchipuram's sacred history includes Jain heritage as well as Hindu traditions.",
     "didYouKnow": "The temple is dedicated to Jain Tirthankaras and is associated with Pallava-period patronage and later expansions.",
     "interests": ["temples", "architecture", "history"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 17,
@@ -374,7 +374,7 @@
     "story": "A locally known silk shop often associated with traditional Kanchipuram saree buying and busy wedding-season shopping.",
     "didYouKnow": "Many travellers prefer comparing multiple silk shops before choosing zari, border, colour, and price range.",
     "interests": ["silk"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 19,
@@ -422,7 +422,7 @@
     "story": "A silk store on T.K. Nambi Street presenting pure silk sarees, wholesale options, and a family craft identity.",
     "didYouKnow": "The store highlights decades of experience and pure silk collections.",
     "interests": ["silk"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   },
   {
     "id": 22,
@@ -546,6 +546,6 @@
     "story": "This walk follows the smell of jigarthanda, hot snacks, and late-night food culture that keeps Madurai awake.",
     "didYouKnow": "Madurai's food streets are often busiest after sunset.",
     "interests": ["food", "markets", "culture"],
-    "isHiddenGem": true
+    "isHiddenGem": false
   }
 ]
