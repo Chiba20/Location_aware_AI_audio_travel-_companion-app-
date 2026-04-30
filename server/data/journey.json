@@ -652,5 +652,20 @@
     "status": "active",
     "visitedPlaceIds": [],
     "lastLocation": null
+  },
+  {
+    "id": 40,
+    "cityId": 1,
+    "walkId": 1,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-29T17:03:49.090049+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": null
   }
 ]
