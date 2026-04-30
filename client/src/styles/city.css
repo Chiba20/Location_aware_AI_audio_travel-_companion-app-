@@ -216,6 +216,158 @@
   gap: 10px;
 }
 
+.personal-story-panel,
+.micro-story-carousel,
+.metrics-panel {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  box-shadow: var(--shadow-soft);
+}
+
+.personal-story-panel::before,
+.micro-story-carousel::before,
+.metrics-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--brand-2);
+}
+
+.personal-story-panel,
+.micro-story-carousel {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+}
+
+.personal-story-panel h3,
+.micro-story-carousel h3 {
+  margin: 4px 0 0;
+  color: var(--brand);
+}
+
+.personal-story-panel p,
+.micro-story-carousel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.story-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.personal-story-output,
+.micro-story-card {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid rgba(15, 118, 110, 0.16);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(232, 243, 245, 0.92), rgba(255, 255, 255, 0.96));
+}
+
+.personal-story-output span {
+  color: var(--brand-2);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.personal-story-output-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.personal-story-output-top button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #f8fbfb;
+  color: var(--brand);
+  font-weight: 800;
+}
+
+.personal-story-output p,
+.micro-story-card p {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.micro-story-top,
+.micro-story-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.micro-story-top > span {
+  color: var(--brand);
+  font-weight: 900;
+}
+
+.micro-story-card {
+  min-height: 132px;
+  align-content: center;
+}
+
+.micro-story-card strong {
+  color: var(--brand);
+  font-size: 1.05rem;
+}
+
+.micro-story-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #f8fbfb;
+  color: var(--brand);
+  font-weight: 800;
+}
+
+.micro-story-actions button {
+  width: 38px;
+  padding: 0;
+}
+
+.micro-story-dots {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.micro-story-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #bfd2da;
+}
+
+.micro-story-dots span.active {
+  width: 22px;
+  background: var(--brand-2);
+}
+
 .overview-facts div {
   display: grid;
   gap: 5px;
@@ -253,8 +405,10 @@
 .premium-lock-panel {
   display: grid;
   justify-items: center;
+  align-content: center;
   gap: 12px;
   margin-bottom: 18px;
+  min-height: 360px;
   padding: 28px;
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -669,6 +823,41 @@
   align-items: stretch;
 }
 
+.metrics-panel {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding: 20px;
+}
+
+.metrics-panel article {
+  display: grid;
+  gap: 7px;
+  min-height: 130px;
+  align-content: center;
+  justify-items: center;
+  padding: 14px;
+  border: 1px solid rgba(15, 118, 110, 0.14);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(232, 243, 245, 0.9), rgba(255, 255, 255, 0.96));
+  text-align: center;
+}
+
+.metrics-panel svg {
+  color: var(--brand-2);
+}
+
+.metrics-panel span {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.metrics-panel strong {
+  color: var(--brand);
+  font-size: 1.35rem;
+}
+
 .feedback-list {
   display: grid;
   gap: 12px;
@@ -975,6 +1164,7 @@
   .detail-layout,
   .journey-grid,
   .feedback-layout,
+  .metrics-panel,
   .premium-layout,
   .premium-grid {
     grid-template-columns: 1fr;
@@ -987,6 +1177,7 @@
   .practical-grid,
   .overview-facts,
   .history-columns,
+  .story-controls,
   .service-button-grid {
     grid-template-columns: 1fr;
   }

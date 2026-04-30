@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { MessageSquare, Send, Star } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import { BarChart3, MessageSquare, Repeat2, Send, SmilePlus, Star, TrendingUp } from "lucide-react";
 import Navbar from "../component/Navbar";
 import LoadingState from "../component/LoadingState";
 import ErrorState from "../component/ErrorState";
 import { createFeedback, getCities, getFeedback, getPlaces } from "../services/api";
+import { getMetricsSummary, recordMetric } from "../utils/metrics";
 
 function Feedback() {
   const [cities, setCities] = useState([]);
@@ -41,6 +42,7 @@ function Feedback() {
   const cityPlaces = places.filter((place) => place.cityId === Number(form.cityId));
   const getCityName = (cityId) => cities.find((city) => city.id === Number(cityId))?.name || "Unknown city";
   const getPlaceName = (placeId) => places.find((place) => place.id === Number(placeId))?.name || "Unknown place";
+  const metrics = useMemo(() => getMetricsSummary(feedback), [feedback]);
 
   const submitFeedback = async (event) => {
     event.preventDefault();
@@ -54,6 +56,11 @@ function Feedback() {
         placeId: Number(form.placeId),
         rating: Number(form.rating),
         comment: form.comment
+      });
+      recordMetric("feedback_sentiment", {
+        cityId: Number(form.cityId),
+        placeId: Number(form.placeId),
+        rating: Number(form.rating),
       });
       setForm((current) => ({ ...current, comment: "" }));
       setSuccessMessage("Feedback saved.");
@@ -80,8 +87,32 @@ function Feedback() {
         {error && <ErrorState message={error} onRetry={loadData} />}
 
         {!loading && (
-          <section className="feedback-layout">
-            <form className="feedback-form" onSubmit={submitFeedback}>
+          <>
+            <section className="metrics-panel" aria-label="Success metrics tracking">
+              <article>
+                <Repeat2 size={22} />
+                <span>Repeat usage</span>
+                <strong>{metrics.repeatUsage}</strong>
+              </article>
+              <article>
+                <BarChart3 size={22} />
+                <span>Engagement</span>
+                <strong>{metrics.engagement}</strong>
+              </article>
+              <article>
+                <TrendingUp size={22} />
+                <span>Premium conversions</span>
+                <strong>{metrics.premiumConversions}</strong>
+              </article>
+              <article>
+                <SmilePlus size={22} />
+                <span>User sentiment</span>
+                <strong>{metrics.sentiment}</strong>
+              </article>
+            </section>
+
+            <section className="feedback-layout">
+              <form className="feedback-form" onSubmit={submitFeedback}>
               <label>
                 City
                 <select
@@ -145,26 +176,27 @@ function Feedback() {
                 Submit feedback
               </button>
               {successMessage && <p className="success-text">{successMessage}</p>}
-            </form>
+              </form>
 
-            <section className="feedback-list">
-              <h2>Recent feedback</h2>
-              {feedback.length === 0 && <p className="muted">No feedback yet.</p>}
-              {feedback.map((item) => (
-                <article className="feedback-item" key={item.id}>
-                  <div className="rating-row">
-                    <Star size={18} />
-                    <strong>{item.rating}/5</strong>
-                  </div>
-                  <p>{item.comment}</p>
-                  <small>
-                    <MessageSquare size={14} />
-                    {item.cityId ? getCityName(item.cityId) : "Unknown city"} - {item.placeId ? getPlaceName(item.placeId) : "Unknown place"}
-                  </small>
-                </article>
-              ))}
+              <section className="feedback-list">
+                <h2>Recent feedback</h2>
+                {feedback.length === 0 && <p className="muted">No feedback yet.</p>}
+                {feedback.map((item) => (
+                  <article className="feedback-item" key={item.id}>
+                    <div className="rating-row">
+                      <Star size={18} />
+                      <strong>{item.rating}/5</strong>
+                    </div>
+                    <p>{item.comment}</p>
+                    <small>
+                      <MessageSquare size={14} />
+                      {item.cityId ? getCityName(item.cityId) : "Unknown city"} - {item.placeId ? getPlaceName(item.placeId) : "Unknown place"}
+                    </small>
+                  </article>
+                ))}
+              </section>
             </section>
-          </section>
+          </>
         )}
       </main>
     </>
