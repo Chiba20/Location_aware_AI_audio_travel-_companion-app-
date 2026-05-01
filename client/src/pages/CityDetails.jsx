@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ArrowRight, Building2, ChevronLeft, ChevronRight, Compass, ExternalLink, EyeOff, Gem, Headphones, Image, Info, Landmark, LockKeyhole, MapPin, Pause, Play, Route, ScrollText, Sparkles, Store, Utensils, Video, WandSparkles, WifiOff } from "lucide-react";
 import Navbar from "../component/Navbar";
@@ -854,9 +854,9 @@ function CityDetails() {
                 {!isPremiumLocked && (
                   <section className="personal-story-panel">
                     <div>
-                      <span className="eyebrow">True AI personalization</span>
+                      <span className="eyebrow">Personalized narration</span>
                       <h3>Personalized city story</h3>
-                      <p>Generate a story from the selected interest and visible place content.</p>
+                      <p>Generate a fresh story from the selected interest and visible place facts.</p>
                     </div>
                     <div className="story-controls">
                       <label>
@@ -877,7 +877,7 @@ function CityDetails() {
                     {personalizedStory && (
                       <article className="personal-story-output">
                         <div className="personal-story-output-top">
-                          <span>{storySource === "ai" ? "AI generated" : "Generated from app content"}</span>
+                          <span>{storySource === "ai" ? "AI generated from place facts" : "Generated from place facts"}</span>
                           <button type="button" onClick={() => setPersonalizedStory("")}>
                             <EyeOff size={15} />
                             Hide

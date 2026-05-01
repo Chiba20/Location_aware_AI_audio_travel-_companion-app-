@@ -72,6 +72,8 @@ def update_location(journey_id):
             if place["id"] not in journey["visitedPlaceIds"]:
                 journey["visitedPlaceIds"].append(place["id"])
 
+    triggered.sort(key=lambda place: place["distanceMeters"])
+
     journey["lastLocation"] = {
         "latitude": latitude,
         "longitude": longitude,
