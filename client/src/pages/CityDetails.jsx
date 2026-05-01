@@ -67,14 +67,14 @@ const interestOverviews = {
   },
   architecture: {
     title: "Architecture and sculpture",
-    text: "Read the built form itself: Pallava sandstone experiments, Dravidian vimanas, cloistered corridors, lion-base pillars, sculpted wall panels, and later gateway and mandapa additions.",
+    text: "See Kanchipuram through stone, shade, towers, corridors, and sculpted walls. These places are worth visiting because their architecture is not still or silent: it guides walking, frames worship, catches light, and turns history into something you can stand inside.",
     facts: [
-      { label: "Core style", value: "Early Dravidian temple architecture shaped by Pallava builders and later expanded by Chola and Vijayanagara traditions" },
-      { label: "Materials", value: "Granite plinths support lighter sandstone superstructures, allowing rich carving while stabilising the monument" },
-      { label: "Look for", value: "Pyramidal vimanas, mandapas, prakara walls, miniature shrine forms, lion-base pillars, carved panels, inscriptions, and murals" },
-      { label: "Best examples", value: "Kailasanathar Temple and Vaikunta Perumal Temple show Pallava planning, sculpture, and narrative architecture most clearly" }
+      { label: "Why go", value: "To feel how temple design controls scale, movement, light, silence, procession, and attention" },
+      { label: "Look closely", value: "Vimanas, mandapas, prakara walls, miniature shrine forms, lion-base pillars, carved panels, inscriptions, and mural traces" },
+      { label: "Best first stop", value: "Kailasanathar Temple for early Pallava stonework and a quieter, close-looking architecture experience" },
+      { label: "Best grand scale", value: "Ekambareswarar Temple for gateways, courtyards, processional space, and the feeling of a temple as a living city" }
     ],
-    highlights: ["Pallava sandstone", "Dravidian vimana", "Lion-base pillars"]
+    highlights: ["Pallava sandstone", "Dravidian vimana", "Lion-base pillars", "Narrative walls"]
   },
   history: {
     title: "Layered city history",
@@ -168,16 +168,52 @@ const interestPlaceLabels = {
 
 const architectureDetails = [
   {
-    title: "Pallava stone experiment",
-    text: "Kanchipuram architecture is important because it shows the move from rock-cut sacred spaces toward freestanding structural temples. Kailasanathar is especially useful to study: a granite base supports sandstone walls, shrines, and sculpted surfaces, turning architecture into a stable but highly carved composition."
+    title: "Walk before you judge",
+    text: "Do not only stand at the entrance for a photograph. Move slowly through the base, wall, shrine, tower, corridor, and gateway. The architecture becomes clearer when your body follows the route it was designed for."
   },
   {
-    title: "Vimana, mandapa, and enclosure",
-    text: "Instead of seeing each site only as a temple name, look at its parts. The vimana rises above the sanctum in stacked, tapering tiers. Mandapas create ritual and gathering space. Prakara walls and cloisters frame movement, shade, sculpture, and circumambulation."
+    title: "Notice the change in mood",
+    text: "Kailasanathar feels compact and ancient, Vaikunta Perumal feels layered and narrative, and Ekambareswarar feels large and public. Visiting more than one place helps you feel how Kanchipuram architecture changes personality."
   },
   {
-    title: "Sculpture as structure",
-    text: "The architecture is not plain masonry with decoration added later. Pillars, pilasters, shrine niches, lion bases, narrative panels, and deity figures are part of how the wall is read. Vaikunta Perumal is known for cloister panels that turn dynastic history into carved visual storytelling."
+    title: "Let the carvings slow you down",
+    text: "Pillars, pilasters, niches, deity figures, inscriptions, and panels are not decoration added at the end. They tell you where to pause, where to look up, and how sacred meaning was built into the wall itself."
+  }
+];
+
+const architectureReadingTips = [
+  "Look up at the vimana above the sanctum, not only at the entrance tower.",
+  "Watch how shade, corridors, and enclosure change the pace of walking.",
+  "Compare one detail at every stop: pillars, niches, panels, or tower form."
+];
+
+const architectureShowcase = [
+  {
+    title: "Kailasanathar Temple",
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kailasanathar_Temple_-_Kanchipuram.jpg?width=900",
+    imageLink: "https://commons.wikimedia.org/wiki/Special:FilePath/Kailasanathar_Temple_-_Kanchipuram.jpg",
+    focus: "Quiet Pallava stonework",
+    mood: "Best for slow looking",
+    text: "Go here when you want architecture close enough to read with your eyes. The compact plan, sandstone surfaces, small shrine forms, and carved walls make the temple feel like an early stone notebook of Dravidian design.",
+    lookFor: "Sandstone walls, miniature shrines, lion-base pillars, sculpted niches"
+  },
+  {
+    title: "Vaikunta Perumal Temple",
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Vaikunta_perumal_temple%2C_Kanchipuram.JPG?width=900",
+    imageLink: "https://commons.wikimedia.org/wiki/Special:FilePath/Vaikunta_perumal_temple%2C_Kanchipuram.JPG",
+    focus: "Story carved into movement",
+    mood: "Best for history lovers",
+    text: "Visit this one when you want architecture to feel like a story path. The enclosure, inner movement, and sculptural panels make the building more than a shrine: it becomes a place where Pallava memory and worship meet.",
+    lookFor: "Layered plan, enclosed movement, narrative panels, royal memory"
+  },
+  {
+    title: "Ekambareswarar Temple",
+    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Ekambareswarar%20temple%20kanchipuram.jpg?width=900",
+    imageLink: "https://commons.wikimedia.org/wiki/Special:FilePath/Ekambareswarar%20temple%20kanchipuram.jpg",
+    focus: "Grand temple-city scale",
+    mood: "Best for first-time visitors",
+    text: "Choose this stop when you want the full force of a living temple town. Large gateways, courtyards, temple streets, and pillared spaces show how architecture can hold worship, movement, legend, and city life together.",
+    lookFor: "Tall gopuram, courtyards, processional space, pillared halls"
   }
 ];
 
@@ -206,6 +242,95 @@ const buildPlaceLinks = (place, cityName) => {
     photos: place.photosUrl || `https://www.google.com/search?tbm=isch&q=${encodedQuery}`,
     videos: place.videosUrl || `https://www.youtube.com/results?search_query=${encodedQuery}+shorts`
   };
+};
+
+const formatDidYouKnowFact = (title, text) => {
+  const cleaned = String(text || "")
+    .trim()
+    .replace(/^it is\s+/i, "is ")
+    .replace(/^it was\s+/i, "was ")
+    .replace(/^the temple is\s+/i, "is ")
+    .replace(/^the complex is\s+/i, "is ")
+    .replace(/^the shrine is\s+/i, "is ");
+  return `Did you know ${title} ${cleaned}`;
+};
+
+const getInterestDidYouKnowFact = (place, interest) => {
+  const normalized = interest.toLowerCase();
+  const name = (place.name || "").toLowerCase();
+
+  if (normalized === "architecture") {
+    if (name.includes("ekambareswarar")) {
+      return "shows how gateways, courtyards, pillared spaces, and temple streets turn a sacred site into part of the city plan.";
+    }
+    if (name.includes("kailasanathar")) {
+      return "is often highlighted as one of the oldest surviving structural temples in Kanchipuram, making it a key stop for early Dravidian architecture.";
+    }
+    if (name.includes("vaikunta")) {
+      return "uses planned movement, enclosure, and sculptural panels to connect Pallava royal memory with sacred architecture.";
+    }
+    if (name.includes("varadharaja")) {
+      return "is useful for reading later temple scale through prakarams, pillared halls, sacred tanks, and processional spaces.";
+    }
+    return "helps reveal Kanchipuram through built details such as shrine layout, tower form, carved panels, enclosure, material, and movement.";
+  }
+
+  if (normalized === "temples") {
+    if (name.includes("ekambareswarar")) {
+      return "is one of the Pancha Bhoota Sthalams, associated with the element earth.";
+    }
+    if (name.includes("kamakshi")) {
+      return "is closely associated with the goddess Kamakshi, one of the most revered forms of Devi in Tamil tradition.";
+    }
+    if (name.includes("varadharaja")) {
+      return "is famous for the Athi Varadar festival, when the wooden image of the deity is brought out after long intervals.";
+    }
+    return place.didYouKnow;
+  }
+
+  if (normalized === "silk") {
+    if (name.includes("weaver")) {
+      return "can reveal how dyed thread, loom setup, borders, zari, and patient handwork become a finished Kanchipuram saree.";
+    }
+    if (name.includes("rmkv")) {
+      return "connects Kanchipuram silk shopping with checks such as Silk Mark and zari purity information.";
+    }
+    return place.didYouKnow;
+  }
+
+  if (normalized === "history") {
+    if (name.includes("kailasanathar")) {
+      return "preserves Pallava-period memory in stone, making it one of the clearest historical markers in the city.";
+    }
+    if (name.includes("kanchi kudil")) {
+      return "helps explain old-town domestic life through traditional interiors, household objects, and street-house design.";
+    }
+    return place.didYouKnow;
+  }
+
+  if (normalized === "hidden gems") {
+    if (name.includes("sarvatirtha")) {
+      return "shows how temple tanks could act as sacred, social, and environmental spaces in older South Indian towns.";
+    }
+    if (name.includes("walking")) {
+      return "reveals connections between temples, lanes, markets, food stops, and quiet corners that are easy to miss by vehicle.";
+    }
+    return place.didYouKnow;
+  }
+
+  if (normalized === "food") {
+    return place.didYouKnow || "is best understood through timing, local freshness, and the daily rhythm of people eating nearby.";
+  }
+
+  if (normalized === "markets") {
+    return place.didYouKnow || "shows how shopping, pilgrimage, food, services, and everyday city movement overlap in one place.";
+  }
+
+  if (normalized === "culture") {
+    return place.didYouKnow || "connects local practice, memory, worship, craft, and everyday routines into one living city experience.";
+  }
+
+  return place.didYouKnow;
 };
 
 const requireOnline = (event) => {
@@ -397,19 +522,69 @@ function CityDetails() {
   const searchPlaceholder = selectedInterest === "all"
     ? "Search for a place"
     : `Search for a ${selectedPlaceLabel}`;
+  const interestExplanationLabel = selectedInterest === "all"
+    ? "Why this place matters"
+    : `Why this matches ${selectedPlaceLabel}`;
+  const getInterestSpecificExplanation = (place) => {
+    if (normalizedInterest === "architecture") {
+      const name = (place.name || "").toLowerCase();
+      if (name.includes("kailasanathar")) {
+        return "This stop is one of the clearest places to study Pallava structural temple design: a raised base, compact shrine plan, sandstone carving, miniature shrines, and sculpted wall surfaces all work together.";
+      }
+      if (name.includes("vaikunta")) {
+        return "This stop is useful for reading architecture as visual history. Its planned enclosure, layered movement, and narrative panels help show how royal memory and sacred design were built into stone.";
+      }
+      if (name.includes("ekambareswarar")) {
+        return "This stop shows architectural scale: large gateways, processional space, pillared areas, and later expansions help explain how Kanchipuram temples grew across dynasties.";
+      }
+      return "For the architecture interest, focus on the built details: tower form, shrine layout, pillar rhythm, wall niches, enclosure, material, sculptural panels, and how the place guides movement.";
+    }
+
+    if (normalizedInterest === "temples") {
+      return "This place connects to worship, sacred geography, ritual movement, and temple-town memory, making it relevant for travellers exploring Kanchipuram's spiritual identity.";
+    }
+    if (normalizedInterest === "silk") {
+      return "This place links the trip to Kanchipuram's living textile economy: handloom skill, saree buying, craft reputation, family occasions, and local shopping streets.";
+    }
+    if (normalizedInterest === "history") {
+      return "This place helps explain the city's layered past through dynasties, sacred institutions, local memory, craft traditions, and everyday heritage.";
+    }
+    if (normalizedInterest === "hidden gems") {
+      return "This stop fits the hidden-gem interest because it reveals quieter local life beyond the famous landmarks: food, lanes, tanks, markets, or slower walking routes.";
+    }
+    if (normalizedInterest === "markets" || normalizedInterest === "food") {
+      return "This place fits the selected interest because it shows daily city rhythm through shopping, food, movement, small stops, and practical local discovery.";
+    }
+    if (normalizedInterest === "culture") {
+      return "This place connects to living culture: rituals, habits, community spaces, food, craft, festivals, and the ordinary routines that keep the city active.";
+    }
+    return "This place is part of the city's main travel story and gives the visitor a clear starting point before choosing a deeper theme.";
+  };
   const requiresPremium = normalizedInterest === "hidden gems" || serviceCategorySet.has(normalizedInterest);
   const isPremiumLocked = requiresPremium && !hasPremium;
-  const microStories = useMemo(
-    () => filteredPlaces
-      .filter((place) => place.didYouKnow)
-      .map((place) => ({
+  const microStories = useMemo(() => {
+    const seenFacts = new Set();
+    return filteredPlaces.reduce((stories, place) => {
+      const fact = getInterestDidYouKnowFact(place, selectedInterest);
+      if (!fact) return stories;
+
+      const fullText = formatDidYouKnowFact(place.name, fact);
+      const normalizedFact = fullText.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+      if (seenFacts.has(normalizedFact)) return stories;
+      seenFacts.add(normalizedFact);
+
+      stories.push({
         id: place.id,
         title: place.name,
-        text: place.didYouKnow,
+        text: fact,
+        fullText,
         durationSeconds: place.audio?.durationSeconds || 0,
-      })),
-    [filteredPlaces]
-  );
+      });
+      return stories;
+    }, []);
+  }, [filteredPlaces, selectedInterest]);
+  const microStorySlideCount = microStories.length + 1;
+  const activeMicroStory = microStories[microStoryIndex - 1];
 
   useEffect(() => {
     setMicroStoryIndex(0);
@@ -420,11 +595,11 @@ function CityDetails() {
   const moveMicroStory = (direction) => {
     if (!microStories.length) return;
     setMicroStoryIndex((current) => {
-      const next = (current + direction + microStories.length) % microStories.length;
+      const next = (current + direction + microStorySlideCount) % microStorySlideCount;
       recordMetric("micro_story_swipe", {
         cityId: city?.id,
         interest: selectedInterest,
-        storyId: microStories[next]?.id,
+        storyId: microStories[next - 1]?.id,
       });
       return next;
     });
@@ -446,6 +621,12 @@ function CityDetails() {
         cityName: city.name,
         interest: selectedInterest === "all" ? "main places" : selectedInterest,
         narrationStyle: storyStyle,
+        referenceNotes: isKanchipuramHistory ? {
+          intro: kanchipuramHistory.intro,
+          knownFor: kanchipuramHistory.knownFor,
+          explore: kanchipuramHistory.explore,
+          stories: kanchipuramHistory.stories
+        } : null,
         places: filteredPlaces.slice(0, 8).map((place) => ({
           name: place.name,
           story: place.story,
@@ -586,6 +767,13 @@ function CityDetails() {
                     </div>
                     {isArchitectureInterest && (
                       <>
+                        <div className="architecture-read-card">
+                          <Building2 size={24} />
+                          <div>
+                            <strong>Architecture mode</strong>
+                            <p>Use this section to observe form, material, movement, and carved meaning. The goal is to understand how each temple is built, not only what it is called.</p>
+                          </div>
+                        </div>
                         <div className="architecture-detail-grid">
                           {architectureDetails.map((detail) => (
                             <article key={detail.title}>
@@ -593,6 +781,31 @@ function CityDetails() {
                               <div>
                                 <h4>{detail.title}</h4>
                                 <p>{detail.text}</p>
+                              </div>
+                            </article>
+                          ))}
+                        </div>
+                        <div className="architecture-tip-row">
+                          {architectureReadingTips.map((tip) => (
+                            <span key={tip}>{tip}</span>
+                          ))}
+                        </div>
+                        <div className="architecture-image-grid" aria-label="Architecture examples">
+                          {architectureShowcase.map((item) => (
+                            <article className="architecture-image-card" key={item.title}>
+                              <a className="architecture-photo-link" href={item.imageLink} target="_blank" rel="noreferrer" onClick={requireOnline} aria-label={`Open ${item.title} architecture picture`}>
+                                <img src={item.image} alt={`${item.title} architecture`} loading="lazy" />
+                                <span>{item.mood}</span>
+                              </a>
+                              <div className="architecture-image-content">
+                                <span className="architecture-focus">{item.focus}</span>
+                                <h4>{item.title}</h4>
+                                <p>{item.text}</p>
+                                <strong>Look for: {item.lookFor}</strong>
+                                <a href={item.imageLink} target="_blank" rel="noreferrer" onClick={requireOnline}>
+                                  Open picture
+                                  <ExternalLink size={13} />
+                                </a>
                               </div>
                             </article>
                           ))}
@@ -611,29 +824,25 @@ function CityDetails() {
                 )}
                 {!isPremiumLocked && microStories.length > 0 && (
                   <section
-                    className="micro-story-carousel"
+                    className="micro-story-carousel did-you-know-intro"
                     onTouchStart={(event) => setTouchStartX(event.touches[0].clientX)}
                     onTouchEnd={handleTouchEnd}
                     aria-label="Swipeable Did You Know micro-stories"
                   >
-                    <div className="micro-story-top">
-                      <div>
-                        <span className="eyebrow">Did You Know</span>
-                        <h3>Swipe micro-stories</h3>
-                      </div>
-                      <span>{microStoryIndex + 1}/{microStories.length}</span>
-                    </div>
                     <article className="micro-story-card">
-                      <strong>{microStories[microStoryIndex].title}</strong>
-                      <p>{microStories[microStoryIndex].text}</p>
+                      {microStoryIndex === 0 ? (
+                        <strong className="did-you-know-question">Did you know?</strong>
+                      ) : (
+                        <p>{activeMicroStory.fullText}</p>
+                      )}
                     </article>
                     <div className="micro-story-actions">
                       <button type="button" onClick={() => moveMicroStory(-1)} aria-label="Previous micro-story">
                         <ChevronLeft size={18} />
                       </button>
                       <div className="micro-story-dots" aria-hidden="true">
-                        {microStories.map((story, index) => (
-                          <span className={index === microStoryIndex ? "active" : ""} key={story.id} />
+                        {Array.from({ length: microStorySlideCount }).map((_, index) => (
+                          <span className={index === microStoryIndex ? "active" : ""} key={index} />
                         ))}
                       </div>
                       <button type="button" onClick={() => moveMicroStory(1)} aria-label="Next micro-story">
@@ -721,7 +930,7 @@ function CityDetails() {
                     </div>
                   </section>
                 )}
-                {!isPremiumLocked && !isHistoryInterest && (
+                {!isPremiumLocked && !isHistoryInterest && !isArchitectureInterest && (
                   <section className="places-section-card">
                     <div className="section-heading">
                       <h2>{searchPlaceholder}</h2>
@@ -737,7 +946,7 @@ function CityDetails() {
                     </div>
                   </section>
                 )}
-                {!isPremiumLocked && !isHistoryInterest && <div className="place-list">
+                {!isPremiumLocked && !isHistoryInterest && !isArchitectureInterest && <div className="place-list">
                   {filteredPlaces.map((place) => (
                     (() => {
                       const links = buildPlaceLinks(place, city.name);
@@ -752,7 +961,11 @@ function CityDetails() {
                               {place.category && <span className="mini-badge">{place.category}</span>}
                               {place.isHiddenGem && <span className="mini-badge">Hidden gem</span>}
                             </div>
-                            <p>{place.story}</p>
+                            <p className="place-story">{place.story}</p>
+                            <div className={`interest-explanation-card ${isArchitectureInterest ? "architecture" : ""}`}>
+                              <span>{interestExplanationLabel}</span>
+                              <p>{getInterestSpecificExplanation(place)}</p>
+                            </div>
                             {showPlaceDetails && (place.address || place.contact || place.timings) && (
                               <div className="practical-grid">
                                 {place.address && <span><strong>Address</strong>{place.address}</span>}
@@ -819,7 +1032,12 @@ function CityDetails() {
                                 )}
                               </div>
                             )}
-                            <p className="did-you-know"><Sparkles size={16} /> {place.didYouKnow}</p>
+                            {getInterestDidYouKnowFact(place, selectedInterest) && (
+                              <aside className="did-you-know-card">
+                                <span><Sparkles size={16} /> Did You Know</span>
+                                <p>{getInterestDidYouKnowFact(place, selectedInterest)}</p>
+                              </aside>
+                            )}
                           </div>
                         </article>
                       );

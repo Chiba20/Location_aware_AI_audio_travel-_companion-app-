@@ -582,6 +582,26 @@
   color: var(--brand);
 }
 
+.micro-story-carousel h3 {
+  font-size: 2rem;
+  line-height: 1.05;
+}
+
+.micro-story-carousel.did-you-know-intro {
+  text-align: center;
+}
+
+.micro-story-carousel.did-you-know-intro .micro-story-top {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.micro-story-carousel.did-you-know-intro h3 {
+  margin: 0;
+  font-size: 2.35rem;
+}
+
 .personal-story-panel p,
 .micro-story-carousel p {
   margin: 0;
@@ -639,6 +659,16 @@
   font-weight: 650;
 }
 
+.micro-story-card strong {
+  color: var(--brand-2);
+  font-size: 0.86rem;
+  text-transform: uppercase;
+}
+
+.micro-story-card p {
+  font-size: 1.12rem;
+}
+
 .micro-story-top,
 .micro-story-actions {
   display: flex;
@@ -660,6 +690,13 @@
 .micro-story-card strong {
   color: var(--brand);
   font-size: 1.05rem;
+}
+
+.micro-story-card .did-you-know-question {
+  color: var(--brand);
+  font-size: 2.35rem;
+  line-height: 1;
+  text-transform: none;
 }
 
 .micro-story-actions button {
@@ -725,11 +762,35 @@
   gap: 10px;
 }
 
+.architecture-read-card {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(232, 243, 245, 0.96), rgba(255, 255, 255, 0.92));
+}
+
+.architecture-read-card svg {
+  color: var(--brand);
+}
+
+.architecture-read-card strong {
+  color: var(--brand);
+  font-size: 1rem;
+}
+
+.architecture-read-card p {
+  max-width: none;
+  margin-top: 4px;
+}
+
 .architecture-detail-grid article {
   display: grid;
   grid-template-columns: 26px minmax(0, 1fr);
   gap: 10px;
-  padding: 14px;
+  padding: 15px;
   border: 1px solid rgba(15, 118, 110, 0.14);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.86);
@@ -749,6 +810,122 @@
   max-width: none;
   color: var(--ink);
   font-weight: 600;
+}
+
+.architecture-tip-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.architecture-tip-row span {
+  padding: 10px;
+  border: 1px solid rgba(25, 52, 79, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--ink);
+  font-size: 0.84rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.architecture-image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.architecture-image-card {
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  border: 1px solid rgba(25, 52, 79, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 22px rgba(20, 35, 51, 0.07);
+}
+
+.architecture-photo-link {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  color: #fff;
+}
+
+.architecture-photo-link img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  object-fit: cover;
+  background: var(--surface-soft);
+  transition: transform 180ms ease;
+}
+
+.architecture-photo-link:hover img {
+  transform: scale(1.035);
+}
+
+.architecture-photo-link span {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  max-width: calc(100% - 24px);
+  padding: 6px 9px;
+  border-radius: 7px;
+  background: rgba(25, 52, 79, 0.86);
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.architecture-image-content {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: 15px;
+}
+
+.architecture-focus {
+  color: var(--brand-2);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.architecture-image-card h4 {
+  margin: 0;
+  color: var(--brand);
+}
+
+.architecture-image-card p {
+  max-width: none;
+  color: var(--ink);
+  font-size: 0.93rem;
+  font-weight: 650;
+  line-height: 1.48;
+}
+
+.architecture-image-card strong {
+  color: var(--brand);
+  font-size: 0.83rem;
+  line-height: 1.4;
+}
+
+.architecture-image-content a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: fit-content;
+  min-height: 32px;
+  padding: 6px 9px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  border-radius: 7px;
+  background: #f8fbfb;
+  color: var(--brand);
+  font-size: 0.82rem;
+  font-weight: 850;
 }
 
 .architecture-source-row {
@@ -945,7 +1122,6 @@
 
 .meta-row span,
 .meta-row a,
-.did-you-know,
 .feedback-item small,
 .walk-button small {
   display: inline-flex;
@@ -1051,10 +1227,56 @@
   text-transform: uppercase;
 }
 
-.did-you-know {
-  margin-top: 12px !important;
+.place-story {
+  margin-bottom: 12px;
+}
+
+.interest-explanation-card,
+.did-you-know-card {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 13px;
+  border-radius: 8px;
+}
+
+.interest-explanation-card {
+  border: 1px solid rgba(15, 118, 110, 0.15);
+  background: linear-gradient(135deg, rgba(232, 243, 245, 0.86), rgba(255, 255, 255, 0.94));
+}
+
+.interest-explanation-card.architecture {
+  border-color: rgba(25, 52, 79, 0.16);
+  background: linear-gradient(135deg, rgba(25, 52, 79, 0.08), rgba(255, 255, 255, 0.95));
+}
+
+.interest-explanation-card span,
+.did-you-know-card span {
+  color: var(--brand);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.interest-explanation-card p,
+.did-you-know-card p {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 650;
+  line-height: 1.55;
+}
+
+.did-you-know-card {
+  border: 1px solid rgba(188, 136, 27, 0.24);
+  background: linear-gradient(135deg, rgba(255, 247, 225, 0.92), rgba(255, 255, 255, 0.95));
+}
+
+.did-you-know-card span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: #8a610d;
-  font-weight: 700;
 }
 
 .side-panel {
@@ -1580,7 +1802,8 @@
   .feedback-layout,
   .metrics-panel,
   .premium-layout,
-  .premium-grid {
+  .premium-grid,
+  .architecture-image-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1598,6 +1821,7 @@
   .coordinate-grid,
   .practical-grid,
   .overview-facts,
+  .architecture-tip-row,
   .history-columns,
   .interest-view-grid,
   .story-controls,
