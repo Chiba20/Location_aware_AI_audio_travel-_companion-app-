@@ -667,5 +667,407 @@
     "status": "active",
     "visitedPlaceIds": [],
     "lastLocation": null
+  },
+  {
+    "id": 41,
+    "cityId": 3,
+    "walkId": 0,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:09:30.601884+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": null
+  },
+  {
+    "id": 42,
+    "cityId": 3,
+    "walkId": 0,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:09:31.348364+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.9868214,
+      "longitude": 80.240613,
+      "updatedAt": "2026-04-30T19:09:38.566750+00:00"
+    }
+  },
+  {
+    "id": 43,
+    "cityId": 3,
+    "walkId": 0,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:12:52.363304+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.9870207,
+      "longitude": 80.2404222,
+      "updatedAt": "2026-04-30T19:12:59.579043+00:00"
+    }
+  },
+  {
+    "id": 44,
+    "cityId": 3,
+    "walkId": 0,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:15:23.217787+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.986714,
+      "longitude": 80.24073,
+      "updatedAt": "2026-04-30T19:17:02.544428+00:00"
+    }
+  },
+  {
+    "id": 45,
+    "cityId": 3,
+    "walkId": 0,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:17:05.927093+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.9871966,
+      "longitude": 80.2407913,
+      "updatedAt": "2026-04-30T19:17:13.181734+00:00"
+    }
+  },
+  {
+    "id": 46,
+    "cityId": 1,
+    "walkId": 1,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:20:17.223961+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": null
+  },
+  {
+    "id": 47,
+    "cityId": 1,
+    "walkId": 1,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:20:17.979139+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": {
+      "latitude": 12.9875241,
+      "longitude": 80.2407899,
+      "updatedAt": "2026-04-30T19:20:25.237994+00:00"
+    }
+  },
+  {
+    "id": 48,
+    "cityId": 3,
+    "walkId": 0,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:20:25.865135+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.989105,
+      "longitude": 80.241829,
+      "updatedAt": "2026-04-30T19:22:23.756159+00:00"
+    }
+  },
+  {
+    "id": 49,
+    "cityId": 1,
+    "walkId": 0,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:22:29.830055+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": {
+      "latitude": 12.989105,
+      "longitude": 80.241829,
+      "updatedAt": "2026-04-30T19:22:37.281959+00:00"
+    }
+  },
+  {
+    "id": 50,
+    "cityId": 1,
+    "walkId": 1,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:25:46.106230+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": {
+      "latitude": 12.9870739,
+      "longitude": 80.2407757,
+      "updatedAt": "2026-04-30T19:25:53.364056+00:00"
+    }
+  },
+  {
+    "id": 51,
+    "cityId": 1,
+    "walkId": 1,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:28:20.028099+00:00",
+    "endedAt": "2026-04-30T19:31:19.564197+00:00",
+    "status": "completed",
+    "visitedPlaceIds": [],
+    "lastLocation": {
+      "latitude": 12.9872156,
+      "longitude": 80.2405424,
+      "updatedAt": "2026-04-30T19:28:27.253195+00:00"
+    }
+  },
+  {
+    "id": 52,
+    "cityId": 1,
+    "walkId": 1,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:31:28.360163+00:00",
+    "endedAt": "2026-04-30T19:31:30.266417+00:00",
+    "status": "completed",
+    "visitedPlaceIds": [],
+    "lastLocation": null
+  },
+  {
+    "id": 53,
+    "cityId": 1,
+    "walkId": 1,
+    "interests": [
+      "history"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:31:32.418027+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": {
+      "latitude": 12.9870739,
+      "longitude": 80.2407757,
+      "updatedAt": "2026-04-30T19:31:49.553641+00:00"
+    }
+  },
+  {
+    "id": 54,
+    "cityId": 3,
+    "walkId": 3,
+    "interests": [
+      "hostels",
+      "academics",
+      "campus life",
+      "management",
+      "online learning"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-04-30T19:34:46.712258+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.98699,
+      "longitude": 80.2404871,
+      "updatedAt": "2026-04-30T19:34:47.145674+00:00"
+    }
+  },
+  {
+    "id": 55,
+    "cityId": 3,
+    "walkId": 3,
+    "interests": [
+      "hostels",
+      "academics",
+      "campus life",
+      "management",
+      "online learning"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-05-01T18:07:27.056549+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.9866677,
+      "longitude": 80.2407735,
+      "updatedAt": "2026-05-01T18:07:29.029802+00:00"
+    }
+  },
+  {
+    "id": 56,
+    "cityId": 3,
+    "walkId": 3,
+    "interests": [
+      "hostels",
+      "academics",
+      "campus life",
+      "management",
+      "online learning"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-05-01T18:12:05.767565+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.9869964,
+      "longitude": 80.2407787,
+      "updatedAt": "2026-05-01T18:12:53.145286+00:00"
+    }
+  },
+  {
+    "id": 57,
+    "cityId": 3,
+    "walkId": 3,
+    "interests": [
+      "hostels",
+      "academics",
+      "campus life",
+      "management",
+      "online learning"
+    ],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-05-01T18:12:57.971807+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.9869964,
+      "longitude": 80.2407787,
+      "updatedAt": "2026-05-01T18:12:58.126275+00:00"
+    }
+  },
+  {
+    "id": 58,
+    "cityId": 3,
+    "walkId": 3,
+    "interests": [],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-05-01T18:22:54.689653+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.9871201,
+      "longitude": 80.2406115,
+      "updatedAt": "2026-05-01T18:22:54.868494+00:00"
+    }
+  },
+  {
+    "id": 59,
+    "cityId": 3,
+    "walkId": 3,
+    "interests": [],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-05-01T18:23:05.468443+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.9871201,
+      "longitude": 80.2406115,
+      "updatedAt": "2026-05-01T18:23:05.587892+00:00"
+    }
+  },
+  {
+    "id": 60,
+    "cityId": 3,
+    "walkId": 3,
+    "interests": [],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-05-01T18:25:32.563550+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [
+      2002
+    ],
+    "lastLocation": {
+      "latitude": 12.9866647,
+      "longitude": 80.2407678,
+      "updatedAt": "2026-05-01T18:25:32.715043+00:00"
+    }
   }
 ]

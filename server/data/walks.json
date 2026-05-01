@@ -18,5 +18,15 @@
     "distanceKm": 2.1,
     "placeIds": [3, 4],
     "interests": ["history", "food", "culture"]
+  },
+  {
+    "id": 3,
+    "cityId": 3,
+    "name": "IIT Madras Campus Trigger Test",
+    "description": "A compact campus route for testing location triggers around hostels, CRC, NPTEL, and management studies.",
+    "estimatedMinutes": 35,
+    "distanceKm": 1.8,
+    "placeIds": [2002, 2003, 2004, 2005, 2006],
+    "interests": ["hostels", "academics", "campus life", "management", "online learning"]
   }
 ]

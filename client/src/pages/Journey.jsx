@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { CheckCircle2, Crosshair, Headphones, MapPin, Navigation, Pause, Play, Radio, Square } from "lucide-react";
+import { CheckCircle2, ExternalLink, Headphones, MapPin, Navigation, Pause, Play, Radio, Square } from "lucide-react";
 import Navbar from "../component/Navbar";
 import ErrorState from "../component/ErrorState";
 import LoadingState from "../component/LoadingState";
@@ -12,7 +12,6 @@ import {
   startJourney,
   updateJourneyLocation
 } from "../services/api";
-import content from "../data/appContent.json";
 
 const defaultLocation = {
   latitude: 12.8476,
@@ -34,6 +33,12 @@ const distanceBetween = (first, second) => {
   return earthRadiusMeters * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
 
+const formatDistance = (meters) => {
+  if (!Number.isFinite(meters)) return "Unknown distance";
+  if (meters < 1000) return `${Math.round(meters)}m`;
+  return `${(meters / 1000).toFixed(2)}km`;
+};
+
 function Journey() {
   const routeLocation = useLocation();
   const [cities, setCities] = useState([]);
@@ -42,7 +47,7 @@ function Journey() {
   const [form, setForm] = useState({
     cityId: routeLocation.state?.cityId || 1,
     walkId: routeLocation.state?.walkId || 1,
-    interests: ["history"],
+    interests: [],
     narrationStyle: "casual friend",
     offlineMode: true
   });
@@ -52,6 +57,7 @@ function Journey() {
   const [autoTracking, setAutoTracking] = useState(false);
   const [trackingStatus, setTrackingStatus] = useState("Start hands-free mode to listen automatically as you walk.");
   const [currentAudioPlace, setCurrentAudioPlace] = useState(null);
+  const [audioPaused, setAudioPaused] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -67,6 +73,7 @@ function Journey() {
       audioRef.current.pause();
       audioRef.current = null;
     }
+    setAudioPaused(false);
     setCurrentAudioPlace(null);
   };
 
@@ -101,12 +108,78 @@ function Journey() {
     };
   }, []);
 
-  const cityWalks = useMemo(
-    () => walks.filter((walk) => walk.cityId === Number(form.cityId)),
-    [walks, form.cityId]
-  );
+  const activeCity = cities.find((city) => city.id === Number(journey?.cityId || form.cityId));
+  const currentLocationMapUrl = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
+  const cityInterests = useMemo(() => {
+    if (activeCity?.interests?.length) return activeCity.interests;
 
-  const selectedCity = cities.find((city) => city.id === Number(form.cityId));
+    return [...new Set(
+      places
+        .filter((place) => place.cityId === Number(activeCity?.id || form.cityId))
+        .flatMap((place) => place.interests || [])
+    )].sort();
+  }, [activeCity, form.cityId, places]);
+
+  const readCurrentLocation = () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation is not available in this browser."));
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            latitude: Number(position.coords.latitude.toFixed(7)),
+            longitude: Number(position.coords.longitude.toFixed(7))
+          });
+        },
+        () => reject(new Error("Could not read your live location. Please allow location access and try again.")),
+        { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+      );
+    });
+  };
+
+  const findNearestCityFromLocation = (nextLocation) => {
+    const nearestPlace = places
+      .filter((place) => place.latitude && place.longitude)
+      .map((place) => ({
+        ...place,
+        distanceMeters: distanceBetween(nextLocation, {
+          latitude: Number(place.latitude),
+          longitude: Number(place.longitude)
+        })
+      }))
+      .sort((first, second) => first.distanceMeters - second.distanceMeters)[0];
+
+    return nearestPlace ? cities.find((city) => city.id === nearestPlace.cityId) : null;
+  };
+
+  const nearestTriggerPlace = useMemo(() => {
+    const selectedInterests = form.interests.map((interest) => interest.toLowerCase());
+
+    return places
+      .filter((place) => {
+        if (!place.latitude || !place.longitude) return false;
+        if (selectedInterests.length === 0) return true;
+
+        const placeInterests = (place.interests || []).map((interest) => interest.toLowerCase());
+        return selectedInterests.some((interest) => placeInterests.includes(interest));
+      })
+      .map((place) => {
+        const distanceMeters = distanceBetween(location, {
+          latitude: Number(place.latitude),
+          longitude: Number(place.longitude)
+        });
+        return {
+          ...place,
+          distanceMeters,
+          canTrigger: distanceMeters <= Number(place.triggerRadius || 0)
+        };
+      })
+      .sort((first, second) => first.distanceMeters - second.distanceMeters)[0];
+  }, [places, form.interests, location]);
+  const nearestTriggerCity = cities.find((city) => city.id === nearestTriggerPlace?.cityId);
 
   const toggleInterest = (interest) => {
     setForm((current) => {
@@ -133,13 +206,19 @@ function Journey() {
     const audio = new Audio(audioUrl);
     audioRef.current = audio;
     setCurrentAudioPlace(nextPlace);
-    setTrackingStatus(`Now playing: ${nextPlace.name}`);
+    setAudioPaused(false);
+    const distanceText = Number.isFinite(nextPlace.distanceMeters)
+      ? ` You are ${formatDistance(nextPlace.distanceMeters)} away.`
+      : "";
+    setTrackingStatus(`Now playing: ${nextPlace.name}.${distanceText}`);
 
     audio.addEventListener("ended", () => {
+      setAudioPaused(false);
       setCurrentAudioPlace(null);
       setTrackingStatus("Listening for the next nearby story.");
     }, { once: true });
     audio.addEventListener("error", () => {
+      setAudioPaused(false);
       setCurrentAudioPlace(null);
       setTrackingStatus(`Could not play audio for ${nextPlace.name}.`);
     }, { once: true });
@@ -148,13 +227,34 @@ function Journey() {
         playedPlaceIdsRef.current.add(nextPlace.id);
       })
       .catch(() => {
-        setCurrentAudioPlace(null);
+        setAudioPaused(true);
         setTrackingStatus("Audio is ready, but the browser blocked autoplay. Tap Play audio on a triggered story.");
       });
   };
 
+  const toggleCurrentAudio = () => {
+    if (!audioRef.current || !currentAudioPlace) return;
+
+    if (audioPaused) {
+      audioRef.current.play()
+        .then(() => {
+          setAudioPaused(false);
+          playedPlaceIdsRef.current.add(currentAudioPlace.id);
+          setTrackingStatus(`Resumed: ${currentAudioPlace.name}.`);
+        })
+        .catch(() => {
+          setTrackingStatus("Audio is ready, but the browser blocked resume. Tap again to play.");
+        });
+      return;
+    }
+
+    audioRef.current.pause();
+    setAudioPaused(true);
+    setTrackingStatus(`Paused: ${currentAudioPlace.name}.`);
+  };
+
   const checkJourneyLocation = async (nextLocation, options = {}) => {
-    const activeJourney = journeyRef.current;
+    let activeJourney = journeyRef.current;
     if (!activeJourney || checkingLocationRef.current) return;
 
     checkingLocationRef.current = true;
@@ -189,11 +289,11 @@ function Journey() {
     }
   };
 
-  const createJourney = async () => {
+  const createJourney = async (journeyForm = form) => {
     const response = await startJourney({
-      ...form,
-      cityId: Number(form.cityId),
-      walkId: Number(form.walkId)
+      ...journeyForm,
+      cityId: Number(journeyForm.cityId),
+      walkId: Number(journeyForm.walkId)
     });
     setJourney(response.data);
     journeyRef.current = response.data;
@@ -240,11 +340,32 @@ function Journey() {
     setBusy(true);
     setError("");
     try {
-      await createJourney();
       if (!navigator.geolocation) {
+        await createJourney();
         setTrackingStatus("Journey started, but geolocation is not available in this browser.");
         return;
       }
+
+      setTrackingStatus("Reading your location to choose the nearest city...");
+      const nextLocation = await readCurrentLocation();
+      setLocation(nextLocation);
+
+      const nearestCity = findNearestCityFromLocation(nextLocation);
+      let journeyForm = form;
+      if (nearestCity) {
+        const nearestCityWalk = walks.find((walk) => walk.cityId === nearestCity.id);
+        journeyForm = {
+          ...form,
+          cityId: nearestCity.id,
+          walkId: nearestCityWalk?.id || "",
+          interests: []
+        };
+        setForm(journeyForm);
+        setTrackingStatus(`Nearest city selected: ${nearestCity.name}. Starting journey...`);
+      }
+
+      await createJourney(journeyForm);
+      await checkJourneyLocation(nextLocation, { autoPlay: true, silent: true });
       beginHandsFreeTracking();
     } catch (err) {
       setError(err.message);
@@ -253,31 +374,20 @@ function Journey() {
     }
   };
 
-  const useBrowserLocation = () => {
-    if (!navigator.geolocation) {
-      setError("Geolocation is not available in this browser.");
-      return;
-    }
-
-    setBusy(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocation({
-          latitude: Number(position.coords.latitude.toFixed(7)),
-          longitude: Number(position.coords.longitude.toFixed(7))
-        });
-        setBusy(false);
-      },
-      () => {
-        setError("Could not read your browser location. You can still enter coordinates manually.");
-        setBusy(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
-  };
-
   const handleUpdateLocation = async () => {
-    await checkJourneyLocation(location, { autoPlay: false, silent: false });
+    setError("");
+    try {
+      if (!journeyRef.current || journeyRef.current.status !== "active") {
+        setBusy(true);
+        setTrackingStatus("Starting journey for manual coordinates...");
+        await createJourney();
+      }
+      await checkJourneyLocation(location, { autoPlay: true, silent: false });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const handleStartHandsFree = async () => {
@@ -344,7 +454,12 @@ function Journey() {
                 City
                 <select
                   value={form.cityId}
-                  onChange={(event) => setForm({ ...form, cityId: Number(event.target.value), walkId: "" })}
+                  onChange={(event) => setForm({
+                    ...form,
+                    cityId: Number(event.target.value),
+                    walkId: "",
+                    interests: []
+                  })}
                 >
                   {cities.map((city) => (
                     <option key={city.id} value={city.id}>{city.name}</option>
@@ -352,35 +467,17 @@ function Journey() {
                 </select>
               </label>
 
-              <label>
-                Walk
-                <select
-                  value={form.walkId}
-                  onChange={(event) => setForm({ ...form, walkId: Number(event.target.value) })}
-                >
-                  <option value="">Free roam</option>
-                  {cityWalks.map((walk) => (
-                    <option key={walk.id} value={walk.id}>{walk.name}</option>
-                  ))}
-                </select>
-              </label>
-
-              <label>
-                Narration style
-                <select
-                  value={form.narrationStyle}
-                  onChange={(event) => setForm({ ...form, narrationStyle: event.target.value })}
-                >
-                  {content.narrationStyles.map((style) => (
-                    <option key={style} value={style}>{style}</option>
-                  ))}
-                </select>
-              </label>
-
               <div>
                 <span className="field-label">Interests</span>
                 <div className="chip-row selectable">
-                  {(selectedCity?.interests || []).map((interest) => (
+                  <button
+                    className={`chip ${form.interests.length === 0 ? "selected" : ""}`}
+                    type="button"
+                    onClick={() => setForm({ ...form, interests: [] })}
+                  >
+                    All interests
+                  </button>
+                  {cityInterests.map((interest) => (
                     <button
                       className={`chip ${form.interests.includes(interest) ? "selected" : ""}`}
                       type="button"
@@ -393,15 +490,6 @@ function Journey() {
                 </div>
               </div>
 
-              <label className="check-row">
-                <input
-                  type="checkbox"
-                  checked={form.offlineMode}
-                  onChange={(event) => setForm({ ...form, offlineMode: event.target.checked })}
-                />
-                Offline mode
-              </label>
-
               <button className="primary-btn full" type="button" onClick={handleStart} disabled={busy}>
                 <Headphones size={18} />
                 {journey ? "Restart hands-free journey" : "Start journey"}
@@ -412,8 +500,8 @@ function Journey() {
               <div className="status-card">
                 <div>
                   <span className="eyebrow">Status</span>
-                  <h2>{journey ? `Journey #${journey.id}` : "No active journey"}</h2>
-                  <p>{journey ? `${journey.status} - ${journey.narrationStyle}` : "Choose a city and start the walk."}</p>
+                  <h2>{journey ? `You are in ${activeCity?.name || "this city"}` : "No active journey"}</h2>
+                  <p>{journey ? `Journey status: ${journey.status}` : "Choose a city and start the journey."}</p>
                   <p className="tracking-status">{trackingStatus}</p>
                 </div>
                 {autoTracking ? <Radio size={28} /> : journey?.status === "active" ? <Navigation size={28} /> : <Square size={28} />}
@@ -424,11 +512,16 @@ function Journey() {
                   <Headphones size={20} />
                   <div>
                     <strong>Now playing</strong>
-                    <span>{currentAudioPlace.name}</span>
+                    <span>
+                      {currentAudioPlace.name}
+                      {Number.isFinite(currentAudioPlace.distanceMeters)
+                        ? ` - ${formatDistance(currentAudioPlace.distanceMeters)} away`
+                        : ""}
+                    </span>
                   </div>
-                  <button className="secondary-btn" type="button" onClick={stopAudio}>
-                    <Pause size={16} />
-                    Pause
+                  <button className="secondary-btn" type="button" onClick={toggleCurrentAudio}>
+                    {audioPaused ? <Play size={16} /> : <Pause size={16} />}
+                    {audioPaused ? "Resume" : "Pause"}
                   </button>
                 </div>
               )}
@@ -454,6 +547,36 @@ function Journey() {
                 </label>
               </div>
 
+              {nearestTriggerPlace && (
+                <article className="trigger-card nearest-trigger-card">
+                  <Navigation size={20} />
+                  <div>
+                    <strong>
+                      Nearest app location: {nearestTriggerPlace.name}
+                      {nearestTriggerCity ? `, ${nearestTriggerCity.name}` : ""}
+                    </strong>
+                    <span>
+                      {formatDistance(nearestTriggerPlace.distanceMeters)} away -
+                      trigger radius {formatDistance(Number(nearestTriggerPlace.triggerRadius || 0))}
+                    </span>
+                    <span>
+                      {nearestTriggerPlace.canTrigger
+                        ? "You are inside this audio trigger area."
+                        : `Move about ${formatDistance(nearestTriggerPlace.distanceMeters - Number(nearestTriggerPlace.triggerRadius || 0))} closer to trigger it.`}
+                    </span>
+                  </div>
+                  <a
+                    className="secondary-btn"
+                    href={`https://www.google.com/maps/search/?api=1&query=${nearestTriggerPlace.latitude},${nearestTriggerPlace.longitude}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <MapPin size={16} />
+                    View place
+                  </a>
+                </article>
+              )}
+
               <div className="button-row">
                 {!autoTracking ? (
                   <button className="primary-btn" type="button" onClick={handleStartHandsFree} disabled={busy}>
@@ -466,11 +589,17 @@ function Journey() {
                     Pause hands-free
                   </button>
                 )}
-                <button className="secondary-btn" type="button" onClick={useBrowserLocation} disabled={busy}>
-                  <Crosshair size={17} />
-                  Use my location
-                </button>
-                <button className="primary-btn" type="button" onClick={handleUpdateLocation} disabled={!journey || busy}>
+                <a
+                  className="secondary-btn"
+                  href={currentLocationMapUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <MapPin size={17} />
+                  Open in Maps
+                  <ExternalLink size={13} />
+                </a>
+                <button className="primary-btn" type="button" onClick={handleUpdateLocation} disabled={busy}>
                   <MapPin size={17} />
                   Check triggers
                 </button>

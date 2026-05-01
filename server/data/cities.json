@@ -20,5 +20,16 @@
     "heroImage": "madurai.jpg",
     "interests": ["temples", "markets", "architecture", "culture"],
     "offlineAvailable": true
+  },
+  {
+    "id": 3,
+    "name": "IIT Madras",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "tagline": "Campus inside the city",
+    "description": "IIT Madras is a residential academic campus in Chennai, with hostels, classrooms, research spaces, management studies, and online learning initiatives such as NPTEL.",
+    "heroImage": "iit-madras.jpg",
+    "interests": ["hostels", "academics", "campus life", "management", "online learning"],
+    "offlineAvailable": true
   }
 ]
