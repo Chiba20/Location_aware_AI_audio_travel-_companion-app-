@@ -6,6 +6,7 @@ import LoadingState from "../component/LoadingState";
 import ErrorState from "../component/ErrorState";
 import { generatePersonalizedStory, getCity } from "../services/api";
 import { recordMetric } from "../utils/metrics";
+import { hasPremiumAccess } from "../utils/premiumAccess";
 import content from "../data/appContent.json";
 
 
@@ -244,20 +245,339 @@ const buildPlaceLinks = (place, cityName) => {
   };
 };
 
-const formatDidYouKnowFact = (title, text) => {
-  const cleaned = String(text || "")
+const cleanDidYouKnowFact = (text) => {
+  return String(text || "")
     .trim()
+    .replace(/^did you know\s+(that\s+)?/i, "")
     .replace(/^it is\s+/i, "is ")
     .replace(/^it was\s+/i, "was ")
     .replace(/^the temple is\s+/i, "is ")
     .replace(/^the complex is\s+/i, "is ")
-    .replace(/^the shrine is\s+/i, "is ");
-  return `Did you know ${title} ${cleaned}`;
+    .replace(/^the shrine is\s+/i, "is ")
+    .replace(/^its name refers to\s+/i, "gets its name from ")
+    .replace(/^its legend connects\s+/i, "has a legend connecting ")
+    .replace(/^its sculptural panels are\s+/i, "has sculptural panels ")
+    .replace(/^its\s+/i, "has ");
+};
+
+const formatDidYouKnowCardFact = (title, text) => {
+  const cleaned = cleanDidYouKnowFact(text);
+  if (!cleaned) return "";
+
+  const normalizedTitle = String(title || "").trim();
+  if (!normalizedTitle) return cleaned;
+
+  if (cleaned.toLowerCase().startsWith(normalizedTitle.toLowerCase())) {
+    return cleaned;
+  }
+
+  return `${normalizedTitle} ${cleaned}`;
+};
+
+const formatDidYouKnowFact = (title, text) => {
+  const cardText = formatDidYouKnowCardFact(title, text);
+  return cardText ? `Did you know ${cardText}` : "";
+};
+
+const hasListedValue = (value) => {
+  return Boolean(value && !/^(not listed|check locally|check store)$/i.test(String(value).trim()));
+};
+
+const serviceFactById = {
+  1001: "is a BPCL-branded fuel point, so it is best treated as a standard petrol and diesel stop rather than a vehicle-repair service.",
+  1002: "is an HPCL outlet with a saved mobile contact, which helps travellers confirm fuel availability before relying on it.",
+  1003: "is an HPCL outlet that also has a saved direct contact number, making phone confirmation its useful extra detail.",
+  1004: "is a Nayara fuel outlet with an early listed opening time, useful for travellers who start before regular shop hours.",
+  1005: "is a Bharat Petroleum outlet with a named dealer listing, making it easier to identify than generic fuel-stop entries.",
+  1006: "is an IndianOil outlet, so its distinguishing point is access to that specific fuel network.",
+  1007: "stands out because it lists auto LPG, which is different from regular petrol and diesel-only fuel stops.",
+  1010: "is the Government Headquarters Hospital listing, making it the main public-hospital reference among the medical service options.",
+  1011: "is another District Head Quarters Hospital entry, useful as a public emergency-care reference rather than a private clinic listing.",
+  1012: "is a multi-speciality hospital listing, so it is more suitable for broader clinical support than a single-speciality clinic.",
+  1013: "mentions 24-hour emergency service and multispecialty care, making emergency availability its most important traveller fact.",
+  1014: "mentions 24-hour emergency service, which makes it relevant when medical help is needed outside normal clinic hours.",
+  1015: "is a hospital listing with a landline contact, useful when travellers need to confirm department availability before going.",
+  1016: "mentions 24-hour emergency support and a direct mobile contact, making it more urgent-care oriented than a routine clinic.",
+  1017: "is a hospital listing with a local landline contact, useful for checking service availability before a visit.",
+  1018: "stands out as an eye-hospital listing, so its role is specialist eye care rather than general emergency care.",
+  1019: "mentions surgical and maternity speciality care, making it distinct from a general hospital listing.",
+  1030: "is the A2B listing, a familiar vegetarian restaurant option for travellers who want predictable South Indian meals.",
+  1031: "has a direct mobile contact saved, making it easier to confirm dining hours before planning a meal.",
+  1032: "belongs to the Vasanta Bhavan restaurant family, so its strength is familiar vegetarian dining rather than local street snacks.",
+  1033: "is an older hotel-style restaurant listing with a landline contact, different from newer cafe-style options.",
+  1034: "calls itself a fine-dine option, which separates it from quick tiffin and tea-shop stops.",
+  1035: "is the biriyani-focused restaurant in this service list, so it fits travellers looking for a heavier meal.",
+  1036: "is a kitchen-style restaurant listing, useful for travellers looking for a proper cooked meal rather than cafe snacks.",
+  1037: "has a direct mobile contact saved, useful for checking table availability or current hours before going.",
+  1038: "is explicitly a multi-cuisine restaurant, which makes variety its distinguishing point.",
+  1039: "is tied to GRT Regency, so it reads more like a hotel-restaurant option than a standalone street eatery.",
+  1050: "uses a tea-themed name, making it a simple tea-break stop rather than a full meal service.",
+  1051: "is coffee-focused by name, so it suits travellers who want coffee instead of a regular tea stall.",
+  1052: "is marked as early-morning open, making timing its clearest advantage over standard tea-shop entries.",
+  1053: "uses the Madras Coffee House name, pointing to coffee as the more distinctive part of the stop.",
+  1054: "has no saved phone number, so it is best treated as a quick in-person tea stop rather than a pre-bookable service.",
+  1055: "has a direct mobile contact saved, which makes it easier to confirm whether the tea stop is open.",
+  1056: "uses a coffee-bar identity, so it is better read as a quick hot-drink stop than a restaurant.",
+  1057: "is a branded Tea Time outlet, making it more chain-like than a small unnamed tea stall.",
+  1058: "stands out for karupatti coffee, a palm-jaggery coffee style that is more specific than ordinary tea.",
+  1059: "has a saved mobile contact and a modern tea-brand style name, making it more identifiable than unnamed tea stalls.",
+  1070: "is listed as a 24-hour pharmacy, which is its most important difference from regular medical shops.",
+  1071: "is an Apollo Pharmacy branch, useful for travellers who prefer a recognizable pharmacy chain.",
+  1072: "is another Apollo Pharmacy entry, distinct because it has a separate branch contact for confirmation.",
+  1073: "is a local medical shop with a landline contact, useful for checking medicine availability before visiting.",
+  1074: "is a local medical shop with a direct mobile contact, useful when travellers want to call before searching in person.",
+  1075: "has a direct mobile contact saved, useful for checking whether a medicine is available before visiting.",
+  1076: "is a medicals listing without a saved phone number, so travellers should rely on directions and local confirmation.",
+  1077: "is a Janaushadhi Kendra, which distinguishes it as a public generic-medicine outlet.",
+  1078: "is a MedPlus listing, useful for travellers looking for a recognizable pharmacy network.",
+  1079: "has a direct mobile contact saved, making phone confirmation its strongest traveller-useful detail.",
+  1090: "is a Kanchi Super Market branch with a direct mobile contact, useful for confirming essentials before going.",
+  1091: "is the Sengaluneer Odai branch of Kanchi Super Market, making it a specific neighbourhood grocery option.",
+  1092: "is one of multiple Kanchi Super Market branches, distinguished here by its saved mobile contact.",
+  1093: "is the Reliance Smart Bazaar listing, a larger-format supermarket option rather than a small provision store.",
+  1094: "is the Nilgiris listing, a familiar supermarket brand for packaged groceries and travel basics.",
+  1095: "is a local supermarket option with store-check guidance, useful when travellers need essentials but should confirm hours.",
+  1096: "stands out as an organic supermarket listing, different from standard packaged-grocery stores.",
+  1097: "is a compact supermarket listing, useful for everyday essentials rather than a large-format shopping trip.",
+  1098: "is a supermarket listing with store-check guidance, so travellers should confirm availability before relying on it.",
+  1110: "is a fresh-juice listing with a long evening timing, useful for a late cool-drink stop.",
+  1111: "uses the Kanchi Fresh Juice name, making fresh fruit juice its clearest identity.",
+  1112: "combines milk-chill and juice-shop identity, so it is more of a cold-drink stop than a plain juice counter.",
+  1113: "is listed as a fresh fruit juice shop with morning-to-night timing, useful across most sightseeing hours.",
+  1114: "is a Drunken Monkey outlet, a smoothie-style brand rather than a basic street juice stall.",
+  1115: "has a saved mobile contact and evening hours, making it easier to confirm a cold-drink stop before going.",
+  1116: "stands out for rose milk, a specific cool-drink choice rather than generic fruit juice.",
+  1117: "uses a coconut-fresh identity, making it better for a tender-coconut style refreshment stop.",
+  1130: "is a theatre option for evening entertainment, so its value depends on the current film schedule.",
+  1131: "has a saved landline contact, making it easier to check show details than theatre listings without numbers.",
+  1132: "is a theatre listing without a saved contact, so checking live show listings matters before visiting.",
+  1133: "is a deluxe-theatre listing by name, making cinema entertainment its only traveller-service role.",
+  1134: "has a saved theatre contact number, useful for confirming shows before going.",
+  1135: "has a saved mobile contact, making it easier to verify current shows than entries without phone details.",
+  1150: "is the town police-station listing, the broadest local police reference in this service group.",
+  1151: "is the taluk police-station listing, useful when assistance may involve wider local administration.",
+  1152: "is a local police-station listing, included for safety support rather than sightseeing.",
+  1153: "is a local police-station listing for that jurisdiction, separate from the main town station.",
+  1154: "is a local police-station listing, useful as a safety reference when nearby assistance is needed.",
+  1155: "stands out as the traffic police listing, relevant for road, parking, accident, and route issues.",
+  1156: "stands out as the all-women police-station listing, important for women travellers seeking appropriate assistance.",
+  1170: "is an SBI branch listing with a toll-free contact, useful for travellers who specifically need SBI services.",
+  1171: "is a second SBI listing without a saved branch phone, so travellers should verify services before going.",
+  1172: "is an Indian Bank listing, useful when travellers specifically need that bank network.",
+  1173: "is a Canara Bank branch listing, useful for travellers who need Canara Bank services.",
+  1174: "is an HDFC Bank listing with a saved mobile contact, useful for confirming branch support.",
+  1175: "is the ICICI Bank listing with a saved direct contact, useful for confirming branch services.",
+  1176: "is the Axis Bank branch listing, useful for travellers who need Axis Bank services.",
+  1177: "is a City Union Bank listing, making it distinct from nationalized and large private-bank options.",
+  1178: "is an IDBI Bank listing with a saved contact, useful for confirming branch services first.",
+  1179: "is a Federal Bank listing with a toll-free contact, useful when travellers need that bank network.",
+  1190: "is a Unimoni listing, so its role is financial service support rather than a bank-branch visit.",
+  1191: "is a Western Union listing with a direct mobile contact, useful for confirming remittance availability.",
+  1192: "is another Western Union listing with a landline contact, giving travellers a separate confirmation option.",
+  1193: "is a MoneyGram listing with a landline contact, useful for checking transfer rules before visiting.",
+  1194: "is a second MoneyGram listing with a different landline contact, useful as an alternate counter option.",
+  1195: "is a Muthoot Finance gold-loan service listing, which differs from standard cash-transfer counters.",
+  1196: "is another Muthoot Finance gold-loan listing with the same saved contact, useful as an alternate branch option.",
+  1197: "is marked as 24x7 local transfer, making timing its strongest distinguishing point.",
+  1210: "is an SBI ATM listing, useful when travellers specifically want an SBI cash machine.",
+  1211: "is a second SBI ATM entry, useful when travellers want another SBI cash-machine option.",
+  1212: "is another SBI ATM entry, making the service list less dependent on a single cash point.",
+  1213: "is an HDFC Bank ATM listing, useful for travellers looking for that bank network.",
+  1214: "is an Axis Bank ATM listing, useful for travellers looking for that bank network.",
+  1215: "is an ICICI Bank ATM listing, useful for travellers looking for that bank network.",
+  1216: "is a Karur Vysya Bank ATM listing, distinct from SBI, HDFC, Axis, and ICICI cash points.",
+  1217: "is a Canara Bank ATM listing, useful for travellers looking for that bank network.",
+  1230: "is a Pantaloons listing, making it a branded ready-made clothing option rather than a local textile shop.",
+  1231: "is a Trends Woman listing, so it is specifically useful for women's ready-made clothing.",
+  1232: "is a garments listing, useful for quick ready-made clothing rather than saree-focused shopping.",
+  1233: "is a menswear listing, making men's ready-made clothing its main distinction.",
+  1234: "is a men's clothing listing, useful when travellers need men's ready-made wear quickly.",
+  1235: "is a fashion-store listing without a saved contact, so it is better treated as a browse-in-person option.",
+  1236: "is a men's clothing listing with a saved mobile contact, useful for checking availability first.",
+  1237: "is a ready-made clothing shop with a landline contact, distinct from silk and saree stores.",
+  1238: "is a Go Colors listing, making women's bottom-wear and colour-choice shopping its clearest role.",
+  1239: "is a budget-fashion listing, useful when travellers want lower-cost ready-made clothing.",
+  1250: "is listed as 24-hour puncture support, which is the strongest fact for unexpected tyre trouble.",
+  1251: "uses 24X7 in the name and timing, making round-the-clock puncture help its core value.",
+  1252: "is a wheel-care point, suggesting tyre and wheel attention beyond a simple puncture fix.",
+  1253: "is a Bridgestone Select wheel-care listing, making brand-linked tyre support its distinction.",
+  1270: "is a bike-doctor listing, so two-wheeler repair is its clearest role.",
+  1271: "is a Castrol Bike Point listing, making branded two-wheeler service its distinguishing fact.",
+  1272: "is a bike-care listing, useful for scooter or motorcycle checks rather than car repair.",
+  1273: "is a named bike-mechanic listing, making two-wheeler breakdown support its main role.",
+  1274: "is a two-wheeler service-center listing, distinct from general car-mechanic options.",
+  1275: "is a myTVS service listing, making it a more organized vehicle-service option than a roadside mechanic.",
+  1276: "is listed as 24-hour auto-garage support, useful for unexpected breakdowns outside regular hours.",
+  1277: "is a car-care listing, so it fits car service needs better than bike or scooter repair.",
+  1278: "is a car-mechanic listing with a saved mobile contact, useful for calling before moving the vehicle.",
+  1279: "is a car-mechanic listing with check-locally guidance, so it is best used after confirming availability."
+};
+
+const getServiceDidYouKnowFact = (place) => {
+  if (serviceFactById[place.id]) {
+    return serviceFactById[place.id];
+  }
+
+  const category = (place.category || "").toLowerCase();
+  const name = (place.name || "").toLowerCase();
+  const hasContact = hasListedValue(place.contact);
+  const hasTimings = hasListedValue(place.timings);
+  const isFullDay = /24\s*(hours|hrs|x7)|24x7/i.test(place.timings || "");
+
+  if (category === "petrol bunk") {
+    if (name.includes("lpg")) {
+      return "stands out because it lists auto LPG support, which is useful for travellers using LPG-fitted vehicles rather than only petrol or diesel.";
+    }
+    if (isFullDay) {
+      return "stands out because it is listed as a 24-hour fuel stop, useful for early departures, late arrivals, or unplanned refuelling.";
+    }
+    return "is useful as a fuel-planning stop before longer drives, especially when travellers want to avoid searching for fuel after leaving the town centre.";
+  }
+  if (category === "hospital") {
+    if (name.includes("eye")) {
+      return "stands out as an eye-care hospital listing, useful when travellers need vision, eye injury, or specialist eye consultation support.";
+    }
+    if (name.includes("maternity")) {
+      return "stands out because it mentions surgical and maternity speciality care, making it more specific than a general clinic listing.";
+    }
+    if (isFullDay || /emergency/i.test(place.timings || "")) {
+      return "stands out because it lists emergency availability, which matters most when travellers need urgent medical help.";
+    }
+    return "is useful as a hospital reference where travellers should call first to confirm the right department, doctor availability, and emergency support.";
+  }
+  if (category === "restaurant") {
+    if (name.includes("biriyani")) {
+      return "stands out for biriyani-focused dining, making it a better match for travellers looking for a full meal rather than a snack stop.";
+    }
+    if (name.includes("fine dine") || name.includes("multi cuisine") || name.includes("dakshin")) {
+      return "stands out as a more formal or multi-cuisine meal option, useful when travellers want a planned sit-down meal.";
+    }
+    if (name.includes("a2b") || name.includes("ananda bhavan") || name.includes("vasanta bhavan")) {
+      return "stands out as a familiar vegetarian restaurant option, useful for predictable meals during temple-town travel.";
+    }
+    return "is useful for meal planning during sightseeing, especially when travellers want a proper food stop instead of only tea or juice.";
+  }
+  if (category === "tea shop") {
+    if (name.includes("coffee")) {
+      return "stands out as a coffee-focused stop, useful for travellers who prefer coffee over a regular tea break.";
+    }
+    if (hasTimings && /early/i.test(place.timings || "")) {
+      return "stands out because it is marked as opening early, making timing its main difference from regular tea-shop entries.";
+    }
+    return "is useful for a short tea break between stops, especially when travellers want a quick local pause instead of a full meal.";
+  }
+  if (category === "medical shop") {
+    if (name.includes("janaushadhi")) {
+      return "stands out as a Janaushadhi medicine outlet, which is meant for affordable generic medicines under India's public pharmacy scheme.";
+    }
+    if (name.includes("apollo") || name.includes("medplus")) {
+      return "stands out as a chain pharmacy listing, useful when travellers prefer a recognizable pharmacy network.";
+    }
+    if (isFullDay) {
+      return "stands out because it is listed as a 24-hour pharmacy, useful for urgent basic medicine needs outside regular shop hours.";
+    }
+    return "is useful for basic pharmacy needs; travellers should carry prescriptions for medicines that require them.";
+  }
+  if (category === "super market") {
+    if (name.includes("organic")) {
+      return "stands out as an organic supermarket listing, useful for travellers looking for grocery choices beyond standard packaged essentials.";
+    }
+    if (name.includes("reliance") || name.includes("nilgiris")) {
+      return "stands out as a recognizable supermarket brand, useful for predictable packaged essentials during travel.";
+    }
+    return "is useful for water, snacks, toiletries, and small essentials that travellers often need during a long day out.";
+  }
+  if (category === "juice shop") {
+    if (name.includes("rose milk")) {
+      return "stands out for rose milk, a local-style cool drink choice rather than a standard juice-only stop.";
+    }
+    if (name.includes("coco")) {
+      return "stands out for coconut or fresh-drink service, useful during warm daytime sightseeing.";
+    }
+    if (name.includes("drunken monkey")) {
+      return "stands out as a smoothie-style juice brand, useful for travellers looking beyond basic fresh juice.";
+    }
+    return "is useful for a quick cool drink break during warm sightseeing hours.";
+  }
+  if (category === "theatre") {
+    return "is useful for evening entertainment planning; travellers should check the current show schedule before going.";
+  }
+  if (category === "police station") {
+    if (name.includes("traffic")) {
+      return "stands out as the traffic police listing, useful for road, parking, accident, or route-related assistance.";
+    }
+    if (name.includes("women")) {
+      return "stands out as the all-women police station listing, useful for women travellers seeking appropriate local assistance.";
+    }
+    return "is included as a practical safety reference for travellers who need local police assistance.";
+  }
+  if (category === "bank") {
+    if (hasContact) {
+      return "stands out because a contact number is saved, useful when travellers need to confirm branch services before visiting.";
+    }
+    return "is useful for branch-level banking support; travellers should confirm working hours and the exact service they need first.";
+  }
+  if (category === "money transfer") {
+    if (name.includes("western union")) {
+      return "stands out as a Western Union money-transfer listing, useful for travellers who need that specific transfer network.";
+    }
+    if (name.includes("moneygram")) {
+      return "stands out as a MoneyGram listing, useful for travellers who need that specific transfer network.";
+    }
+    if (name.includes("muthoot")) {
+      return "stands out as a finance and gold-loan service listing rather than only a standard remittance counter.";
+    }
+    return "is useful for money-transfer needs; travellers should carry valid ID and confirm fees, limits, and service availability.";
+  }
+  if (category === "atm") {
+    return "is useful for quick cash access, but travellers should keep a backup payment option because ATM cash and machine availability can change.";
+  }
+  if (category === "dress shop") {
+    if (name.includes("pantaloons") || name.includes("trends") || name.includes("go colors")) {
+      return "stands out as a branded clothing-store listing, useful for travellers who want predictable ready-made clothing options.";
+    }
+    if (name.includes("menswear") || name.includes("men's")) {
+      return "stands out as a men's clothing listing, useful for quick ready-made clothing needs.";
+    }
+    return "is useful for ready-made clothing needs, separate from the city's silk and saree-focused shopping.";
+  }
+  if (category === "puncture shop") {
+    if (isFullDay) {
+      return "stands out because it is listed as 24-hour puncture support, useful for unexpected tyre trouble during travel.";
+    }
+    if (name.includes("bridgestone") || name.includes("wheel")) {
+      return "stands out because it suggests tyre or wheel-care support beyond a basic puncture fix.";
+    }
+    return "is useful for tyre puncture support when travelling by bike, scooter, or car.";
+  }
+  if (category === "mechanic") {
+    if (name.includes("car")) {
+      return "stands out as a car-mechanic listing, useful for travellers who need car-specific repair support.";
+    }
+    if (name.includes("bike") || name.includes("two wheeler")) {
+      return "stands out as a two-wheeler service listing, useful for travellers using bikes or scooters.";
+    }
+    if (isFullDay) {
+      return "stands out because it is listed with 24-hour vehicle support, useful for unexpected breakdowns.";
+    }
+    return "is useful for vehicle checks or breakdown support during local travel.";
+  }
+
+  if (place.category) {
+    return `is listed as a ${place.category} service, useful when travellers need that specific kind of practical support.`;
+  }
+
+  return "";
 };
 
 const getInterestDidYouKnowFact = (place, interest) => {
   const normalized = interest.toLowerCase();
   const name = (place.name || "").toLowerCase();
+  const category = (place.category || "").toLowerCase();
+
+  if (category && category === normalized) {
+    return getServiceDidYouKnowFact(place);
+  }
 
   if (normalized === "architecture") {
     if (name.includes("ekambareswarar")) {
@@ -339,6 +659,12 @@ const requireOnline = (event) => {
   window.alert("This feature needs an internet connection. Live maps, photos, and videos cannot open offline.");
 };
 
+const getCityImages = (cityName) => {
+  const slides = content.heroImageSlides?.[cityName];
+  if (slides?.length) return slides;
+  return [content.heroImages[cityName] || content.heroImages.default];
+};
+
 function CityDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -353,11 +679,9 @@ function CityDetails() {
   const [storyBusy, setStoryBusy] = useState(false);
   const [storyError, setStoryError] = useState("");
   const [microStoryIndex, setMicroStoryIndex] = useState(0);
+  const [heroImageIndex, setHeroImageIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState(null);
-  const [hasPremium] = useState(() => {
-    const savedPremium = window.localStorage.getItem("everyStreetPremiumMember");
-    return savedPremium ? JSON.parse(savedPremium)?.isPremium === true : false;
-  });
+  const [hasPremium] = useState(() => hasPremiumAccess());
   const [expandedInfoPlaceId, setExpandedInfoPlaceId] = useState(null);
   const [playingPlaceId, setPlayingPlaceId] = useState(null);
   const audioRef = useRef(null);
@@ -384,7 +708,19 @@ function CityDetails() {
     };
   }, []);
 
-  const image = city ? content.heroImages[city.name] || content.heroImages.default : content.heroImages.default;
+  const heroImages = city ? getCityImages(city.name) : [content.heroImages.default];
+  const image = heroImages[heroImageIndex] || heroImages[0];
+
+  useEffect(() => {
+    setHeroImageIndex(0);
+    if (!city || heroImages.length < 2) return undefined;
+
+    const timer = window.setInterval(() => {
+      setHeroImageIndex((current) => (current + 1) % heroImages.length);
+    }, 5200);
+
+    return () => window.clearInterval(timer);
+  }, [city?.name, heroImages.length]);
 
   const serviceCategories = useMemo(() => {
     const mainInterests = new Set((city?.interests || []).map((interest) => interest.toLowerCase()));
@@ -851,7 +1187,7 @@ function CityDetails() {
                     </div>
                   </section>
                 )}
-                {!isPremiumLocked && (
+                {!isPremiumLocked && !showPracticalDetails && (
                   <section className="personal-story-panel">
                     <div>
                       <span className="eyebrow">Personalized narration</span>
@@ -963,7 +1299,7 @@ function CityDetails() {
                             </div>
                             <p className="place-story">{place.story}</p>
                             <div className={`interest-explanation-card ${isArchitectureInterest ? "architecture" : ""}`}>
-                              <span>{interestExplanationLabel}</span>
+                              {selectedInterest === "all" && <span>{interestExplanationLabel}</span>}
                               <p>{getInterestSpecificExplanation(place)}</p>
                             </div>
                             {showPlaceDetails && (place.address || place.contact || place.timings) && (
@@ -1034,8 +1370,8 @@ function CityDetails() {
                             )}
                             {getInterestDidYouKnowFact(place, selectedInterest) && (
                               <aside className="did-you-know-card">
-                                <span><Sparkles size={16} /> Did You Know</span>
-                                <p>{getInterestDidYouKnowFact(place, selectedInterest)}</p>
+                                <span><Sparkles size={16} /> Did You Know That</span>
+                                <p>{formatDidYouKnowCardFact(place.name, getInterestDidYouKnowFact(place, selectedInterest))}</p>
                               </aside>
                             )}
                           </div>

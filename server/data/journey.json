@@ -1069,5 +1069,22 @@
       "longitude": 80.2407678,
       "updatedAt": "2026-05-01T18:25:32.715043+00:00"
     }
+  },
+  {
+    "id": 61,
+    "cityId": 3,
+    "walkId": 3,
+    "interests": [],
+    "narrationStyle": "casual friend",
+    "offlineMode": true,
+    "startedAt": "2026-05-02T05:03:38.392554+00:00",
+    "endedAt": null,
+    "status": "active",
+    "visitedPlaceIds": [],
+    "lastLocation": {
+      "latitude": 12.9907898,
+      "longitude": 80.2306292,
+      "updatedAt": "2026-05-02T05:03:46.706712+00:00"
+    }
   }
 ]

@@ -15,6 +15,13 @@ import {
 import Navbar from "../component/Navbar";
 import { sendPremiumConfirmationEmail } from "../services/api";
 import { recordMetric } from "../utils/metrics";
+import {
+  clearPremiumSession,
+  getPremiumAccount,
+  getPremiumSession,
+  savePremiumAccount,
+  savePremiumSession
+} from "../utils/premiumAccess";
 
 const PREMIUM_AMOUNT = 199;
 const UPI_ID = "8754147468@ptaxis";
@@ -70,12 +77,7 @@ function Premium() {
   const [form, setForm] = useState(emptyRegistrationForm);
   const [login, setLogin] = useState({ email: "", password: "" });
   const [paymentReady, setPaymentReady] = useState(false);
-  const [member, setMember] = useState(() => {
-    const saved = window.localStorage.getItem("everyStreetPremiumMember");
-    if (!saved) return null;
-    const parsed = JSON.parse(saved);
-    return parsed?.isPremium === true ? parsed : null;
-  });
+  const [member, setMember] = useState(() => getPremiumSession());
   const [message, setMessage] = useState("");
 
   const upiLink = useMemo(() => {
@@ -112,6 +114,10 @@ function Premium() {
   };
 
   const completeRegistration = async () => {
+    if (!canStartPayment) {
+      setMessage("Complete the registration form before confirming payment.");
+      return;
+    }
     if (!form.upiReference.trim()) {
       setMessage("Enter the UPI transaction reference after payment to complete registration.");
       return;
@@ -129,16 +135,20 @@ function Premium() {
       upiReference: form.upiReference,
       password: form.password,
       isPremium: true,
+      registrationComplete: true,
       unlockedAt: new Date().toISOString()
     };
-    window.localStorage.setItem("everyStreetPremiumMember", JSON.stringify(nextMember));
+    savePremiumAccount(nextMember);
+    clearPremiumSession();
     recordMetric("premium_conversion", {
       amount: PREMIUM_AMOUNT,
       email: nextMember.email,
     });
-    setMember(nextMember);
+    setMember(null);
     setForm(emptyRegistrationForm);
+    setLogin({ email: nextMember.email, password: "" });
     setPaymentReady(false);
+    setMode("login");
     try {
       const response = await sendPremiumConfirmationEmail({
         name: nextMember.name,
@@ -148,24 +158,23 @@ function Premium() {
       });
       setMessage(
         response.data?.emailSent
-          ? "Premium unlocked. A confirmation email has been sent."
-          : "Premium unlocked. Email sending needs SMTP setup on the backend."
+          ? "Registration complete. Login with your premium email and password to unlock access."
+          : "Registration complete. Login to unlock access. Email sending needs SMTP setup on the backend."
       );
     } catch (err) {
-      setMessage(`Premium unlocked, but email could not be sent: ${err.message}`);
+      setMessage(`Registration complete. Login to unlock access. Email could not be sent: ${err.message}`);
     }
   };
 
   const handleLogin = (event) => {
     event.preventDefault();
-    const saved = window.localStorage.getItem("everyStreetPremiumMember");
-    if (!saved) {
+    const savedMember = getPremiumAccount();
+    if (!savedMember) {
       setMessage("No premium registration found on this browser. Register and finish payment first.");
       return;
     }
 
-    const savedMember = JSON.parse(saved);
-    if (savedMember?.isPremium !== true) {
+    if (savedMember?.isPremium !== true || savedMember?.registrationComplete !== true) {
       setMessage("This account is not premium yet. Complete payment first.");
       return;
     }
@@ -177,11 +186,13 @@ function Premium() {
       return;
     }
 
+    savePremiumSession(savedMember);
     setMember(savedMember);
     setMessage("Welcome back. Premium access restored.");
   };
 
   const logout = () => {
+    clearPremiumSession();
     setMember(null);
     setMessage("Logged out from this browser.");
   };

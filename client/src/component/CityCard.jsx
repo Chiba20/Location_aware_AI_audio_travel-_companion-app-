@@ -1,12 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Sparkles, WifiOff } from "lucide-react";
 import content from "../data/appContent.json";
+import { hasPremiumAccess } from "../utils/premiumAccess";
+
+const getCityImages = (cityName) => {
+  const slides = content.heroImageSlides?.[cityName];
+  if (slides?.length) return slides;
+  return [content.heroImages[cityName] || content.heroImages.default];
+};
 
 function CityCard({ city }) {
-  const image = content.heroImages[city.name] || content.heroImages.default;
-  const savedPremium = window.localStorage.getItem("everyStreetPremiumMember");
-  const hasPremium = savedPremium ? JSON.parse(savedPremium)?.isPremium === true : false;
+  const images = getCityImages(city.name);
+  const [imageIndex, setImageIndex] = useState(0);
+  const image = images[imageIndex] || images[0];
+  const hasPremium = hasPremiumAccess();
+
+  useEffect(() => {
+    setImageIndex(0);
+    if (images.length < 2) return undefined;
+
+    const timer = window.setInterval(() => {
+      setImageIndex((current) => (current + 1) % images.length);
+    }, 4500);
+
+    return () => window.clearInterval(timer);
+  }, [city.name, images.length]);
 
   return (
     <div className="city-card">
