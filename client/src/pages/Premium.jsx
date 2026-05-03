@@ -350,20 +350,22 @@ function Premium() {
             </div>
           )}
 
-          <section className="premium-summary">
-            <div className="premium-price">
-              <div>
-                <span>Unlock Premium</span>
-                <strong>Pay Rs. {PREMIUM_AMOUNT}</strong>
+          {!member && (
+            <section className="premium-summary">
+              <div className="premium-price">
+                <div>
+                  <span>Unlock Premium</span>
+                  <strong>Pay Rs. {PREMIUM_AMOUNT}</strong>
+                </div>
               </div>
-            </div>
-            <div className="premium-feature-list">
-              <p><Sparkles size={17} /> Unlock Hidden Gems in Kanchipuram</p>
-              <p><Phone size={17} /> Unlock Traveller Services</p>
-              <p><Bus size={17} /> Unlock guide-driver contacts by transport mode</p>
-              <p><Download size={17} /> Offline travel service</p>
-            </div>
-          </section>
+              <div className="premium-feature-list">
+                <p><Sparkles size={17} /> Unlock Hidden Gems in Kanchipuram</p>
+                <p><Phone size={17} /> Unlock Traveller Services</p>
+                <p><Bus size={17} /> Unlock guide-driver contacts by transport mode</p>
+                <p><Download size={17} /> Offline travel service</p>
+              </div>
+            </section>
+          )}
         </section>
 
         <section className={`premium-unlocked ${member ? "unlocked-layout" : "locked"}`}>

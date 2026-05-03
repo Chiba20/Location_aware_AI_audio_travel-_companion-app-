@@ -1723,24 +1723,58 @@
 
 .premium-unlocked.unlocked-layout {
   display: grid;
-  grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.35fr);
-  gap: 22px;
-  align-items: start;
+  grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.45fr);
+  gap: 24px;
+  align-items: stretch;
+  margin-top: 0;
 }
 
 .premium-unlocked.unlocked-layout .section-heading {
   position: sticky;
   top: 88px;
   margin: 0;
-  padding: 22px;
-  border: 1px solid var(--line);
+  min-height: 320px;
+  padding: 24px;
+  border: 1px solid rgba(15, 118, 110, 0.2);
   border-radius: 8px;
-  background: linear-gradient(135deg, rgba(232, 243, 245, 0.95), rgba(255, 255, 255, 0.98));
+  background:
+    linear-gradient(135deg, rgba(25, 52, 79, 0.94), rgba(15, 118, 110, 0.88)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0));
   box-shadow: var(--shadow-soft);
+  align-content: end;
+}
+
+.premium-unlocked.unlocked-layout .section-heading .eyebrow,
+.premium-unlocked.unlocked-layout .section-heading h2,
+.premium-unlocked.unlocked-layout .section-heading p,
+.premium-unlocked.unlocked-layout .section-heading .success-text {
+  color: #f8fbfb;
+}
+
+.premium-unlocked.unlocked-layout .section-heading .success-text {
+  margin-top: 8px;
+  color: #dff0f4;
 }
 
 .premium-unlocked.unlocked-layout .premium-grid {
   min-width: 0;
+}
+
+.premium-unlocked.unlocked-layout .premium-card {
+  min-height: 420px;
+  border-color: rgba(15, 118, 110, 0.18);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(232, 243, 245, 0.9)),
+    var(--card);
+}
+
+.premium-unlocked.unlocked-layout .transport-select-card {
+  max-width: none;
+  margin-inline: 0;
+}
+
+.premium-unlocked.unlocked-layout .transport-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .premium-unlocked.locked {
@@ -1841,6 +1875,10 @@
 
   .premium-unlocked.unlocked-layout .section-heading {
     position: static;
+  }
+
+  .premium-unlocked.unlocked-layout .transport-options {
+    grid-template-columns: 1fr;
   }
 
   .interest-view-grid {
