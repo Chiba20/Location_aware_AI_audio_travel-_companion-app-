@@ -56,11 +56,23 @@
 .interest-link {
   min-height: 36px;
   border-radius: 7px;
+  border-color: rgba(25, 52, 79, 0.22);
+  background: linear-gradient(135deg, #d8edf6, #c6e2ee);
+  color: #12304c;
+  box-shadow: 0 8px 18px rgba(20, 35, 51, 0.1);
 }
 
 .interest-link:hover {
-  background: var(--brand);
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
   border-color: var(--brand);
+  color: #f8fbfb;
+}
+
+.interest-link svg {
+  color: #0f5d72;
+}
+
+.interest-link:hover svg {
   color: #f8fbfb;
 }
 
