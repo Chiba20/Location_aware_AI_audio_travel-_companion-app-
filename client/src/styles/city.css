@@ -1864,6 +1864,11 @@
   background: var(--card-tint);
 }
 
+.transport-card.selected {
+  border-color: var(--brand-2);
+  background: #eef8f7;
+}
+
 .transport-card svg {
   color: var(--brand);
 }
@@ -1871,6 +1876,94 @@
 .transport-options {
   display: grid;
   gap: 10px;
+}
+
+.route-booking-panel,
+.admin-route-form,
+.admin-list,
+.admin-row {
+  display: grid;
+  gap: 10px;
+}
+
+.route-booking-panel {
+  padding: 14px;
+  border: 1px solid rgba(15, 118, 110, 0.2);
+  border-radius: 8px;
+  background: #f5fbfa;
+}
+
+.route-price-row,
+.route-path,
+.admin-row a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.route-price-row {
+  justify-content: space-between;
+}
+
+.route-price-row strong {
+  display: block;
+  color: var(--brand);
+  font-size: 1.35rem;
+}
+
+.route-price-row span,
+.route-path,
+.admin-row small {
+  color: var(--muted);
+}
+
+.route-price-row svg,
+.route-path svg,
+.admin-driver-card > svg {
+  color: var(--brand-2);
+}
+
+.admin-driver-card {
+  margin-top: 18px;
+}
+
+.admin-route-form {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.admin-list {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.admin-row {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.admin-row span {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.admin-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-row button {
+  width: fit-content;
+  min-height: 34px;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--brand);
+  font-weight: 800;
 }
 
 .premium-logout {
