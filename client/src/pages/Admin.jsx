@@ -8,7 +8,6 @@ import {
   Route,
   ShieldCheck
 } from "lucide-react";
-import Navbar from "../component/Navbar";
 import {
   createDriverRoute,
   getDriverAdminDashboard,
@@ -116,18 +115,27 @@ function Admin() {
 
   return (
     <>
-      <Navbar />
-      <main className="page-container">
-        <div className="page-header">
-          <span className="eyebrow">Admin</span>
-          <h1>Driver route and payment dashboard</h1>
-          <p>Login with admin credentials to manage fixed routes and view paid driver bookings.</p>
-        </div>
+      <main className="page-container admin-page">
+        {!unlocked && (
+          <div className="page-header">
+            <span className="eyebrow">Secure access</span>
+            <h1>Admin login</h1>
+            <p>Enter admin credentials to continue.</p>
+          </div>
+        )}
+
+        {unlocked && (
+          <div className="page-header">
+            <span className="eyebrow">Admin</span>
+            <h1>Driver route and payment dashboard</h1>
+            <p>Manage fixed route prices and view paid driver bookings.</p>
+          </div>
+        )}
 
         <section className="admin-dashboard-layout">
           <article className="premium-card admin-login-card">
             <ShieldCheck size={24} />
-            <h3>Admin login</h3>
+            <h3>{unlocked ? "Admin session" : "Admin login"}</h3>
             <label>
               Admin token
               <input
@@ -139,7 +147,7 @@ function Admin() {
             </label>
             <button className="primary-btn full" type="button" onClick={loadDashboard} disabled={busy}>
               <LockKeyhole size={18} />
-              {busy ? "Checking" : "Login to admin"}
+              {busy ? "Checking" : unlocked ? "Refresh admin session" : "Login"}
             </button>
             {message && <p className="premium-message">{message}</p>}
           </article>

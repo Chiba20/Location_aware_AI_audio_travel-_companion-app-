@@ -1970,6 +1970,15 @@
   align-items: start;
 }
 
+.admin-page {
+  min-height: 100vh;
+  padding-top: 40px;
+}
+
+.admin-page .page-header {
+  margin-bottom: 20px;
+}
+
 .admin-dashboard-layout .premium-card {
   margin: 0;
 }
