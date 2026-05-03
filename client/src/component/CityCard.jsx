@@ -1,6 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles, WifiOff } from "lucide-react";
+import {
+  BookOpenText,
+  Building2,
+  Church,
+  Gem,
+  GraduationCap,
+  Landmark,
+  LibraryBig,
+  MapPin,
+  MonitorPlay,
+  Shirt,
+  Store,
+  Utensils,
+  WifiOff,
+} from "lucide-react";
 import content from "../data/appContent.json";
 import { hasPremiumAccess } from "../utils/premiumAccess";
 
@@ -8,6 +22,26 @@ const getCityImages = (cityName) => {
   const slides = content.heroImageSlides?.[cityName];
   if (slides?.length) return slides;
   return [content.heroImages[cityName] || content.heroImages.default];
+};
+
+const interestIcons = {
+  academics: GraduationCap,
+  architecture: Building2,
+  "campus life": Landmark,
+  culture: BookOpenText,
+  food: Utensils,
+  "hidden gems": Gem,
+  history: BookOpenText,
+  hostels: Building2,
+  management: LibraryBig,
+  markets: Store,
+  "online learning": MonitorPlay,
+  silk: Shirt,
+  temples: Church,
+};
+
+const getInterestIcon = (interest) => {
+  return interestIcons[interest.toLowerCase()] || MapPin;
 };
 
 function CityCard({ city }) {
@@ -43,16 +77,19 @@ function CityCard({ city }) {
         <p className="muted">{city.state}, {city.country}</p>
         <p>{city.tagline}</p>
         <div className="chip-row city-interest-actions" aria-label={`${city.name} interests`}>
-          {(city.interests || []).map((interest) => (
-            <Link
-              className="chip interest-link"
-              key={interest}
-              to={interest === "hidden gems" && !hasPremium ? "/premium" : `/city/${city.id}?interest=${encodeURIComponent(interest)}`}
-            >
-              <Sparkles size={14} />
-              {interest}
-            </Link>
-          ))}
+          {(city.interests || []).map((interest) => {
+            const InterestIcon = getInterestIcon(interest);
+            return (
+              <Link
+                className="chip interest-link"
+                key={interest}
+                to={interest === "hidden gems" && !hasPremium ? "/premium" : `/city/${city.id}?interest=${encodeURIComponent(interest)}`}
+              >
+                <InterestIcon size={14} />
+                {interest}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>
