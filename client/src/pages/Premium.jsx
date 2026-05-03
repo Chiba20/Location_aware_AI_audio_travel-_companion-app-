@@ -1,26 +1,19 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Bike,
   Bus,
+  CheckCircle2,
   Download,
-  IndianRupee,
   LockKeyhole,
   LogIn,
-  MapPin,
   Phone,
   QrCode,
-  Route,
   ShieldCheck,
   Sparkles,
   UserPlus,
 } from "lucide-react";
 import Navbar from "../component/Navbar";
-import {
-  createDriverBooking,
-  getDriverRoutes,
-  loginPremium,
-  registerPremium,
-} from "../services/api";
+import { loginPremium, registerPremium } from "../services/api";
 import { recordMetric } from "../utils/metrics";
 import {
   clearPremiumSession,
@@ -85,12 +78,6 @@ function Premium() {
   const [member, setMember] = useState(() => getPremiumSession());
   const [message, setMessage] = useState("");
   const [accountBusy, setAccountBusy] = useState(false);
-  const [driverRoutes, setDriverRoutes] = useState([]);
-  const [selectedDriverPhone, setSelectedDriverPhone] = useState("");
-  const [selectedRouteId, setSelectedRouteId] = useState("");
-  const [routeUpiReference, setRouteUpiReference] = useState("");
-  const [bookingBusy, setBookingBusy] = useState(false);
-  const [bookingMessage, setBookingMessage] = useState("");
 
   const upiLink = useMemo(() => {
     const params = new URLSearchParams({
@@ -110,35 +97,6 @@ function Premium() {
 
   const canStartPayment = form.name.trim() && form.email.trim() && form.phone.trim() && form.password.length >= 4;
   const selectedTransportContact = transportContacts.find((item) => item.type === selectedTransport);
-  const selectedDriver = selectedTransportContact?.options.find((option) => option.phone === selectedDriverPhone);
-  const selectedRoute = driverRoutes.find((route) => String(route.id) === selectedRouteId);
-  const routePaymentLink = useMemo(() => {
-    if (!selectedRoute) {
-      return "";
-    }
-    const params = new URLSearchParams({
-      pa: UPI_ID,
-      pn: UPI_NAME,
-      am: String(selectedRoute.fixedPrice),
-      cu: "INR",
-      tn: `Driver route: ${selectedRoute.name}`
-    });
-    return `upi://pay?${params.toString()}`;
-  }, [selectedRoute]);
-
-  useEffect(() => {
-    let mounted = true;
-    getDriverRoutes()
-      .then((response) => {
-        if (mounted) {
-          setDriverRoutes(response.data.routes || []);
-        }
-      })
-      .catch((err) => setBookingMessage(err.message));
-    return () => {
-      mounted = false;
-    };
-  }, []);
 
   const handleStartPayment = (event) => {
     event.preventDefault();
@@ -234,48 +192,6 @@ function Premium() {
     clearPremiumSession();
     setMember(null);
     setMessage("Logged out from this browser.");
-  };
-
-  const handleTransportChange = (event) => {
-    setSelectedTransport(event.target.value);
-    setSelectedDriverPhone("");
-    setSelectedRouteId("");
-    setRouteUpiReference("");
-    setBookingMessage("");
-  };
-
-  const bookDriverRoute = async () => {
-    setBookingMessage("");
-    if (!selectedDriver || !selectedRoute || !member) {
-      setBookingMessage("Select a driver and route before confirming the route payment.");
-      return;
-    }
-    if (!routeUpiReference.trim()) {
-      setBookingMessage("Enter the route payment UPI reference.");
-      return;
-    }
-
-    setBookingBusy(true);
-    try {
-      const response = await createDriverBooking({
-        premiumUserId: member.id,
-        driverName: selectedDriver.name,
-        driverPhone: selectedDriver.phone,
-        transportType: selectedTransport,
-        routeId: selectedRoute.id,
-        upiReference: routeUpiReference.trim()
-      });
-      recordMetric("premium_driver_booking", {
-        route: response.data.booking.routeName,
-        amount: response.data.booking.paidPrice
-      });
-      setRouteUpiReference("");
-      setBookingMessage(`Booked ${selectedDriver.name} for ${selectedRoute.name}. Paid Rs. ${selectedRoute.fixedPrice}.`);
-    } catch (err) {
-      setBookingMessage(err.message);
-    } finally {
-      setBookingBusy(false);
-    }
   };
 
   return (
@@ -473,101 +389,32 @@ function Premium() {
           <div className="premium-grid premium-grid-single">
             <article className="premium-card transport-select-card">
               <Bus size={24} />
-              <h3>Driver booking</h3>
+              <h3>Guide-driver contacts</h3>
               {member ? (
                 <>
-                  <div className="driver-booking-flow">
-                    <label>
-                      Transport type
-                      <select value={selectedTransport} onChange={handleTransportChange}>
-                        <option value="">Choose a transport mode</option>
-                        {transportContacts.map((item) => (
-                          <option key={item.type} value={item.type}>{item.type}</option>
-                        ))}
-                      </select>
-                    </label>
-
-                    <label>
-                      Driver
-                      <select
-                        value={selectedDriverPhone}
-                        onChange={(event) => setSelectedDriverPhone(event.target.value)}
-                        disabled={!selectedTransportContact}
-                      >
-                        <option value="">Choose a driver</option>
-                        {selectedTransportContact?.options.map((option) => (
-                          <option key={option.phone} value={option.phone}>{option.name}</option>
-                        ))}
-                      </select>
-                    </label>
-
-                    <label>
-                      Route
-                      <select
-                        value={selectedRouteId}
-                        onChange={(event) => setSelectedRouteId(event.target.value)}
-                        disabled={!selectedDriver}
-                      >
-                          <option value="">Choose route to see fare</option>
-                        {driverRoutes.map((route) => (
-                          <option key={route.id} value={route.id}>
-                            {route.name} - Rs. {route.fixedPrice}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  </div>
+                  <label>
+                    Select your transport interest
+                    <select value={selectedTransport} onChange={(event) => setSelectedTransport(event.target.value)}>
+                      <option value="">Choose a transport mode</option>
+                      {transportContacts.map((item) => (
+                        <option key={item.type} value={item.type}>{item.type}</option>
+                      ))}
+                    </select>
+                  </label>
                   {selectedTransportContact ? (
-                    <>
-                      {selectedDriver && selectedRoute ? (
-                        <section className="route-booking-panel">
-                          <div className="selected-driver-summary">
-                            <selectedTransportContact.icon size={22} />
-                            <div>
-                              <strong>{selectedDriver.name}</strong>
-                              <a href={`tel:${selectedDriver.phone.replaceAll(" ", "")}`}>
-                                <Phone size={15} />
-                                {selectedDriver.phone}
-                              </a>
-                              <span>{selectedDriver.note}</span>
-                            </div>
-                          </div>
-                          <div className="route-price-row">
-                            <IndianRupee size={20} />
-                            <div>
-                              <strong>Rs. {selectedRoute.fixedPrice}</strong>
-                              <span>Same fixed route fare for every driver</span>
-                            </div>
-                          </div>
-                          <div className="route-path">
-                            <MapPin size={17} />
-                            <span>{selectedRoute.startPoint} to {selectedRoute.endPoint}</span>
-                          </div>
-                          <a className="secondary-btn full" href={routePaymentLink}>
-                            <QrCode size={18} />
-                            Pay route fare
-                          </a>
-                          <label>
-                            Route payment UPI reference
-                            <input
-                              value={routeUpiReference}
-                              onChange={(event) => setRouteUpiReference(event.target.value)}
-                              placeholder="Example: ROUTE123456"
-                            />
-                          </label>
-                          <button className="primary-btn full" type="button" onClick={bookDriverRoute} disabled={bookingBusy}>
-                            <ShieldCheck size={18} />
-                            {bookingBusy ? "Saving booking" : "Confirm driver booking"}
-                          </button>
-                        </section>
-                      ) : (
-                        <div className="locked-contact">
-                          <Route size={22} />
-                          <strong>Select driver, then route</strong>
-                          <span>The fare appears only from the route you choose.</span>
-                        </div>
-                      )}
-                    </>
+                    <div className="transport-options">
+                    {selectedTransportContact.options.map((option) => (
+                      <div className="transport-card" key={option.phone}>
+                        <selectedTransportContact.icon size={22} />
+                        <strong>{option.name}</strong>
+                        <a href={`tel:${option.phone.replaceAll(" ", "")}`}>
+                          <Phone size={15} />
+                          {option.phone}
+                        </a>
+                        <span>{option.note}</span>
+                      </div>
+                    ))}
+                    </div>
                   ) : (
                     <div className="locked-contact">
                       <LockKeyhole size={22} />
@@ -583,7 +430,6 @@ function Premium() {
                   <span>Premium login reveals transport contacts with guide-style local support.</span>
                 </div>
               )}
-              {bookingMessage && <p className="premium-message">{bookingMessage}</p>}
             </article>
           </div>
         </section>

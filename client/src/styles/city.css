@@ -1826,12 +1826,6 @@
   width: 100%;
 }
 
-.driver-booking-flow {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
 .contact-row,
 .transport-card,
 .locked-contact {
@@ -1870,11 +1864,6 @@
   background: var(--card-tint);
 }
 
-.transport-card.selected {
-  border-color: var(--brand-2);
-  background: #eef8f7;
-}
-
 .transport-card svg {
   color: var(--brand);
 }
@@ -1882,75 +1871,6 @@
 .transport-options {
   display: grid;
   gap: 10px;
-}
-
-.route-booking-panel {
-  display: grid;
-  gap: 10px;
-}
-
-.route-booking-panel {
-  padding: 14px;
-  border: 1px solid rgba(15, 118, 110, 0.2);
-  border-radius: 8px;
-  background: #f5fbfa;
-}
-
-.selected-driver-summary {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 10px;
-  align-items: center;
-  padding: 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fff;
-}
-
-.selected-driver-summary div {
-  display: grid;
-  gap: 4px;
-}
-
-.selected-driver-summary a,
-.route-price-row,
-.route-path {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.selected-driver-summary strong {
-  color: var(--ink);
-}
-
-.selected-driver-summary span {
-  color: var(--muted);
-}
-
-.selected-driver-summary a {
-  color: var(--brand);
-  font-weight: 800;
-}
-
-.route-price-row {
-  justify-content: space-between;
-}
-
-.route-price-row strong {
-  display: block;
-  color: var(--brand);
-  font-size: 1.35rem;
-}
-
-.route-price-row span,
-.route-path {
-  color: var(--muted);
-}
-
-.route-price-row svg,
-.route-path svg {
-  color: var(--brand-2);
 }
 
 .premium-logout {
@@ -1986,10 +1906,6 @@
   }
 
   .premium-unlocked.unlocked-layout .transport-options {
-    grid-template-columns: 1fr;
-  }
-
-  .driver-booking-flow {
     grid-template-columns: 1fr;
   }
 
