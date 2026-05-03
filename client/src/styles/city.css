@@ -1963,6 +1963,22 @@
   margin-top: 18px;
 }
 
+.admin-dashboard-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.3fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.admin-dashboard-layout .premium-card {
+  margin: 0;
+}
+
+.admin-login-card {
+  position: sticky;
+  top: 88px;
+}
+
 .admin-route-form {
   padding-top: 12px;
   border-top: 1px solid var(--line);
@@ -2026,11 +2042,16 @@
   .premium-layout,
   .premium-unlocked.unlocked-layout,
   .premium-grid,
+  .admin-dashboard-layout,
   .architecture-image-grid {
     grid-template-columns: 1fr;
   }
 
   .premium-unlocked.unlocked-layout .section-heading {
+    position: static;
+  }
+
+  .admin-login-card {
     position: static;
   }
 

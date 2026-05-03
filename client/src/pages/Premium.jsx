@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   Bike,
   Bus,
-  CheckCircle2,
   Download,
   IndianRupee,
   LockKeyhole,
@@ -10,9 +9,7 @@ import {
   MapPin,
   Phone,
   QrCode,
-  RefreshCw,
   Route,
-  Settings,
   ShieldCheck,
   Sparkles,
   UserPlus,
@@ -20,12 +17,9 @@ import {
 import Navbar from "../component/Navbar";
 import {
   createDriverBooking,
-  createDriverRoute,
-  getDriverAdminDashboard,
   getDriverRoutes,
   loginPremium,
   registerPremium,
-  updateDriverRoute
 } from "../services/api";
 import { recordMetric } from "../utils/metrics";
 import {
@@ -44,12 +38,6 @@ const emptyRegistrationForm = {
   phone: "",
   password: "",
   upiReference: ""
-};
-const emptyRouteForm = {
-  name: "",
-  startPoint: "",
-  endPoint: "",
-  fixedPrice: ""
 };
 
 const transportContacts = [
@@ -103,13 +91,6 @@ function Premium() {
   const [routeUpiReference, setRouteUpiReference] = useState("");
   const [bookingBusy, setBookingBusy] = useState(false);
   const [bookingMessage, setBookingMessage] = useState("");
-  const [adminToken, setAdminToken] = useState("");
-  const [adminMessage, setAdminMessage] = useState("");
-  const [adminDashboard, setAdminDashboard] = useState({ routes: [], bookings: [] });
-  const [routeForm, setRouteForm] = useState(emptyRouteForm);
-  const [routePriceDrafts, setRoutePriceDrafts] = useState({});
-  const [adminBusy, setAdminBusy] = useState(false);
-  const [adminUnlocked, setAdminUnlocked] = useState(false);
 
   const upiLink = useMemo(() => {
     const params = new URLSearchParams({
@@ -131,7 +112,6 @@ function Premium() {
   const selectedTransportContact = transportContacts.find((item) => item.type === selectedTransport);
   const selectedDriver = selectedTransportContact?.options.find((option) => option.phone === selectedDriverPhone);
   const selectedRoute = driverRoutes.find((route) => String(route.id) === selectedRouteId);
-  const isAdminMode = useMemo(() => new URLSearchParams(window.location.search).get("admin") === "1", []);
   const routePaymentLink = useMemo(() => {
     if (!selectedRoute) {
       return "";
@@ -295,103 +275,6 @@ function Premium() {
       setBookingMessage(err.message);
     } finally {
       setBookingBusy(false);
-    }
-  };
-
-  const loadAdminDashboard = async () => {
-    setAdminMessage("");
-    if (!adminToken.trim()) {
-      setAdminMessage("Enter the admin token to manage routes and see driver payments.");
-      return;
-    }
-
-    setAdminBusy(true);
-    try {
-      const response = await getDriverAdminDashboard(adminToken.trim());
-      setAdminDashboard(response.data);
-      setDriverRoutes((response.data.routes || []).filter((route) => route.isActive));
-      setRoutePriceDrafts(
-        Object.fromEntries((response.data.routes || []).map((route) => [route.id, String(route.fixedPrice)]))
-      );
-      setAdminUnlocked(true);
-      setAdminMessage("Admin driver desk loaded.");
-    } catch (err) {
-      setAdminMessage(err.message);
-    } finally {
-      setAdminBusy(false);
-    }
-  };
-
-  const saveRoute = async (event) => {
-    event.preventDefault();
-    setAdminMessage("");
-    if (!adminToken.trim()) {
-      setAdminMessage("Enter the admin token before saving a route.");
-      return;
-    }
-    if (!routeForm.name.trim() || !routeForm.startPoint.trim() || !routeForm.endPoint.trim() || !routeForm.fixedPrice) {
-      setAdminMessage("Fill route name, start, end, and fixed price.");
-      return;
-    }
-
-    setAdminBusy(true);
-    try {
-      await createDriverRoute({
-        name: routeForm.name.trim(),
-        startPoint: routeForm.startPoint.trim(),
-        endPoint: routeForm.endPoint.trim(),
-        fixedPrice: Number(routeForm.fixedPrice)
-      }, adminToken.trim());
-      setRouteForm(emptyRouteForm);
-      await loadAdminDashboard();
-      setAdminMessage("Route added with a fixed price for every driver.");
-    } catch (err) {
-      setAdminMessage(err.message);
-    } finally {
-      setAdminBusy(false);
-    }
-  };
-
-  const toggleRoute = async (route) => {
-    setAdminMessage("");
-    if (!adminToken.trim()) {
-      setAdminMessage("Enter the admin token before changing a route.");
-      return;
-    }
-
-    setAdminBusy(true);
-    try {
-      await updateDriverRoute(route.id, { isActive: !route.isActive }, adminToken.trim());
-      await loadAdminDashboard();
-      setAdminMessage(route.isActive ? "Route hidden from travellers." : "Route restored for travellers.");
-    } catch (err) {
-      setAdminMessage(err.message);
-    } finally {
-      setAdminBusy(false);
-    }
-  };
-
-  const updateRoutePrice = async (route) => {
-    setAdminMessage("");
-    const nextPrice = Number(routePriceDrafts[route.id]);
-    if (!adminToken.trim()) {
-      setAdminMessage("Enter the admin token before updating a price.");
-      return;
-    }
-    if (!nextPrice || nextPrice <= 0) {
-      setAdminMessage("Enter a valid fixed route price.");
-      return;
-    }
-
-    setAdminBusy(true);
-    try {
-      await updateDriverRoute(route.id, { fixedPrice: nextPrice }, adminToken.trim());
-      await loadAdminDashboard();
-      setAdminMessage("Route fixed price updated for every driver.");
-    } catch (err) {
-      setAdminMessage(err.message);
-    } finally {
-      setAdminBusy(false);
     }
   };
 
@@ -623,7 +506,7 @@ function Premium() {
                       <select
                         value={selectedRouteId}
                         onChange={(event) => setSelectedRouteId(event.target.value)}
-                        disabled={!selectedTransportContact}
+                        disabled={!selectedDriver}
                       >
                         <option value="">Choose route with fixed price</option>
                         {driverRoutes.map((route) => (
@@ -702,108 +585,6 @@ function Premium() {
               )}
               {bookingMessage && <p className="premium-message">{bookingMessage}</p>}
             </article>
-
-            {member && isAdminMode && (
-              <article className="premium-card admin-driver-card">
-                <Settings size={24} />
-                <h3>Admin driver desk</h3>
-                <label>
-                  Admin token
-                  <input
-                    type="password"
-                    value={adminToken}
-                    onChange={(event) => setAdminToken(event.target.value)}
-                    placeholder="Admin token"
-                  />
-                </label>
-                <button className="secondary-btn full" type="button" onClick={loadAdminDashboard} disabled={adminBusy}>
-                  <RefreshCw size={18} />
-                  {adminBusy ? "Loading admin desk" : "Open admin desk"}
-                </button>
-
-                {adminMessage && <p className="premium-message">{adminMessage}</p>}
-
-                {adminUnlocked && (
-                  <>
-                    <form className="admin-route-form" onSubmit={saveRoute}>
-                      <label>
-                        Route name
-                        <input value={routeForm.name} onChange={(event) => setRouteForm({ ...routeForm, name: event.target.value })} placeholder="Akisha route" />
-                      </label>
-                      <label>
-                        Start point
-                        <input value={routeForm.startPoint} onChange={(event) => setRouteForm({ ...routeForm, startPoint: event.target.value })} placeholder="Pickup area" />
-                      </label>
-                      <label>
-                        End point
-                        <input value={routeForm.endPoint} onChange={(event) => setRouteForm({ ...routeForm, endPoint: event.target.value })} placeholder="Drop area" />
-                      </label>
-                      <label>
-                        Fixed price
-                        <input type="number" min="1" value={routeForm.fixedPrice} onChange={(event) => setRouteForm({ ...routeForm, fixedPrice: event.target.value })} placeholder="350" />
-                      </label>
-                      <button className="primary-btn full" type="submit" disabled={adminBusy}>
-                        <CheckCircle2 size={18} />
-                        Save route
-                      </button>
-                    </form>
-
-                    {adminDashboard.routes.length > 0 && (
-                      <div className="admin-list">
-                        <strong>Managed routes</strong>
-                        {adminDashboard.routes.map((route) => (
-                          <div className="admin-row" key={route.id}>
-                            <span>{route.name} - Rs. {route.fixedPrice}</span>
-                            <small>{route.startPoint} to {route.endPoint}</small>
-                            <label>
-                              Fixed price
-                              <input
-                                type="number"
-                                min="1"
-                                value={routePriceDrafts[route.id] || ""}
-                                onChange={(event) => setRoutePriceDrafts({ ...routePriceDrafts, [route.id]: event.target.value })}
-                              />
-                            </label>
-                            <div className="admin-row-actions">
-                              <button type="button" onClick={() => updateRoutePrice(route)} disabled={adminBusy}>
-                                Update price
-                              </button>
-                              <button type="button" onClick={() => toggleRoute(route)} disabled={adminBusy}>
-                                {route.isActive ? "Hide" : "Restore"}
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {adminDashboard.bookings.length > 0 && (
-                      <div className="admin-list">
-                        <strong>Paid driver bookings</strong>
-                        {adminDashboard.bookings.map((booking) => (
-                          <div className="admin-row" key={booking.id}>
-                            <span>{booking.driverName} - Rs. {booking.paidPrice}</span>
-                            <small>{booking.routeName} for {booking.travellerName || booking.travellerEmail}</small>
-                            {booking.driverLocation ? (
-                              <a
-                                href={`https://www.google.com/maps?q=${booking.driverLocation.latitude},${booking.driverLocation.longitude}`}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                <MapPin size={14} />
-                                Live location
-                              </a>
-                            ) : (
-                              <small>No live location yet</small>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                )}
-              </article>
-            )}
           </div>
         </section>
       </main>
