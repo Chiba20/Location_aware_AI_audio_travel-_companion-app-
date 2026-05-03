@@ -324,7 +324,33 @@ img {
 }
 
 .error-panel {
-  color: var(--danger);
+  color: #3f5467;
+  background:
+    linear-gradient(135deg, rgba(223, 240, 244, 0.96), rgba(255, 255, 255, 0.96));
+  border-color: rgba(25, 52, 79, 0.18);
+}
+
+.error-panel p {
+  margin: 0;
+  max-width: 560px;
+  color: inherit;
+  line-height: 1.55;
+}
+
+.error-panel strong {
+  color: var(--brand);
+  font-size: 1.05rem;
+}
+
+.timeout-panel {
+  min-height: 150px;
+  box-shadow: var(--shadow-soft);
+}
+
+.timeout-panel .secondary-btn {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #f8fbfb;
 }
 
 .loader {

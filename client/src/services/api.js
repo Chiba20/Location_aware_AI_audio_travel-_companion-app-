@@ -8,10 +8,13 @@ const api = axios.create({
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
+    const timedOut = error.code === "ECONNABORTED" || error.message?.toLowerCase().includes("timeout");
     const message =
-      error.response?.data?.message ||
-      error.message ||
-      "Something went wrong. Please try again.";
+      timedOut
+        ? "The server is taking a little longer to wake up. Please tap Try again in a moment."
+        : error.response?.data?.message ||
+          error.message ||
+          "Something went wrong. Please try again.";
     return Promise.reject(new Error(message));
   }
 );
