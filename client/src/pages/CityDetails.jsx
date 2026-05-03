@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ArrowRight, Building2, ChevronLeft, ChevronRight, Compass, ExternalLink, EyeOff, Gem, Headphones, Image, Info, Landmark, LockKeyhole, MapPin, Pause, Play, Route, ScrollText, Sparkles, Store, Utensils, Video, WandSparkles, WifiOff } from "lucide-react";
+import { ArrowRight, BookOpenText, Building2, ChevronLeft, ChevronRight, Church, Compass, ExternalLink, EyeOff, Gem, Headphones, Image, Info, Landmark, LockKeyhole, MapPin, Pause, Play, Route, ScrollText, Shirt, Sparkles, Store, Utensils, Video, WandSparkles, WifiOff } from "lucide-react";
 import Navbar from "../component/Navbar";
 import LoadingState from "../component/LoadingState";
 import ErrorState from "../component/ErrorState";
@@ -110,13 +110,13 @@ const interestMeta = {
     label: "Temples",
     title: "Sacred routes",
     text: "Temple corridors, rituals, legends, and sacred architecture.",
-    icon: Landmark
+    icon: Church
   },
   silk: {
     label: "Silk",
     title: "Weaving streets",
     text: "Handloom craft, saree shops, zari work, and artisan memory.",
-    icon: Sparkles
+    icon: Shirt
   },
   architecture: {
     label: "Architecture",
@@ -146,7 +146,7 @@ const interestMeta = {
     label: "Culture",
     title: "Living tradition",
     text: "Festivals, rituals, community stories, and local customs.",
-    icon: Sparkles
+    icon: BookOpenText
   },
   food: {
     label: "Food",
