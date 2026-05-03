@@ -37,7 +37,7 @@ def _send_premium_email(to_email, name, amount):
         return False
 
     message = EmailMessage()
-    message["Subject"] = "Every Street Premium unlocked"
+    message["Subject"] = "Welcome to Every Street Premium"
     message["From"] = from_email
     message["To"] = to_email
     message.set_content(
@@ -45,10 +45,11 @@ def _send_premium_email(to_email, name, amount):
             [
                 f"Hi {name},",
                 "",
-                "Your Every Street Premium access is now active.",
+                "You have successfully registered for Every Street Premium.",
+                "Your premium access is now active.",
                 f"Payment amount: Rs. {amount}",
                 "",
-                "Premium unlocks Hidden Gems, Traveller Services, guide-driver contacts, and offline travel service.",
+                "You can now login with this email and your password to use Hidden Gems, Traveller Services, guide-driver contacts, and offline travel service.",
                 "",
                 "Thank you,",
                 "Every Street",
