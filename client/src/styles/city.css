@@ -2082,4 +2082,58 @@
   .service-empty-card {
     min-height: 42px;
   }
+
+  .micro-story-carousel.did-you-know-intro,
+  .micro-story-card,
+  .micro-story-actions {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .micro-story-carousel.did-you-know-intro {
+    padding: 14px;
+    gap: 10px;
+    overflow: hidden;
+  }
+
+  .micro-story-card {
+    min-height: 116px;
+    padding: 13px;
+  }
+
+  .micro-story-card .did-you-know-question {
+    font-size: 1.75rem;
+    line-height: 1.08;
+    overflow-wrap: anywhere;
+  }
+
+  .micro-story-card p {
+    font-size: 0.92rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .micro-story-actions {
+    gap: 8px;
+  }
+
+  .micro-story-actions button {
+    width: 34px;
+    min-width: 34px;
+    min-height: 32px;
+  }
+
+  .micro-story-dots {
+    min-width: 0;
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .micro-story-dots span {
+    width: 7px;
+    height: 7px;
+  }
 }
