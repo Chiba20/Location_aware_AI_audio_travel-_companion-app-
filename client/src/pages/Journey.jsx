@@ -310,34 +310,46 @@ function Journey() {
   };
 
   const beginHandsFreeTracking = () => {
+    if (watchIdRef.current !== null) {
+      return;
+    }
+
     setTrackingStatus("Waiting for GPS permission...");
-    setAutoTracking(true);
 
-    watchIdRef.current = navigator.geolocation.watchPosition(
-      (position) => {
-        const nextLocation = {
-          latitude: Number(position.coords.latitude.toFixed(7)),
-          longitude: Number(position.coords.longitude.toFixed(7))
-        };
-        setLocation(nextLocation);
+    try {
+      const watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const nextLocation = {
+            latitude: Number(position.coords.latitude.toFixed(7)),
+            longitude: Number(position.coords.longitude.toFixed(7))
+          };
+          setLocation(nextLocation);
 
-        const lastCheck = lastAutoCheckRef.current;
-        const movedMeters = distanceBetween(lastCheck.location, nextLocation);
-        const elapsedMs = Date.now() - lastCheck.checkedAt;
-        if (movedMeters < minimumAutoCheckDistanceMeters && elapsedMs < minimumAutoCheckIntervalMs) {
-          setTrackingStatus("GPS is active. Waiting for meaningful movement.");
-          return;
-        }
+          const lastCheck = lastAutoCheckRef.current;
+          const movedMeters = distanceBetween(lastCheck.location, nextLocation);
+          const elapsedMs = Date.now() - lastCheck.checkedAt;
+          if (movedMeters < minimumAutoCheckDistanceMeters && elapsedMs < minimumAutoCheckIntervalMs) {
+            setTrackingStatus("GPS is active. Waiting for meaningful movement.");
+            return;
+          }
 
-        lastAutoCheckRef.current = { location: nextLocation, checkedAt: Date.now() };
-        checkJourneyLocation(nextLocation, { autoPlay: true, silent: true });
-      },
-      () => {
-        stopAutoTracking();
-        setError("Could not read your live location. Please allow location access and try again.");
-      },
-      { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
-    );
+          lastAutoCheckRef.current = { location: nextLocation, checkedAt: Date.now() };
+          checkJourneyLocation(nextLocation, { autoPlay: true, silent: true });
+        },
+        () => {
+          stopAutoTracking();
+          setError("Could not read your live location. Please allow location access and try again.");
+        },
+        { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+      );
+
+      watchIdRef.current = watchId;
+      setAutoTracking(true);
+    } catch {
+      watchIdRef.current = null;
+      setAutoTracking(false);
+      setError("Could not start hands-free tracking. Please allow location access and try again.");
+    }
   };
 
   const handleStart = async () => {
@@ -405,9 +417,6 @@ function Journey() {
     setBusy(true);
     setError("");
     stopAudio();
-    if (autoTracking) {
-      stopAutoTracking();
-    }
 
     try {
       if (!journeyRef.current || journeyRef.current.status !== "active") {
@@ -422,6 +431,15 @@ function Journey() {
 
     beginHandsFreeTracking();
     setBusy(false);
+  };
+
+  const handleToggleHandsFree = () => {
+    if (watchIdRef.current !== null) {
+      stopAutoTracking();
+      return;
+    }
+
+    handleStartHandsFree();
   };
 
   const handleEnd = async () => {
@@ -439,6 +457,8 @@ function Journey() {
       setBusy(false);
     }
   };
+
+  const handsFreeActive = autoTracking && watchIdRef.current !== null;
 
   return (
     <>
@@ -510,7 +530,7 @@ function Journey() {
                   <p>{journey ? `Journey status: ${journey.status}` : "Choose a city and start the journey."}</p>
                   <p className="tracking-status">{trackingStatus}</p>
                 </div>
-                {autoTracking ? <Radio size={28} /> : journey?.status === "active" ? <Navigation size={28} /> : <Square size={28} />}
+                {handsFreeActive ? <Radio size={28} /> : journey?.status === "active" ? <Navigation size={28} /> : <Square size={28} />}
               </div>
 
               {currentAudioPlace && (
@@ -584,17 +604,15 @@ function Journey() {
               )}
 
               <div className="button-row">
-                {!autoTracking ? (
-                  <button className="primary-btn" type="button" onClick={handleStartHandsFree} disabled={busy}>
-                    <Radio size={17} />
-                    Resume hands-free
-                  </button>
-                ) : (
-                  <button className="secondary-btn" type="button" onClick={stopAutoTracking}>
-                    <Pause size={17} />
-                    Pause hands-free
-                  </button>
-                )}
+                <button
+                  className={handsFreeActive ? "secondary-btn" : "primary-btn"}
+                  type="button"
+                  onClick={handleToggleHandsFree}
+                  disabled={busy}
+                >
+                  {handsFreeActive ? <Pause size={17} /> : <Radio size={17} />}
+                  {handsFreeActive ? "Pause hands-free" : "Resume hands-free"}
+                </button>
                 <a
                   className="secondary-btn"
                   href={currentLocationMapUrl}
