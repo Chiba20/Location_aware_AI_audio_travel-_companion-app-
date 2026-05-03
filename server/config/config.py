@@ -5,4 +5,4 @@ load_dotenv()
 
 class Config:
     PORT = int(os.getenv("PORT", 5000))
-    DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+    DEBUG = os.getenv("DEBUG", "False").lower() == "true"
