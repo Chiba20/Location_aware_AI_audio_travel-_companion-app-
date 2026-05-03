@@ -1903,6 +1903,23 @@
 }
 
 @media (max-width: 680px) {
+  .detail-layout,
+  .interest-detail-layout,
+  .interest-detail-layout .main-column,
+  .interest-service-row,
+  .interest-picker-panel,
+  .traveller-services-panel,
+  .interest-view-grid,
+  .service-card-grid {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .interest-detail-layout .main-column {
+    overflow: hidden;
+  }
+
   .toolbar,
   .coordinate-grid,
   .practical-grid,
@@ -1944,6 +1961,7 @@
   .interest-view-card {
     min-height: 74px;
     padding: 8px 6px;
+    max-width: 100%;
   }
 
   .interest-view-icon {
@@ -1970,6 +1988,7 @@
     padding: 8px 7px;
     text-align: center;
     justify-items: center;
+    max-width: 100%;
   }
 
   .service-option-card strong {
@@ -2039,7 +2058,7 @@
   }
 
   .interest-view-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .interest-view-card {
