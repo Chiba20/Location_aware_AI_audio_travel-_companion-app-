@@ -109,6 +109,7 @@ function Premium() {
   const [routeForm, setRouteForm] = useState(emptyRouteForm);
   const [routePriceDrafts, setRoutePriceDrafts] = useState({});
   const [adminBusy, setAdminBusy] = useState(false);
+  const [adminUnlocked, setAdminUnlocked] = useState(false);
 
   const upiLink = useMemo(() => {
     const params = new URLSearchParams({
@@ -130,6 +131,7 @@ function Premium() {
   const selectedTransportContact = transportContacts.find((item) => item.type === selectedTransport);
   const selectedDriver = selectedTransportContact?.options.find((option) => option.phone === selectedDriverPhone);
   const selectedRoute = driverRoutes.find((route) => String(route.id) === selectedRouteId);
+  const isAdminMode = useMemo(() => new URLSearchParams(window.location.search).get("admin") === "1", []);
   const routePaymentLink = useMemo(() => {
     if (!selectedRoute) {
       return "";
@@ -311,6 +313,7 @@ function Premium() {
       setRoutePriceDrafts(
         Object.fromEntries((response.data.routes || []).map((route) => [route.id, String(route.fixedPrice)]))
       );
+      setAdminUnlocked(true);
       setAdminMessage("Admin driver desk loaded.");
     } catch (err) {
       setAdminMessage(err.message);
@@ -587,44 +590,65 @@ function Premium() {
           <div className="premium-grid premium-grid-single">
             <article className="premium-card transport-select-card">
               <Bus size={24} />
-              <h3>Guide-driver contacts</h3>
+              <h3>Driver booking</h3>
               {member ? (
                 <>
-                  <label>
-                    Select your transport interest
-                    <select value={selectedTransport} onChange={handleTransportChange}>
-                      <option value="">Choose a transport mode</option>
-                      {transportContacts.map((item) => (
-                        <option key={item.type} value={item.type}>{item.type}</option>
-                      ))}
-                    </select>
-                  </label>
+                  <div className="driver-booking-flow">
+                    <label>
+                      Transport type
+                      <select value={selectedTransport} onChange={handleTransportChange}>
+                        <option value="">Choose a transport mode</option>
+                        {transportContacts.map((item) => (
+                          <option key={item.type} value={item.type}>{item.type}</option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label>
+                      Driver
+                      <select
+                        value={selectedDriverPhone}
+                        onChange={(event) => setSelectedDriverPhone(event.target.value)}
+                        disabled={!selectedTransportContact}
+                      >
+                        <option value="">Choose a driver</option>
+                        {selectedTransportContact?.options.map((option) => (
+                          <option key={option.phone} value={option.phone}>{option.name}</option>
+                        ))}
+                      </select>
+                    </label>
+
+                    <label>
+                      Route
+                      <select
+                        value={selectedRouteId}
+                        onChange={(event) => setSelectedRouteId(event.target.value)}
+                        disabled={!selectedTransportContact}
+                      >
+                        <option value="">Choose route with fixed price</option>
+                        {driverRoutes.map((route) => (
+                          <option key={route.id} value={route.id}>
+                            {route.name} - Rs. {route.fixedPrice}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
                   {selectedTransportContact ? (
                     <>
-                      <label>
-                        Select driver
-                        <select value={selectedDriverPhone} onChange={(event) => setSelectedDriverPhone(event.target.value)}>
-                          <option value="">Choose a driver</option>
-                          {selectedTransportContact.options.map((option) => (
-                            <option key={option.phone} value={option.phone}>{option.name} - {option.phone}</option>
-                          ))}
-                        </select>
-                      </label>
-
-                      <label>
-                        Select route
-                        <select value={selectedRouteId} onChange={(event) => setSelectedRouteId(event.target.value)}>
-                          <option value="">Choose route with fixed price</option>
-                          {driverRoutes.map((route) => (
-                            <option key={route.id} value={route.id}>
-                              {route.name} - Rs. {route.fixedPrice}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-
                       {selectedDriver && selectedRoute ? (
                         <section className="route-booking-panel">
+                          <div className="selected-driver-summary">
+                            <selectedTransportContact.icon size={22} />
+                            <div>
+                              <strong>{selectedDriver.name}</strong>
+                              <a href={`tel:${selectedDriver.phone.replaceAll(" ", "")}`}>
+                                <Phone size={15} />
+                                {selectedDriver.phone}
+                              </a>
+                              <span>{selectedDriver.note}</span>
+                            </div>
+                          </div>
                           <div className="route-price-row">
                             <IndianRupee size={20} />
                             <div>
@@ -660,20 +684,6 @@ function Premium() {
                           <span>The fixed route fare appears before payment.</span>
                         </div>
                       )}
-
-                      <div className="transport-options">
-                        {selectedTransportContact.options.map((option) => (
-                          <div className={`transport-card ${selectedDriverPhone === option.phone ? "selected" : ""}`} key={option.phone}>
-                            <selectedTransportContact.icon size={22} />
-                            <strong>{option.name}</strong>
-                            <a href={`tel:${option.phone.replaceAll(" ", "")}`}>
-                              <Phone size={15} />
-                              {option.phone}
-                            </a>
-                            <span>{option.note}</span>
-                          </div>
-                        ))}
-                      </div>
                     </>
                   ) : (
                     <div className="locked-contact">
@@ -693,11 +703,10 @@ function Premium() {
               {bookingMessage && <p className="premium-message">{bookingMessage}</p>}
             </article>
 
-            {member && (
+            {member && isAdminMode && (
               <article className="premium-card admin-driver-card">
                 <Settings size={24} />
                 <h3>Admin driver desk</h3>
-                <p>Admin can manage fixed route prices and see paid driver bookings with live driver location.</p>
                 <label>
                   Admin token
                   <input
@@ -712,82 +721,86 @@ function Premium() {
                   {adminBusy ? "Loading admin desk" : "Open admin desk"}
                 </button>
 
-                <form className="admin-route-form" onSubmit={saveRoute}>
-                  <label>
-                    Route name
-                    <input value={routeForm.name} onChange={(event) => setRouteForm({ ...routeForm, name: event.target.value })} placeholder="Akisha route" />
-                  </label>
-                  <label>
-                    Start point
-                    <input value={routeForm.startPoint} onChange={(event) => setRouteForm({ ...routeForm, startPoint: event.target.value })} placeholder="Pickup area" />
-                  </label>
-                  <label>
-                    End point
-                    <input value={routeForm.endPoint} onChange={(event) => setRouteForm({ ...routeForm, endPoint: event.target.value })} placeholder="Drop area" />
-                  </label>
-                  <label>
-                    Fixed price
-                    <input type="number" min="1" value={routeForm.fixedPrice} onChange={(event) => setRouteForm({ ...routeForm, fixedPrice: event.target.value })} placeholder="350" />
-                  </label>
-                  <button className="primary-btn full" type="submit" disabled={adminBusy}>
-                    <CheckCircle2 size={18} />
-                    Save route
-                  </button>
-                </form>
-
                 {adminMessage && <p className="premium-message">{adminMessage}</p>}
 
-                {adminDashboard.routes.length > 0 && (
-                  <div className="admin-list">
-                    <strong>Managed routes</strong>
-                    {adminDashboard.routes.map((route) => (
-                      <div className="admin-row" key={route.id}>
-                        <span>{route.name} - Rs. {route.fixedPrice}</span>
-                        <small>{route.startPoint} to {route.endPoint}</small>
-                        <label>
-                          Fixed price
-                          <input
-                            type="number"
-                            min="1"
-                            value={routePriceDrafts[route.id] || ""}
-                            onChange={(event) => setRoutePriceDrafts({ ...routePriceDrafts, [route.id]: event.target.value })}
-                          />
-                        </label>
-                        <div className="admin-row-actions">
-                          <button type="button" onClick={() => updateRoutePrice(route)} disabled={adminBusy}>
-                            Update price
-                          </button>
-                          <button type="button" onClick={() => toggleRoute(route)} disabled={adminBusy}>
-                            {route.isActive ? "Hide" : "Restore"}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                {adminUnlocked && (
+                  <>
+                    <form className="admin-route-form" onSubmit={saveRoute}>
+                      <label>
+                        Route name
+                        <input value={routeForm.name} onChange={(event) => setRouteForm({ ...routeForm, name: event.target.value })} placeholder="Akisha route" />
+                      </label>
+                      <label>
+                        Start point
+                        <input value={routeForm.startPoint} onChange={(event) => setRouteForm({ ...routeForm, startPoint: event.target.value })} placeholder="Pickup area" />
+                      </label>
+                      <label>
+                        End point
+                        <input value={routeForm.endPoint} onChange={(event) => setRouteForm({ ...routeForm, endPoint: event.target.value })} placeholder="Drop area" />
+                      </label>
+                      <label>
+                        Fixed price
+                        <input type="number" min="1" value={routeForm.fixedPrice} onChange={(event) => setRouteForm({ ...routeForm, fixedPrice: event.target.value })} placeholder="350" />
+                      </label>
+                      <button className="primary-btn full" type="submit" disabled={adminBusy}>
+                        <CheckCircle2 size={18} />
+                        Save route
+                      </button>
+                    </form>
 
-                {adminDashboard.bookings.length > 0 && (
-                  <div className="admin-list">
-                    <strong>Paid driver bookings</strong>
-                    {adminDashboard.bookings.map((booking) => (
-                      <div className="admin-row" key={booking.id}>
-                        <span>{booking.driverName} - Rs. {booking.paidPrice}</span>
-                        <small>{booking.routeName} for {booking.travellerName || booking.travellerEmail}</small>
-                        {booking.driverLocation ? (
-                          <a
-                            href={`https://www.google.com/maps?q=${booking.driverLocation.latitude},${booking.driverLocation.longitude}`}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            <MapPin size={14} />
-                            Live location
-                          </a>
-                        ) : (
-                          <small>No live location yet</small>
-                        )}
+                    {adminDashboard.routes.length > 0 && (
+                      <div className="admin-list">
+                        <strong>Managed routes</strong>
+                        {adminDashboard.routes.map((route) => (
+                          <div className="admin-row" key={route.id}>
+                            <span>{route.name} - Rs. {route.fixedPrice}</span>
+                            <small>{route.startPoint} to {route.endPoint}</small>
+                            <label>
+                              Fixed price
+                              <input
+                                type="number"
+                                min="1"
+                                value={routePriceDrafts[route.id] || ""}
+                                onChange={(event) => setRoutePriceDrafts({ ...routePriceDrafts, [route.id]: event.target.value })}
+                              />
+                            </label>
+                            <div className="admin-row-actions">
+                              <button type="button" onClick={() => updateRoutePrice(route)} disabled={adminBusy}>
+                                Update price
+                              </button>
+                              <button type="button" onClick={() => toggleRoute(route)} disabled={adminBusy}>
+                                {route.isActive ? "Hide" : "Restore"}
+                              </button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    )}
+
+                    {adminDashboard.bookings.length > 0 && (
+                      <div className="admin-list">
+                        <strong>Paid driver bookings</strong>
+                        {adminDashboard.bookings.map((booking) => (
+                          <div className="admin-row" key={booking.id}>
+                            <span>{booking.driverName} - Rs. {booking.paidPrice}</span>
+                            <small>{booking.routeName} for {booking.travellerName || booking.travellerEmail}</small>
+                            {booking.driverLocation ? (
+                              <a
+                                href={`https://www.google.com/maps?q=${booking.driverLocation.latitude},${booking.driverLocation.longitude}`}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <MapPin size={14} />
+                                Live location
+                              </a>
+                            ) : (
+                              <small>No live location yet</small>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
                 )}
               </article>
             )}
