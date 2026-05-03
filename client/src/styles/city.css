@@ -1919,6 +1919,12 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .interest-view-grid {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+    width: 100%;
+  }
+
   .interest-picker-panel,
   .traveller-services-panel {
     padding: 12px;
@@ -1994,5 +2000,67 @@
   .trigger-card button {
     width: 100%;
     margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .city-hero {
+    min-height: 340px;
+    padding: 18px;
+  }
+
+  .city-hero h1 {
+    font-size: 1.85rem;
+  }
+
+  .city-hero p {
+    font-size: 0.94rem;
+    line-height: 1.55;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+  }
+
+  .hero-actions .primary-btn,
+  .hero-actions .secondary-btn {
+    width: 100%;
+    min-width: 0;
+    padding-inline: 10px;
+    justify-content: center;
+    white-space: nowrap;
+  }
+
+  .interest-service-row {
+    gap: 12px;
+  }
+
+  .interest-view-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .interest-view-card {
+    min-height: 68px;
+    gap: 5px;
+  }
+
+  .interest-view-copy {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .interest-view-copy strong {
+    font-size: 0.66rem;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .service-option-card,
+  .service-empty-card {
+    min-height: 42px;
   }
 }
