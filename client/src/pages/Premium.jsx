@@ -378,6 +378,12 @@ function Premium() {
                 : "Register, complete payment, and login to reveal offline tools and contacts."}
             </p>
             {member && message && <p className="success-text">{message}</p>}
+            {member && (
+              <button className="secondary-btn premium-logout" type="button" onClick={logout}>
+                <LogIn size={16} />
+                Logout
+              </button>
+            )}
           </div>
 
           <div className="premium-grid premium-grid-single">
@@ -426,12 +432,6 @@ function Premium() {
               )}
             </article>
           </div>
-
-          {member && (
-            <button className="secondary-btn premium-logout" type="button" onClick={logout}>
-              Logout
-            </button>
-          )}
         </section>
       </main>
     </>

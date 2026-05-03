@@ -1742,6 +1742,7 @@
     linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0));
   box-shadow: var(--shadow-soft);
   align-content: end;
+  gap: 12px;
 }
 
 .premium-unlocked.unlocked-layout .section-heading .eyebrow,
@@ -1857,7 +1858,18 @@
 }
 
 .premium-logout {
-  margin-top: 18px;
+  margin-top: 10px;
+  width: fit-content;
+}
+
+.premium-unlocked.unlocked-layout .premium-logout {
+  color: #f8fbfb;
+  border-color: rgba(248, 251, 251, 0.36);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.premium-unlocked.unlocked-layout .premium-logout:hover {
+  background: rgba(255, 255, 255, 0.22);
 }
 
 @media (max-width: 980px) {
