@@ -928,6 +928,16 @@ function CityDetails() {
     setStoryError("");
   }, [selectedInterest, query]);
 
+  useEffect(() => {
+    if (!microStories.length) return undefined;
+
+    const timer = window.setInterval(() => {
+      setMicroStoryIndex((current) => (current + 1) % microStorySlideCount);
+    }, 4500);
+
+    return () => window.clearInterval(timer);
+  }, [microStories.length, microStorySlideCount]);
+
   const moveMicroStory = (direction) => {
     if (!microStories.length) return;
     setMicroStoryIndex((current) => {
@@ -1367,12 +1377,6 @@ function CityDetails() {
                                   </div>
                                 )}
                               </div>
-                            )}
-                            {getInterestDidYouKnowFact(place, selectedInterest) && (
-                              <aside className="did-you-know-card">
-                                <span><Sparkles size={16} /> Did You Know That</span>
-                                <p>{formatDidYouKnowCardFact(place.name, getInterestDidYouKnowFact(place, selectedInterest))}</p>
-                              </aside>
                             )}
                           </div>
                         </article>
