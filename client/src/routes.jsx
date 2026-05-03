@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
 import CitySuggestion from "./pages/CitySuggestion";
@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound";
 
 function AppRoutes() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/app" element={<Home />} />
@@ -22,7 +22,7 @@ function AppRoutes() {
         <Route path="/feedback" element={<Feedback />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
