@@ -23,9 +23,9 @@ const routes = [
 
 await Promise.all(
   routes.map(async (route) => {
-    const targetDir = join(distRoot, route);
-    await mkdir(targetDir, { recursive: true });
-    await copyFile(source, join(targetDir, "index.html"));
+    const target = join(distRoot, route);
+    await mkdir(dirname(target), { recursive: true });
+    await copyFile(source, target);
   })
 );
 
