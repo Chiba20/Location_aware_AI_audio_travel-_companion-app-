@@ -82,6 +82,10 @@ function Journey() {
       navigator.geolocation.clearWatch(watchIdRef.current);
       watchIdRef.current = null;
     }
+    if (audioRef.current && !audioRef.current.paused) {
+      audioRef.current.pause();
+      setAudioPlaying(false);
+    }
     setAutoTracking(false);
     setTrackingStatus("Hands-free mode is paused.");
   };
