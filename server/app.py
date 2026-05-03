@@ -18,12 +18,14 @@ from routes.premium_routes import bp as premium_bp
 from routes.ai_routes import bp as ai_bp
 from middleware.error_handlers import register_error_handlers
 from utils.api_utils import success
+from utils.db import init_db
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     CORS(app)
+    init_db()
 
     @app.get("/api/health")
     def health():

@@ -13,13 +13,11 @@ import {
   UserPlus,
 } from "lucide-react";
 import Navbar from "../component/Navbar";
-import { sendPremiumConfirmationEmail } from "../services/api";
+import { loginPremium, registerPremium } from "../services/api";
 import { recordMetric } from "../utils/metrics";
 import {
   clearPremiumSession,
-  getPremiumAccount,
   getPremiumSession,
-  savePremiumAccount,
   savePremiumSession
 } from "../utils/premiumAccess";
 
@@ -79,6 +77,7 @@ function Premium() {
   const [paymentReady, setPaymentReady] = useState(false);
   const [member, setMember] = useState(() => getPremiumSession());
   const [message, setMessage] = useState("");
+  const [accountBusy, setAccountBusy] = useState(false);
 
   const upiLink = useMemo(() => {
     const params = new URLSearchParams({
@@ -127,68 +126,66 @@ function Premium() {
       return;
     }
 
-    const nextMember = {
-      name: form.name,
-      email: form.email.trim().toLowerCase(),
-      phone: form.phone,
-      paidAmount: PREMIUM_AMOUNT,
-      upiReference: form.upiReference,
-      password: form.password,
-      isPremium: true,
-      registrationComplete: true,
-      unlockedAt: new Date().toISOString()
-    };
-    savePremiumAccount(nextMember);
-    clearPremiumSession();
-    recordMetric("premium_conversion", {
-      amount: PREMIUM_AMOUNT,
-      email: nextMember.email,
-    });
-    setMember(null);
-    setForm(emptyRegistrationForm);
-    setLogin({ email: nextMember.email, password: "" });
-    setPaymentReady(false);
-    setMode("login");
+    setAccountBusy(true);
     try {
-      const response = await sendPremiumConfirmationEmail({
-        name: nextMember.name,
-        email: nextMember.email,
+      const response = await registerPremium({
+        name: form.name.trim(),
+        email: form.email.trim().toLowerCase(),
+        phone: form.phone.trim(),
+        password: form.password,
         amount: PREMIUM_AMOUNT,
-        upiReference: nextMember.upiReference
+        upiReference: form.upiReference.trim()
       });
+      const nextMember = response.data.user;
+      clearPremiumSession();
+      recordMetric("premium_conversion", {
+        amount: PREMIUM_AMOUNT,
+        email: nextMember.email,
+      });
+      setMember(null);
+      setForm(emptyRegistrationForm);
+      setLogin({ email: nextMember.email, password: "" });
+      setPaymentReady(false);
+      setMode("login");
       setMessage(
         response.data?.emailSent
           ? "Registration complete. Login with your premium email and password to unlock access."
           : "Registration complete. Login to unlock access. Email sending needs SMTP setup on the backend."
       );
     } catch (err) {
-      setMessage(`Registration complete. Login to unlock access. Email could not be sent: ${err.message}`);
+      setMessage(err.message);
+    } finally {
+      setAccountBusy(false);
     }
   };
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    const savedMember = getPremiumAccount();
-    if (!savedMember) {
-      setMessage("No premium registration found on this browser. Register and finish payment first.");
+    setMessage("");
+    if (!EMAIL_RE.test(login.email.trim())) {
+      setMessage("Enter your registered premium email.");
+      return;
+    }
+    if (!login.password) {
+      setMessage("Enter your password.");
       return;
     }
 
-    if (savedMember?.isPremium !== true || savedMember?.registrationComplete !== true) {
-      setMessage("This account is not premium yet. Complete payment first.");
-      return;
+    setAccountBusy(true);
+    try {
+      const response = await loginPremium({
+        email: login.email.trim().toLowerCase(),
+        password: login.password
+      });
+      const savedMember = response.data.user;
+      savePremiumSession(savedMember);
+      setMember(savedMember);
+      setMessage("Welcome back. Premium access restored.");
+    } catch (err) {
+      setMessage(err.message);
+    } finally {
+      setAccountBusy(false);
     }
-    if (
-      login.email.trim().toLowerCase() !== savedMember.email.toLowerCase() ||
-      login.password !== savedMember.password
-    ) {
-      setMessage("Use the same email and password from your completed premium registration.");
-      return;
-    }
-
-    savePremiumSession(savedMember);
-    setMember(savedMember);
-    setMessage("Welcome back. Premium access restored.");
   };
 
   const logout = () => {
@@ -210,146 +207,148 @@ function Premium() {
         </div>
 
         <section className="premium-layout">
-          <div className="premium-access-panel">
-            <div className="premium-tabs" aria-label="Premium account options">
-              <button
-                className={mode === "register" ? "active" : ""}
-                type="button"
-                onClick={() => {
-                  setMode("register");
-                  setMessage("");
-                  setForm(emptyRegistrationForm);
-                  setPaymentReady(false);
-                }}
-              >
-                <UserPlus size={17} />
-                Register
-              </button>
-              <button
-                className={mode === "login" ? "active" : ""}
-                type="button"
-                onClick={() => {
-                  setMode("login");
-                  setMessage("");
-                }}
-              >
-                <LogIn size={17} />
-                Login
-              </button>
-            </div>
-
-            {mode === "register" ? (
-              <form className="premium-form" onSubmit={handleStartPayment} autoComplete="off">
-                <label>
-                  Full name
-                  <input
-                    autoComplete="off"
-                    value={form.name}
-                    onChange={(event) => setForm({ ...form, name: event.target.value })}
-                    placeholder="Traveller name"
-                  />
-                </label>
-                <label>
-                  Email
-                  <input
-                    type="email"
-                    autoComplete="off"
-                    value={form.email}
-                    onChange={(event) => setForm({ ...form, email: event.target.value })}
-                    placeholder="name@example.com"
-                  />
-                </label>
-                <label>
-                  Phone
-                  <input
-                    autoComplete="off"
-                    value={form.phone}
-                    onChange={(event) => setForm({ ...form, phone: event.target.value })}
-                    placeholder="+91 phone number"
-                  />
-                </label>
-                <label>
-                  Password
-                  <input
-                    type="password"
-                    autoComplete="new-password"
-                    value={form.password}
-                    onChange={(event) => setForm({ ...form, password: event.target.value })}
-                    placeholder="Minimum 4 characters"
-                  />
-                </label>
-
-                <button className="primary-btn full" type="submit">
-                  <LockKeyhole size={18} />
-                  Continue to payment
+          {!member && (
+            <div className="premium-access-panel">
+              <div className="premium-tabs" aria-label="Premium account options">
+                <button
+                  className={mode === "register" ? "active" : ""}
+                  type="button"
+                  onClick={() => {
+                    setMode("register");
+                    setMessage("");
+                    setForm(emptyRegistrationForm);
+                    setPaymentReady(false);
+                  }}
+                >
+                  <UserPlus size={17} />
+                  Register
                 </button>
-              </form>
-            ) : (
-              <form className="premium-form" onSubmit={handleLogin}>
-                <label>
-                  Email
-                  <input
-                    type="email"
-                    value={login.email}
-                    onChange={(event) => setLogin({ ...login, email: event.target.value })}
-                    placeholder="Registered email"
-                  />
-                </label>
-                <label>
-                  Password
-                  <input
-                    type="password"
-                    value={login.password}
-                    onChange={(event) => setLogin({ ...login, password: event.target.value })}
-                    placeholder="Password"
-                  />
-                </label>
-                <button className="primary-btn full" type="submit">
-                  <LogIn size={18} />
-                  Login to premium
+                <button
+                  className={mode === "login" ? "active" : ""}
+                  type="button"
+                  onClick={() => {
+                    setMode("login");
+                    setMessage("");
+                  }}
+                >
+                  <LogIn size={17} />
+                  Login
                 </button>
-              </form>
-            )}
+              </div>
 
-            {paymentReady && mode === "register" && !member && (
-              <section className="payment-panel" aria-label="UPI payment">
-                <div>
-                  <span className="eyebrow">Payment required</span>
-                  <h2>Pay Rs. {PREMIUM_AMOUNT} to unlock Premium</h2>
-                  <p>Registration is completed only after payment confirmation.</p>
-                </div>
+              {mode === "register" ? (
+                <form className="premium-form" onSubmit={handleStartPayment} autoComplete="off">
+                  <label>
+                    Full name
+                    <input
+                      autoComplete="off"
+                      value={form.name}
+                      onChange={(event) => setForm({ ...form, name: event.target.value })}
+                      placeholder="Traveller name"
+                    />
+                  </label>
+                  <label>
+                    Email
+                    <input
+                      type="email"
+                      autoComplete="off"
+                      value={form.email}
+                      onChange={(event) => setForm({ ...form, email: event.target.value })}
+                      placeholder="name@example.com"
+                    />
+                  </label>
+                  <label>
+                    Phone
+                    <input
+                      autoComplete="off"
+                      value={form.phone}
+                      onChange={(event) => setForm({ ...form, phone: event.target.value })}
+                      placeholder="+91 phone number"
+                    />
+                  </label>
+                  <label>
+                    Password
+                    <input
+                      type="password"
+                      autoComplete="new-password"
+                      value={form.password}
+                      onChange={(event) => setForm({ ...form, password: event.target.value })}
+                      placeholder="Minimum 4 characters"
+                    />
+                  </label>
 
-                <div className="qr-card">
-                  <img src={qrUrl} alt={`UPI QR code for ${UPI_ID}`} />
+                  <button className="primary-btn full" type="submit">
+                    <LockKeyhole size={18} />
+                    Continue to payment
+                  </button>
+                </form>
+              ) : (
+                <form className="premium-form" onSubmit={handleLogin}>
+                  <label>
+                    Email
+                    <input
+                      type="email"
+                      value={login.email}
+                      onChange={(event) => setLogin({ ...login, email: event.target.value })}
+                      placeholder="Registered email"
+                    />
+                  </label>
+                  <label>
+                    Password
+                    <input
+                      type="password"
+                      value={login.password}
+                      onChange={(event) => setLogin({ ...login, password: event.target.value })}
+                      placeholder="Password"
+                    />
+                  </label>
+                  <button className="primary-btn full" type="submit" disabled={accountBusy}>
+                    <LogIn size={18} />
+                    {accountBusy ? "Logging in" : "Login to premium"}
+                  </button>
+                </form>
+              )}
+
+              {paymentReady && mode === "register" && (
+                <section className="payment-panel" aria-label="UPI payment">
                   <div>
-                    <strong>{UPI_NAME}</strong>
-                    <span>{UPI_ID}</span>
+                    <span className="eyebrow">Payment required</span>
+                    <h2>Pay Rs. {PREMIUM_AMOUNT} to unlock Premium</h2>
+                    <p>Registration is completed only after payment confirmation.</p>
                   </div>
-                </div>
 
-                <a className="secondary-btn full" href={upiLink}>
-                  <QrCode size={18} />
-                  Open UPI payment app
-                </a>
+                  <div className="qr-card">
+                    <img src={qrUrl} alt={`UPI QR code for ${UPI_ID}`} />
+                    <div>
+                      <strong>{UPI_NAME}</strong>
+                      <span>{UPI_ID}</span>
+                    </div>
+                  </div>
 
-                <label>
-                  UPI transaction reference
-                  <input
-                    value={form.upiReference}
-                    onChange={(event) => setForm({ ...form, upiReference: event.target.value })}
-                    placeholder="Example: UPI123456789"
-                  />
-                </label>
+                  <a className="secondary-btn full" href={upiLink}>
+                    <QrCode size={18} />
+                    Open UPI payment app
+                  </a>
 
-                <button className="primary-btn full" type="button" onClick={completeRegistration}>
-                  <ShieldCheck size={18} />
-                  I paid, unlock premium
-                </button>
-              </section>
-            )}
+                  <label>
+                    UPI transaction reference
+                    <input
+                      value={form.upiReference}
+                      onChange={(event) => setForm({ ...form, upiReference: event.target.value })}
+                      placeholder="Example: UPI123456789"
+                    />
+                  </label>
 
-            {message && <p className={member ? "success-text" : "premium-message"}>{message}</p>}
-          </div>
+                  <button className="primary-btn full" type="button" onClick={completeRegistration} disabled={accountBusy}>
+                    <ShieldCheck size={18} />
+                    {accountBusy ? "Completing registration" : "I paid, complete registration"}
+                  </button>
+                </section>
+              )}
+
+              {message && <p className="premium-message">{message}</p>}
+            </div>
+          )}
 
           <section className="premium-summary">
             <div className="premium-price">
@@ -376,6 +375,7 @@ function Premium() {
                 ? "You are logged in as a premium traveller. Offline tools and contacts are unlocked."
                 : "Register, complete payment, and login to reveal offline tools and contacts."}
             </p>
+            {member && message && <p className="success-text">{message}</p>}
           </div>
 
           <div className="premium-grid premium-grid-single">

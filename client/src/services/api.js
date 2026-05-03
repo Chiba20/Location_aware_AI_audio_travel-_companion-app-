@@ -31,6 +31,8 @@ export const updateJourneyLocation = (journeyId, location) =>
 export const endJourney = (journeyId) => api.post(`/journeys/${journeyId}/end`);
 export const getFeedback = () => api.get("/feedback/");
 export const createFeedback = (payload) => api.post("/feedback/", payload);
+export const registerPremium = (payload) => api.post("/premium/register", payload);
+export const loginPremium = (payload) => api.post("/premium/login", payload);
 export const sendPremiumConfirmationEmail = (payload) => api.post("/premium/confirmation-email", payload);
 export const generatePersonalizedStory = (payload) => api.post("/ai/personalized-story", payload);
 

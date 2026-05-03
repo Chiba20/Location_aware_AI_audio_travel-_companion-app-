@@ -17,16 +17,9 @@ export const getPremiumAccount = () => {
 };
 
 export const getPremiumSession = () => {
-  const account = getPremiumAccount();
   const session = readJson(PREMIUM_SESSION_KEY);
 
-  if (!account || session?.isPremium !== true) return null;
-  if (session.email?.toLowerCase() !== account.email?.toLowerCase()) return null;
-
-  return {
-    ...account,
-    loggedInAt: session.loggedInAt
-  };
+  return session?.isPremium === true ? session : null;
 };
 
 export const hasPremiumAccess = () => Boolean(getPremiumSession());
@@ -38,6 +31,7 @@ export const savePremiumAccount = (account) => {
 
 export const savePremiumSession = (account) => {
   window.localStorage.setItem(PREMIUM_SESSION_KEY, JSON.stringify({
+    ...account,
     email: account.email,
     isPremium: true,
     loggedInAt: new Date().toISOString()
