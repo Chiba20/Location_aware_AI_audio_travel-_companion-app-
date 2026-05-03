@@ -508,7 +508,7 @@ function Premium() {
                         onChange={(event) => setSelectedRouteId(event.target.value)}
                         disabled={!selectedDriver}
                       >
-                        <option value="">Choose route with fixed price</option>
+                          <option value="">Choose route to see fare</option>
                         {driverRoutes.map((route) => (
                           <option key={route.id} value={route.id}>
                             {route.name} - Rs. {route.fixedPrice}
@@ -536,7 +536,7 @@ function Premium() {
                             <IndianRupee size={20} />
                             <div>
                               <strong>Rs. {selectedRoute.fixedPrice}</strong>
-                              <span>Fixed price for every driver on this route</span>
+                              <span>Same fixed route fare for every driver</span>
                             </div>
                           </div>
                           <div className="route-path">
@@ -563,8 +563,8 @@ function Premium() {
                       ) : (
                         <div className="locked-contact">
                           <Route size={22} />
-                          <strong>Select route and driver</strong>
-                          <span>The fixed route fare appears before payment.</span>
+                          <strong>Select driver, then route</strong>
+                          <span>The fare appears only from the route you choose.</span>
                         </div>
                       )}
                     </>
