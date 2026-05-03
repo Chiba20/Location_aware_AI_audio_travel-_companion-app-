@@ -1909,14 +1909,71 @@
   .overview-facts,
   .architecture-tip-row,
   .history-columns,
-  .interest-view-grid,
   .story-controls,
   .service-button-grid {
     grid-template-columns: 1fr;
   }
 
+  .interest-view-grid,
   .service-card-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .interest-picker-panel,
+  .traveller-services-panel {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .interest-picker-panel .section-heading h2,
+  .traveller-services-panel .section-heading h2 {
+    font-size: 1.08rem;
+  }
+
+  .interest-picker-panel .section-heading p,
+  .traveller-services-panel .section-heading p {
+    font-size: 0.78rem;
+  }
+
+  .interest-view-card {
+    min-height: 74px;
+    padding: 8px 6px;
+  }
+
+  .interest-view-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .interest-view-copy {
+    min-height: 26px;
+    padding: 5px 4px;
+  }
+
+  .interest-view-copy strong {
+    font-size: 0.7rem;
+  }
+
+  .service-card-grid {
+    gap: 7px;
+  }
+
+  .service-option-card,
+  .service-empty-card {
+    min-height: 44px;
+    padding: 8px 7px;
+    text-align: center;
+    justify-items: center;
+  }
+
+  .service-option-card strong {
+    display: -webkit-box;
+    overflow: hidden;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 0.7rem;
+    line-height: 1.18;
   }
 
   .city-hero {
