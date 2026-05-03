@@ -366,7 +366,7 @@ function Premium() {
           </section>
         </section>
 
-        <section className={`premium-unlocked ${member ? "" : "locked"}`}>
+        <section className={`premium-unlocked ${member ? "unlocked-layout" : "locked"}`}>
           <div className="section-heading">
             <span className="eyebrow">{member ? "Unlocked" : "Locked preview"}</span>
             <h2>{member ? `Welcome, ${member.name}` : "Premium features"}</h2>
