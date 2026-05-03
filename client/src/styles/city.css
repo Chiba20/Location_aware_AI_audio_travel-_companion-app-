@@ -1833,9 +1833,14 @@
   .feedback-layout,
   .metrics-panel,
   .premium-layout,
+  .premium-unlocked.unlocked-layout,
   .premium-grid,
   .architecture-image-grid {
     grid-template-columns: 1fr;
+  }
+
+  .premium-unlocked.unlocked-layout .section-heading {
+    position: static;
   }
 
   .interest-view-grid {
