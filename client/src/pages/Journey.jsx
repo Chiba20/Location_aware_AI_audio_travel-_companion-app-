@@ -57,7 +57,7 @@ function Journey() {
   const [autoTracking, setAutoTracking] = useState(false);
   const [trackingStatus, setTrackingStatus] = useState("Start hands-free mode to listen automatically as you walk.");
   const [currentAudioPlace, setCurrentAudioPlace] = useState(null);
-  const [audioPaused, setAudioPaused] = useState(false);
+  const [audioPlaying, setAudioPlaying] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -73,7 +73,7 @@ function Journey() {
       audioRef.current.pause();
       audioRef.current = null;
     }
-    setAudioPaused(false);
+    setAudioPlaying(false);
     setCurrentAudioPlace(null);
   };
 
@@ -206,19 +206,25 @@ function Journey() {
     const audio = new Audio(audioUrl);
     audioRef.current = audio;
     setCurrentAudioPlace(nextPlace);
-    setAudioPaused(false);
+    setAudioPlaying(false);
     const distanceText = Number.isFinite(nextPlace.distanceMeters)
       ? ` You are ${formatDistance(nextPlace.distanceMeters)} away.`
       : "";
     setTrackingStatus(`Now playing: ${nextPlace.name}.${distanceText}`);
 
+    audio.addEventListener("play", () => {
+      setAudioPlaying(true);
+    });
+    audio.addEventListener("pause", () => {
+      setAudioPlaying(false);
+    });
     audio.addEventListener("ended", () => {
-      setAudioPaused(false);
+      setAudioPlaying(false);
       setCurrentAudioPlace(null);
       setTrackingStatus("Listening for the next nearby story.");
     }, { once: true });
     audio.addEventListener("error", () => {
-      setAudioPaused(false);
+      setAudioPlaying(false);
       setCurrentAudioPlace(null);
       setTrackingStatus(`Could not play audio for ${nextPlace.name}.`);
     }, { once: true });
@@ -227,7 +233,7 @@ function Journey() {
         playedPlaceIdsRef.current.add(nextPlace.id);
       })
       .catch(() => {
-        setAudioPaused(true);
+        setAudioPlaying(false);
         setTrackingStatus("Audio is ready, but the browser blocked autoplay. Tap Play audio on a triggered story.");
       });
   };
@@ -235,10 +241,10 @@ function Journey() {
   const toggleCurrentAudio = () => {
     if (!audioRef.current || !currentAudioPlace) return;
 
-    if (audioPaused) {
+    if (audioRef.current.paused) {
       audioRef.current.play()
         .then(() => {
-          setAudioPaused(false);
+          setAudioPlaying(true);
           playedPlaceIdsRef.current.add(currentAudioPlace.id);
           setTrackingStatus(`Resumed: ${currentAudioPlace.name}.`);
         })
@@ -249,7 +255,7 @@ function Journey() {
     }
 
     audioRef.current.pause();
-    setAudioPaused(true);
+    setAudioPlaying(false);
     setTrackingStatus(`Paused: ${currentAudioPlace.name}.`);
   };
 
@@ -520,8 +526,8 @@ function Journey() {
                     </span>
                   </div>
                   <button className="secondary-btn" type="button" onClick={toggleCurrentAudio}>
-                    {audioPaused ? <Play size={16} /> : <Pause size={16} />}
-                    {audioPaused ? "Resume" : "Pause"}
+                    {audioPlaying ? <Pause size={16} /> : <Play size={16} />}
+                    {audioPlaying ? "Pause" : "Resume"}
                   </button>
                 </div>
               )}
@@ -596,7 +602,7 @@ function Journey() {
                   rel="noreferrer"
                 >
                   <MapPin size={17} />
-                  Open in Maps
+                  You are here
                   <ExternalLink size={13} />
                 </a>
                 <button className="primary-btn" type="button" onClick={handleUpdateLocation} disabled={busy}>
