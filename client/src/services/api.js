@@ -38,13 +38,7 @@ export const registerPremium = (payload) => api.post("/premium/register", payloa
 export const loginPremium = (payload) => api.post("/premium/login", payload);
 export const sendPremiumConfirmationEmail = (payload) => api.post("/premium/confirmation-email", payload);
 export const getDriverRoutes = () => api.get("/premium/driver-routes");
-export const createDriverRoute = (payload, adminToken) =>
-  api.post("/premium/driver-routes", payload, { headers: { "X-Admin-Token": adminToken } });
-export const updateDriverRoute = (routeId, payload, adminToken) =>
-  api.patch(`/premium/driver-routes/${routeId}`, payload, { headers: { "X-Admin-Token": adminToken } });
 export const createDriverBooking = (payload) => api.post("/premium/driver-bookings", payload);
-export const getDriverAdminDashboard = (adminToken) =>
-  api.get("/premium/admin/driver-dashboard", { headers: { "X-Admin-Token": adminToken } });
 export const generatePersonalizedStory = (payload) => api.post("/ai/personalized-story", payload);
 
 export default api;
