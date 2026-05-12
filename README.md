@@ -1,6 +1,6 @@
-# Every Street
+# CityWhisper
 
-Every Street is a location-aware AI audio travel companion for city storytelling, practical traveller services, hidden gems, walks, premium access, and feedback collection.
+CityWhisper is a location-aware AI audio travel companion for city storytelling, practical traveller services, hidden gems, walks, premium access, and feedback collection.
 
 The app is built as a React/Vite frontend with a Flask API backend. City content is served from local JSON data, while premium users are stored in PostgreSQL when `DATABASE_URL` is configured.
 

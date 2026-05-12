@@ -85,7 +85,7 @@ function Premium() {
       pn: UPI_NAME,
       am: String(PREMIUM_AMOUNT),
       cu: "INR",
-      tn: "Every Street Premium"
+      tn: "CityWhisper Premium"
     });
     return `upi://pay?${params.toString()}`;
   }, []);

@@ -1,6 +1,6 @@
 # Frontend
 
-React.js frontend for Every Street.
+React.js frontend for CityWhisper.
 
 ## Commands
 

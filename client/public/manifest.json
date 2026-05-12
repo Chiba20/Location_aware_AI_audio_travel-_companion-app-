@@ -1,6 +1,6 @@
 {
-  "short_name": "Every Street",
-  "name": "Every Street Audio Travel Companion",
+  "short_name": "CityWhisper",
+  "name": "CityWhisper Audio Travel Companion",
   "description": "Location-aware city stories, walking routes, hidden gems, and travel feedback.",
   "start_url": "/",
   "display": "standalone",

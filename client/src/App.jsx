@@ -84,7 +84,7 @@ function App() {
             <span className="eyebrow">Location access</span>
             <h1 id="location-gate-title">Allow location to trigger nearby audio</h1>
             <p>
-              Every Street uses your current position to detect nearby places and play the right story as you walk.
+              CityWhisper uses your current position to detect nearby places and play the right story as you walk.
             </p>
             {locationMessage && <p className="location-gate-message">{locationMessage}</p>}
             <div className="location-gate-actions">
