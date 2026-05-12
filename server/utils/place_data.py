@@ -119,6 +119,7 @@ def _service_category_text(category):
         "Bank": "It can help with banking support, account services, card help, and financial queries.",
         "Dress shop": "It can help travellers buy clothing, basic travel wear, or local fashion items.",
         "Hospital": "It can help with medical attention, emergency care, consultation, or health support.",
+        "Hotel": "It can help travellers choose a stay, contact the property, check location convenience, and plan temple-town movement.",
         "Juice shop": "It can help with a short refreshment stop for juice, chilled drinks, or a rest break.",
         "Mechanic": "It can help with two-wheeler or vehicle repair support during local travel.",
         "Medical shop": "It can help with medicines, first-aid needs, and pharmacy support while travelling.",

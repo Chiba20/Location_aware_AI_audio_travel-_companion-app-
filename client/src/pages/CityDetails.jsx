@@ -445,6 +445,18 @@ const getServiceDidYouKnowFact = (place) => {
     }
     return "is useful as a hospital reference where travellers should call first to confirm the right department, doctor availability, and emergency support.";
   }
+  if (category === "hotel") {
+    if (name.includes("grt") || name.includes("legacy")) {
+      return "stands out as a more full-service stay option, useful for travellers who want stronger hotel facilities, dining, or event support.";
+    }
+    if (name.includes("ssk") || name.includes("pine") || name.includes("kaviya")) {
+      return "is useful as a city-stay option for travellers who want to remain close to Kanchipuram's temple, shopping, and old-town movement.";
+    }
+    if (hasContact) {
+      return "is useful because contact information is saved, so travellers can confirm room availability, check-in rules, parking, and current rates before going.";
+    }
+    return "is useful for stay planning; travellers should confirm live room availability, ID rules, check-in time, parking, and final price before booking.";
+  }
   if (category === "restaurant") {
     if (name.includes("biriyani")) {
       return "stands out for biriyani-focused dining, making it a better match for travellers looking for a full meal rather than a snack stop.";
