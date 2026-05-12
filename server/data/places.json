@@ -572,7 +572,7 @@
     "address": "Hostel zone, IIT Madras, Chennai - 600036",
     "directionsUrl": "https://maps.app.goo.gl/54M7KCpoDhZY7Per7",
     "audio": { "url": "/audio/iit-madras/mahanadhi-hostel.mp3", "durationSeconds": 70, "offlineAvailable": true },
-    "story": "Mahanadhi is one of the IIT Madras student hostels. Use this stop for live location-trigger testing from the hostel side of campus.",
+    "story": "Mahanadhi is one of the IIT Madras student hostels in the residential campus zone, representing the everyday rhythm of student life beyond classrooms and laboratories.",
     "didYouKnow": "IIT Madras hostels are named after Indian rivers, and the official hostel list includes Mahanadhi.",
     "interests": ["hostels", "campus life"],
     "isHiddenGem": false
@@ -586,7 +586,7 @@
     "triggerRadius": 260,
     "address": "Hostel zone, IIT Madras, Chennai - 600036",
     "audio": { "url": "/audio/iit-madras/sabarmati-hostel.mp3", "durationSeconds": 70, "offlineAvailable": true },
-    "story": "Sabarmati is an IIT Madras hostel and a useful nearby stop for testing location triggers around the student residential area.",
+    "story": "Sabarmati is one of the IIT Madras hostels in the student residential area, reflecting the campus culture of shared living, study routines, and hostel community life.",
     "didYouKnow": "The official hostel administration page lists Sabarmati among IIT Madras hostels and provides hostel office contact details.",
     "interests": ["hostels", "campus life"],
     "isHiddenGem": false
