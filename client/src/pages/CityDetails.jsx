@@ -945,7 +945,7 @@ function CityDetails() {
 
     const timer = window.setInterval(() => {
       setMicroStoryIndex((current) => (current + 1) % microStorySlideCount);
-    }, 4500);
+    }, 6000);
 
     return () => window.clearInterval(timer);
   }, [microStories.length, microStorySlideCount]);
