@@ -606,20 +606,6 @@
     "isHiddenGem": false
   },
   {
-    "id": 2005,
-    "cityId": 3,
-    "name": "NPTEL Office, ICSR Building",
-    "latitude": 12.99165,
-    "longitude": 80.23355,
-    "triggerRadius": 50,
-    "address": "ICSR Building, IIT Madras, Chennai - 600036",
-    "audio": { "url": "/audio/iit-madras/nptel-office-icsr.mp3", "durationSeconds": 90, "offlineAvailable": true },
-    "story": "NPTEL is the National Programme on Technology Enhanced Learning. Its IIT Madras contact address is associated with the ICSR Building, and its courses support free online learning with optional certification exams.",
-    "didYouKnow": "NPTEL courses are free to enroll and learn from; certification exams are optional and fee-based.",
-    "interests": ["academics", "online learning"],
-    "isHiddenGem": false
-  },
-  {
     "id": 2006,
     "cityId": 3,
     "name": "Department of Management Studies (DoMS)",
