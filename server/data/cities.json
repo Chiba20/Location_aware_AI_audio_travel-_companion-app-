@@ -27,9 +27,9 @@
     "state": "Tamil Nadu",
     "country": "India",
     "tagline": "Campus inside the city",
-    "description": "IIT Madras is a residential academic campus in Chennai, with hostels, classrooms, research spaces, management studies, and online learning initiatives such as NPTEL.",
+    "description": "IIT Madras is a residential campus in Chennai, with hostels, campus life, and the Department of Management Studies.",
     "heroImage": "iit-madras.jpg",
-    "interests": ["hostels", "academics", "campus life", "management", "online learning"],
+    "interests": ["hostels", "academics", "campus life", "management"],
     "offlineAvailable": true
   }
 ]

@@ -559,7 +559,7 @@
     "audio": { "url": "/audio/iit-madras/main-campus.mp3", "durationSeconds": 75, "offlineAvailable": true },
     "story": "The IIT Madras campus sits inside Chennai near Adyar and is known for its residential academic environment, tree cover, hostels, classrooms, research spaces, and institute services.",
     "didYouKnow": "The campus operates internal transport connecting the main gate, hostel zone, and academic zone.",
-    "interests": ["academics", "campus life"],
+    "interests": ["campus life"],
     "isHiddenGem": false
   },
   {
@@ -589,20 +589,6 @@
     "story": "Sabarmati is one of the IIT Madras hostels in the student residential area, reflecting the campus culture of shared living, study routines, and hostel community life.",
     "didYouKnow": "The official hostel administration page lists Sabarmati among IIT Madras hostels and provides hostel office contact details.",
     "interests": ["hostels", "campus life"],
-    "isHiddenGem": false
-  },
-  {
-    "id": 2004,
-    "cityId": 3,
-    "name": "Class Room Complex (CRC) and NPTEL Studios",
-    "latitude": 12.99195,
-    "longitude": 80.23465,
-    "triggerRadius": 50,
-    "address": "Class Room Complex, IIT Madras, Chennai - 600036",
-    "audio": { "url": "/audio/iit-madras/crc-nptel-studios.mp3", "durationSeconds": 95, "offlineAvailable": true },
-    "story": "The Class Room Complex is an academic teaching space on campus. NPTEL studio references at IIT Madras point to CRC rooms used for recording online course content, including NPTEL course material.",
-    "didYouKnow": "NPTEL began as a national IIT-IISc initiative for open online course lectures, and IIT Madras is one of its key member institutes.",
-    "interests": ["academics", "online learning"],
     "isHiddenGem": false
   },
   {
