@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { CheckCircle2, ExternalLink, Headphones, MapPin, Navigation, Pause, Play, Radio, Square } from "lucide-react";
+import { CheckCircle2, Headphones, MapPin, Navigation, Pause, Play, Radio, Square } from "lucide-react";
 import Navbar from "../component/Navbar";
 import ErrorState from "../component/ErrorState";
 import LoadingState from "../component/LoadingState";
+import InAppMapModal from "../component/InAppMapModal";
 import {
   endJourney,
   getCities,
@@ -20,6 +21,10 @@ const defaultLocation = {
 
 const minimumAutoCheckDistanceMeters = 20;
 const minimumAutoCheckIntervalMs = 8000;
+
+const buildPointMapUrl = ({ latitude, longitude }) => {
+  return `https://maps.google.com/maps?output=embed&q=${latitude},${longitude}&z=16`;
+};
 
 const distanceBetween = (first, second) => {
   if (!first || !second) return Infinity;
@@ -61,6 +66,7 @@ function Journey() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [mapView, setMapView] = useState(null);
   const journeyRef = useRef(null);
   const watchIdRef = useRef(null);
   const audioRef = useRef(null);
@@ -113,7 +119,6 @@ function Journey() {
   }, []);
 
   const activeCity = cities.find((city) => city.id === Number(journey?.cityId || form.cityId));
-  const currentLocationMapUrl = `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
   const cityInterests = useMemo(() => {
     if (activeCity?.interests?.length) return activeCity.interests;
 
@@ -462,6 +467,15 @@ function Journey() {
     }
   };
 
+  const openLocationMap = (title, point) => {
+    if (!navigator.onLine) {
+      window.alert("This feature needs an internet connection. Live maps cannot open offline.");
+      return;
+    }
+
+    setMapView({ title, mapUrl: buildPointMapUrl(point) });
+  };
+
   const handsFreeActive = autoTracking && watchIdRef.current !== null;
 
   return (
@@ -595,15 +609,14 @@ function Journey() {
                         : `Move about ${formatDistance(nearestTriggerPlace.distanceMeters - Number(nearestTriggerPlace.triggerRadius || 0))} closer to trigger it.`}
                     </span>
                   </div>
-                  <a
+                  <button
                     className="secondary-btn"
-                    href={`https://www.google.com/maps/search/?api=1&query=${nearestTriggerPlace.latitude},${nearestTriggerPlace.longitude}`}
-                    target="_blank"
-                    rel="noreferrer"
+                    type="button"
+                    onClick={() => openLocationMap(nearestTriggerPlace.name, nearestTriggerPlace)}
                   >
                     <MapPin size={16} />
                     View place
-                  </a>
+                  </button>
                 </article>
               )}
 
@@ -617,16 +630,14 @@ function Journey() {
                   {handsFreeActive ? <Pause size={17} /> : <Radio size={17} />}
                   {handsFreeActive ? "Pause hands-free" : "Resume hands-free"}
                 </button>
-                <a
+                <button
                   className="secondary-btn"
-                  href={currentLocationMapUrl}
-                  target="_blank"
-                  rel="noreferrer"
+                  type="button"
+                  onClick={() => openLocationMap("Your current location", location)}
                 >
                   <MapPin size={17} />
                   You are here
-                  <ExternalLink size={13} />
-                </a>
+                </button>
                 <button className="primary-btn" type="button" onClick={handleUpdateLocation} disabled={busy}>
                   <MapPin size={17} />
                   Check triggers
@@ -660,6 +671,11 @@ function Journey() {
           </section>
         )}
       </main>
+      <InAppMapModal
+        title={mapView?.title}
+        mapUrl={mapView?.mapUrl}
+        onClose={() => setMapView(null)}
+      />
     </>
   );
 }

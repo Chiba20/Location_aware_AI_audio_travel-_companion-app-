@@ -4,6 +4,7 @@ import { ArrowRight, BookOpenText, Building2, ChevronLeft, ChevronRight, Church,
 import Navbar from "../component/Navbar";
 import LoadingState from "../component/LoadingState";
 import ErrorState from "../component/ErrorState";
+import InAppMapModal from "../component/InAppMapModal";
 import { generatePersonalizedStory, getCity } from "../services/api";
 import { recordMetric } from "../utils/metrics";
 import { hasPremiumAccess } from "../utils/premiumAccess";
@@ -239,10 +240,17 @@ const buildPlaceLinks = (place, cityName) => {
   const query = buildPlaceQuery(place, cityName);
   const encodedQuery = encodeURIComponent(query);
   return {
-    directions: place.directionsUrl || `https://www.google.com/maps/dir/?api=1&destination=${encodedQuery}`,
     photos: place.photosUrl || `https://www.google.com/search?tbm=isch&q=${encodedQuery}`,
     videos: place.videosUrl || `https://www.youtube.com/results?search_query=${encodedQuery}+shorts`
   };
+};
+
+const buildDirectionsMapUrl = (place, cityName) => {
+  const hasCoordinates = Number.isFinite(Number(place.latitude)) && Number.isFinite(Number(place.longitude));
+  const destination = hasCoordinates
+    ? `${place.latitude},${place.longitude}`
+    : buildPlaceQuery(place, cityName);
+  return `https://maps.google.com/maps?output=embed&daddr=${encodeURIComponent(destination)}`;
 };
 
 const cleanDidYouKnowFact = (text) => {
@@ -696,6 +704,7 @@ function CityDetails() {
   const [hasPremium] = useState(() => hasPremiumAccess());
   const [expandedInfoPlaceId, setExpandedInfoPlaceId] = useState(null);
   const [playingPlaceId, setPlayingPlaceId] = useState(null);
+  const [mapView, setMapView] = useState(null);
   const audioRef = useRef(null);
   const selectedInterest = searchParams.get("interest") || "all";
 
@@ -1004,6 +1013,19 @@ function CityDetails() {
     } finally {
       setStoryBusy(false);
     }
+  };
+
+  const openDirectionsMap = (place) => {
+    if (!navigator.onLine) {
+      window.alert("This feature needs an internet connection. Live maps cannot open offline.");
+      return;
+    }
+
+    setMapView({
+      title: `Directions to ${place.name}`,
+      mapUrl: buildDirectionsMapUrl(place, city.name)
+    });
+    recordMetric("media_open", { cityId: city.id, placeId: place.id, type: "directions" });
   };
 
   return (
@@ -1349,14 +1371,10 @@ function CityDetails() {
                                   {playingPlaceId === place.id ? "Pause audio" : "Play audio"}
                                 </button>
                               )}
-                              {!isArchitectureInterest && <a href={links.directions} target="_blank" rel="noreferrer" onClick={(event) => {
-                                requireOnline(event);
-                                recordMetric("media_open", { cityId: city.id, placeId: place.id, type: "directions" });
-                              }}>
+                              {!isArchitectureInterest && <button type="button" onClick={() => openDirectionsMap(place)}>
                                 <MapPin size={15} />
                                 Directions
-                                <ExternalLink size={13} />
-                              </a>}
+                              </button>}
                               <a href={links.photos} target="_blank" rel="noreferrer" onClick={(event) => {
                                 requireOnline(event);
                                 recordMetric("media_open", { cityId: city.id, placeId: place.id, type: "photos" });
@@ -1406,6 +1424,11 @@ function CityDetails() {
           </>
         )}
       </div>
+      <InAppMapModal
+        title={mapView?.title}
+        mapUrl={mapView?.mapUrl}
+        onClose={() => setMapView(null)}
+      />
     </>
   );
 }
