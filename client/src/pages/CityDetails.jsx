@@ -255,7 +255,7 @@ const isDirectImageUrl = (url) => {
   }
 };
 
-const buildInAppMedia = ({ kind, title, url, query }) => {
+const buildInAppMedia = ({ kind, title, url }) => {
   let embedUrl = url;
   const mode = kind === "photos" && isDirectImageUrl(url) ? "image" : "frame";
 
@@ -268,25 +268,6 @@ const buildInAppMedia = ({ kind, title, url, query }) => {
       }
     } catch {
       embedUrl = url;
-    }
-  }
-
-  if (kind === "videos") {
-    try {
-      const parsed = new URL(url);
-      const host = parsed.hostname.replace(/^www\./, "");
-      const searchQuery = parsed.searchParams.get("search_query") || query || title;
-      const videoId = host === "youtu.be"
-        ? parsed.pathname.split("/").filter(Boolean)[0]
-        : parsed.searchParams.get("v");
-
-      if (videoId) {
-        embedUrl = `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?rel=0`;
-      } else if (host.endsWith("youtube.com")) {
-        embedUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(searchQuery)}`;
-      }
-    } catch {
-      embedUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(query || title)}`;
     }
   }
 
