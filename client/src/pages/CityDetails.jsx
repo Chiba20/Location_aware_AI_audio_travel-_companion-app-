@@ -242,7 +242,7 @@ const buildPlaceLinks = (place, cityName) => {
   const encodedQuery = encodeURIComponent(query);
   return {
     photos: place.photosUrl || `https://www.google.com/search?tbm=isch&q=${encodedQuery}`,
-    videos: place.videosUrl || `https://www.youtube.com/results?search_query=${encodedQuery}+shorts`
+    videos: `https://www.google.com/search?tbm=vid&q=${encodedQuery}`
   };
 };
 
@@ -259,7 +259,7 @@ const buildInAppMedia = ({ kind, title, url }) => {
   let embedUrl = url;
   const mode = kind === "photos" && isDirectImageUrl(url) ? "image" : "frame";
 
-  if (kind === "photos" && mode === "frame") {
+  if ((kind === "photos" || kind === "videos") && mode === "frame") {
     try {
       const parsed = new URL(url);
       if (parsed.hostname.includes("google.") && parsed.pathname === "/search") {
