@@ -5,6 +5,7 @@ import Navbar from "../component/Navbar";
 import LoadingState from "../component/LoadingState";
 import ErrorState from "../component/ErrorState";
 import InAppMapModal from "../component/InAppMapModal";
+import InAppMediaModal from "../component/InAppMediaModal";
 import { generatePersonalizedStory, getCity } from "../services/api";
 import { recordMetric } from "../utils/metrics";
 import { hasPremiumAccess } from "../utils/premiumAccess";
@@ -242,6 +243,59 @@ const buildPlaceLinks = (place, cityName) => {
   return {
     photos: place.photosUrl || `https://www.google.com/search?tbm=isch&q=${encodedQuery}`,
     videos: place.videosUrl || `https://www.youtube.com/results?search_query=${encodedQuery}+shorts`
+  };
+};
+
+const isDirectImageUrl = (url) => {
+  try {
+    const parsed = new URL(url);
+    return /\.(avif|gif|jpe?g|png|webp)$/i.test(parsed.pathname) || parsed.pathname.includes("Special:FilePath");
+  } catch {
+    return false;
+  }
+};
+
+const buildInAppMedia = ({ kind, title, url, query }) => {
+  let embedUrl = url;
+  const mode = kind === "photos" && isDirectImageUrl(url) ? "image" : "frame";
+
+  if (kind === "photos" && mode === "frame") {
+    try {
+      const parsed = new URL(url);
+      if (parsed.hostname.includes("google.") && parsed.pathname === "/search") {
+        parsed.searchParams.set("igu", "1");
+        embedUrl = parsed.toString();
+      }
+    } catch {
+      embedUrl = url;
+    }
+  }
+
+  if (kind === "videos") {
+    try {
+      const parsed = new URL(url);
+      const host = parsed.hostname.replace(/^www\./, "");
+      const searchQuery = parsed.searchParams.get("search_query") || query || title;
+      const videoId = host === "youtu.be"
+        ? parsed.pathname.split("/").filter(Boolean)[0]
+        : parsed.searchParams.get("v");
+
+      if (videoId) {
+        embedUrl = `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?rel=0`;
+      } else if (host.endsWith("youtube.com")) {
+        embedUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(searchQuery)}`;
+      }
+    } catch {
+      embedUrl = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(query || title)}`;
+    }
+  }
+
+  return {
+    kind,
+    title,
+    embedUrl,
+    externalUrl: url,
+    mode
   };
 };
 
@@ -705,6 +759,7 @@ function CityDetails() {
   const [expandedInfoPlaceId, setExpandedInfoPlaceId] = useState(null);
   const [playingPlaceId, setPlayingPlaceId] = useState(null);
   const [mapView, setMapView] = useState(null);
+  const [mediaView, setMediaView] = useState(null);
   const audioRef = useRef(null);
   const selectedInterest = searchParams.get("interest") || "all";
 
@@ -771,6 +826,16 @@ function CityDetails() {
       return;
     }
     setSearchParams({ interest });
+  };
+
+  const openMediaView = ({ kind, title, url, placeId, query: mediaQuery }) => {
+    if (!navigator.onLine) {
+      window.alert("This feature needs an internet connection. Live maps, photos, and videos cannot open offline.");
+      return;
+    }
+
+    recordMetric("media_open", { cityId: city.id, placeId, type: kind });
+    setMediaView(buildInAppMedia({ kind, title, url, query: mediaQuery }));
   };
 
   const placeMatchesInterest = (place, interest) => {
@@ -1173,19 +1238,37 @@ function CityDetails() {
                         <div className="architecture-image-grid" aria-label="Architecture examples">
                           {architectureShowcase.map((item) => (
                             <article className="architecture-image-card" key={item.title}>
-                              <a className="architecture-photo-link" href={item.imageLink} target="_blank" rel="noreferrer" onClick={requireOnline} aria-label={`Open ${item.title} architecture picture`}>
+                              <button
+                                className="architecture-photo-link"
+                                type="button"
+                                onClick={() => openMediaView({
+                                  kind: "photos",
+                                  title: `${item.title} architecture picture`,
+                                  url: item.imageLink,
+                                  query: item.title
+                                })}
+                                aria-label={`Open ${item.title} architecture picture`}
+                              >
                                 <img src={item.image} alt={`${item.title} architecture`} loading="lazy" />
                                 <span>{item.mood}</span>
-                              </a>
+                              </button>
                               <div className="architecture-image-content">
                                 <span className="architecture-focus">{item.focus}</span>
                                 <h4>{item.title}</h4>
                                 <p>{item.text}</p>
                                 <strong>Look for: {item.lookFor}</strong>
-                                <a href={item.imageLink} target="_blank" rel="noreferrer" onClick={requireOnline}>
+                                <button
+                                  type="button"
+                                  onClick={() => openMediaView({
+                                    kind: "photos",
+                                    title: `${item.title} architecture picture`,
+                                    url: item.imageLink,
+                                    query: item.title
+                                  })}
+                                >
                                   Open picture
-                                  <ExternalLink size={13} />
-                                </a>
+                                  <Image size={13} />
+                                </button>
                               </div>
                             </article>
                           ))}
@@ -1375,22 +1458,32 @@ function CityDetails() {
                                 <MapPin size={15} />
                                 Directions
                               </button>}
-                              <a href={links.photos} target="_blank" rel="noreferrer" onClick={(event) => {
-                                requireOnline(event);
-                                recordMetric("media_open", { cityId: city.id, placeId: place.id, type: "photos" });
-                              }}>
+                              <button
+                                type="button"
+                                onClick={() => openMediaView({
+                                  kind: "photos",
+                                  title: `${place.name} photos`,
+                                  url: links.photos,
+                                  placeId: place.id,
+                                  query: buildPlaceQuery(place, city.name)
+                                })}
+                              >
                                 <Image size={15} />
                                 {isArchitectureInterest ? "View architecture photos" : "Photos"}
-                                <ExternalLink size={13} />
-                              </a>
-                              {!isArchitectureInterest && <a href={links.videos} target="_blank" rel="noreferrer" onClick={(event) => {
-                                requireOnline(event);
-                                recordMetric("media_open", { cityId: city.id, placeId: place.id, type: "videos" });
-                              }}>
+                              </button>
+                              {!isArchitectureInterest && <button
+                                type="button"
+                                onClick={() => openMediaView({
+                                  kind: "videos",
+                                  title: `${place.name} videos`,
+                                  url: links.videos,
+                                  placeId: place.id,
+                                  query: buildPlaceQuery(place, city.name)
+                                })}
+                              >
                                 <Video size={15} />
                                 Videos
-                                <ExternalLink size={13} />
-                              </a>}
+                              </button>}
                             </div>}
                             {expandedInfoPlaceId === place.id && place.audioNarration && (
                               <div className="audio-info-panel">
@@ -1428,6 +1521,10 @@ function CityDetails() {
         title={mapView?.title}
         mapUrl={mapView?.mapUrl}
         onClose={() => setMapView(null)}
+      />
+      <InAppMediaModal
+        media={mediaView}
+        onClose={() => setMediaView(null)}
       />
     </>
   );

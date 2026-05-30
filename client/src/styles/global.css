@@ -502,13 +502,19 @@ textarea:focus {
   border-bottom: 1px solid var(--line);
 }
 
+.in-app-map-header > div:first-child {
+  min-width: 0;
+}
+
 .in-app-map-header h2 {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin: 5px 0 0;
   color: var(--ink);
   font-size: 1.12rem;
+  line-height: 1.25;
 }
 
 .in-app-map-header h2 svg {
@@ -537,6 +543,49 @@ textarea:focus {
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+.in-app-media-dialog {
+  width: min(1040px, 100%);
+}
+
+.in-app-media-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.in-app-media-header-actions a {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+  color: var(--brand);
+}
+
+.in-app-media-header-actions a:hover {
+  color: #fff;
+  background: var(--brand);
+  border-color: var(--brand);
+}
+
+.in-app-media-image-wrap {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding: 14px;
+  background: #142333;
+}
+
+.in-app-media-image-wrap img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+  object-fit: contain;
 }
 
 @media (max-width: 780px) {

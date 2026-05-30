@@ -866,8 +866,14 @@
 .architecture-photo-link {
   position: relative;
   display: block;
+  width: 100%;
+  padding: 0;
   overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: #fff;
+  cursor: pointer;
 }
 
 .architecture-photo-link img {
@@ -930,7 +936,8 @@
   line-height: 1.4;
 }
 
-.architecture-image-content a {
+.architecture-image-content a,
+.architecture-image-content button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
