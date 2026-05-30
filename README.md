@@ -25,7 +25,7 @@ The app is built as a React/Vite frontend with a Flask API backend. City content
 | Database | PostgreSQL for premium users |
 | Data source | JSON files for cities, places, walks, journeys, and feedback |
 | Email | SMTP provider such as Gmail, SendGrid, Brevo, Mailgun, or Resend |
-| Audio | gTTS-generated MP3 narration files |
+| Audio | Edge TTS-generated MP3 narration files |
 | Deployment | Render Web Service + Render Static Site + Render PostgreSQL |
 
 ## Project Structure
@@ -63,7 +63,7 @@ python server\app.py
 
 Local backend URL:
 
-```text
+```text 
 http://127.0.0.1:5000/api
 ```
 
@@ -264,7 +264,11 @@ pip install -r requirements.txt
 python scripts\generate_audio.py
 ```
 
-The generator skips existing MP3 files.
+The generator uses the Indian English `en-IN-NeerjaNeural` voice and skips existing MP3 files. To regenerate every audio file with Edge TTS:
+
+```powershell
+python scripts\generate_audio.py --force
+```
 
 ## Useful Commands
 
